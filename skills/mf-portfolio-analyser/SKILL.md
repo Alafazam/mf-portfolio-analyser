@@ -18,7 +18,7 @@ Turns an investor's statement into a rules-based screen of every fund and a tax-
 
 ## Workflow
 
-1. **Setup check** — run `python3 -m mfpa doctor`. If `pdftotext` is missing, show the one install line it prints for the user's OS.
+1. **Setup check** — run `python3 -m mfpa doctor`. If `pdftotext` is missing, show the one install line it prints for the user's OS. If `qpdf` is missing and their CAS is password-protected (MF Central CAS always is), show its install line too; only suggest `--allow-password-arg` if they say they are the only user of the computer.
 2. **Ask four questions** (one message): investment horizon (under 3 / 3–7 / 7+ years); tax regime (old with 80C, or new); equity long-term gains already booked this financial year outside mutual funds (shares, ETFs), default ₹0; what they want (fewer funds, lower fees, or both).
 3. **Get the input** — best is the MF Central Detailed CAS (see `references/cas-howto.md` and walk them through it). Alternatives: INDmoney MCP (save `networth_holdings(asset_type="MF")` and `mf_sips()` output to two JSON files under `~/.mfpa/`), or the CSV template in `templates/holdings.csv`. Without a CAS, every tax figure is an estimate; say so.
 4. **Run** — in the background (first run fetches a few hundred NAV histories and can take 5–10 minutes):

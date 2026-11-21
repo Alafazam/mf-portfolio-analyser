@@ -29,7 +29,7 @@ def fy_label(start_year, first=False): return f"FY {start_year}-{str(start_year 
 
 class Engine:
     def __init__(self, data, out_dir):
-        self.data, self.out = data, out_dir; os.makedirs(out_dir, exist_ok=True)
+        self.data, self.out = data, out_dir; os.makedirs(out_dir, mode=0o700, exist_ok=True); os.chmod(out_dir, 0o700)
         self.as_of = D(data["as_of"]); self.H = data["holdings"]
         self.scored = [h for h in self.H if h["category"] in BM["categories"]]
         self.snap = {r["code"]: r for r in SNAP["rows"]}
@@ -38,7 +38,8 @@ class Engine:
             else: h["regular_code"] = amfi.twin(h["direct_code"], "Regular")
         self.mine = {h["direct_code"]: h["name"] for h in self.scored}
 
-    def save(self, name, obj): json.dump(obj, open(os.path.join(self.out, name), "w"), indent=1, default=str)
+    def save(self, name, obj):
+        with os.fdopen(os.open(os.path.join(self.out, name), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as fh: json.dump(obj, fh, indent=1, default=str)
 
     # ---------------- prices ----------------
     def grid(self):

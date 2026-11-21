@@ -19,6 +19,8 @@ def doctor():
     else:
         ok = False; print("pdftotext: missing (needed for CAS PDFs). Install:")
         print("  Linux (Debian/Ubuntu): sudo apt install -y poppler-utils\n  macOS: brew install poppler\n  Windows: winget install oschwartz10612.Poppler  (or use WSL)")
+    print("qpdf: OK (password-protected PDFs)" if shutil.which("qpdf") else
+          "qpdf: missing (only needed for password-protected PDFs). Install: sudo apt install -y qpdf  /  brew install qpdf")
     try:
         from .data.amfi import rows; n = len(rows()); print(f"AMFI scheme list: OK ({n} schemes)")
     except Exception as e: ok = False; print(f"AMFI scheme list: can't download ({e})")
@@ -34,16 +36,16 @@ def progress(d, msg):
 def run(args):
     from .engine import Engine
     from .report.build import build
+    os.umask(0o077)   # every file and folder this run creates is owner-only, wherever --out points
     d = args.out or run_dir(); os.makedirs(d, mode=0o700, exist_ok=True)
+    txt = os.path.join(d, "cas.txt")
     try:
         if args.cas:
             from .ingest.cas import pdf_to_text, ingest
-            txt = os.path.join(d, "cas.txt")
             pw = os.environ.get("MFPA_CAS_PASSWORD")
             if pw is None and not args.no_password and sys.stdin.isatty(): pw = getpass.getpass("CAS PDF password (leave empty if none): ") or None
-            progress(d, "Reading the CAS PDF"); pdf_to_text(args.cas, txt, pw)
+            progress(d, "Reading the CAS PDF"); pdf_to_text(args.cas, txt, pw, args.allow_password_arg)
             progress(d, "Building purchase lots and checking units"); data = ingest(txt, os.path.join(d, "holdings_in.json"))
-            os.remove(txt)   # raw text holds personal details: delete as soon as the redacted JSON exists
         elif args.csv:
             from .ingest.simple import from_csv
             progress(d, "Reading the CSV"); data = from_csv(args.csv)
@@ -56,11 +58,13 @@ def run(args):
         if args.other_ltcg: data["other_ltcg_this_fy"] = args.other_ltcg
         progress(d, "Fetching NAVs and scoring funds (first run takes a few minutes)")
         e = Engine(data, os.path.join(d, "data")).run()
-        out = build(os.path.join(d, "data"), os.path.join(d, "report.html"))
+        out = build(os.path.join(d, "data"), os.path.join(d, "report.html"), web_fonts=False)
         progress(d, f"Done: {out}")
         print(json.dumps(dict(report=out, data=os.path.join(d, "data"), warnings=data.get("warnings", [])), indent=1))
-    except Exception:
-        progress(d, "Failed:\n" + traceback.format_exc()); raise
+    except Exception as e:
+        progress(d, f"Failed: {type(e).__name__}: {e}"); raise
+    finally:
+        if os.path.exists(txt): os.remove(txt)   # raw CAS text holds personal details: always delete it, success or failure
 
 def sample():
     sys.path.insert(0, HERE)
@@ -79,6 +83,7 @@ def main():
     r = sub.add_parser("run")
     r.add_argument("--cas"); r.add_argument("--csv"); r.add_argument("--indmoney", nargs="+")
     r.add_argument("--out"); r.add_argument("--no-password", action="store_true")
+    r.add_argument("--allow-password-arg", action="store_true", help="without qpdf, pass the PDF password to pdftotext on the command line (visible to other users of this computer)")
     r.add_argument("--other-ltcg", type=float, default=0, help="equity long-term gains already booked this FY outside mutual funds (shares, ETFs)")
     sub.add_parser("sample"); sub.add_parser("refresh-snapshot")
     a = ap.parse_args()

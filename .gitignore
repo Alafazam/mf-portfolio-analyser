@@ -1,7 +1,17 @@
-# personal data never belongs in this repo
-*.pdf
-cas*.txt
+# personal data never belongs in this repo (patterns are case-insensitive by hand: git's are not)
+*.[Pp][Dd][Ff]
+[Cc][Aa][Ss]*.[Tt][Xx][Tt]
+*[Cc][Aa][Ss]*.json
 !samples/synthetic_cas.txt
+*.xlsx
+*.xls
+*.csv
+!templates/holdings.csv
+holdings_in*.json
+report.html
+progress.txt
+.pw
+.decrypted.pdf
 work/
 runs/
 samples/out/

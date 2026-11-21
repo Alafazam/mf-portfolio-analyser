@@ -12,7 +12,8 @@ def clean(x):
     if isinstance(x, float): return round(x, 5)
     return x
 
-def build(data_dir, out_html):
+def build(data_dir, out_html, web_fonts=True):
+    """web_fonts=False (personal reports): drop the Google Fonts links so opening the file makes no network request."""
     J = lambda f: json.load(open(os.path.join(data_dir, f))) if os.path.exists(os.path.join(data_dir, f)) else None
     r = J("results.json")
     D = dict(end=r["end"], n50_10y=None, portfolio=r["portfolio"], funds=r["funds"], look=J("lookthrough.json"), universe=None,
@@ -20,5 +21,6 @@ def build(data_dir, out_html):
              holdings=J("holdings.json"), conviction=None)
     blob = json.dumps(clean(D), separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     html = open(os.path.join(HERE, "template.html"), encoding="utf-8").read().replace("__DATA__", blob)
-    open(out_html, "w", encoding="utf-8").write(html)
+    if not web_fonts: html = re.sub(r'<link rel="(preconnect|stylesheet)" href="https://fonts\.(googleapis|gstatic)\.com[^"]*"[^>]*>\n?', "", html)
+    with os.fdopen(os.open(out_html, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600 if not web_fonts else 0o644), "w", encoding="utf-8") as fh: fh.write(html)
     return out_html

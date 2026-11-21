@@ -16,12 +16,37 @@ VIA = {"INZ000305337": "INDmoney", "INZ000208032": "Groww", "INZ000031633": "Zer
 DEBT_CATS = re.compile(r"liquid|overnight|money market|duration|gilt|corporate bond|credit risk|banking and psu|floater|dynamic bond|debt", re.I)
 OTHER_CATS = re.compile(r"fof|fund of fund|multi asset|balanced advantage|dynamic asset|conservative hybrid|equity savings|gold|silver|international|overseas|global|emerging market|nasdaq|world|u\.\s?s\.|\bus\b", re.I)
 
-def pdf_to_text(pdf, out_txt, password=None):
+def pdf_to_text(pdf, out_txt, password=None, allow_password_arg=False):
+    """PDF -> layout text. A password never goes on a command line (other users could see it in `ps`):
+    the PDF is first decrypted with qpdf, which reads the password from an owner-only temporary file."""
     if not shutil.which("pdftotext"): raise RuntimeError("pdftotext not found: run `python3 -m mfpa doctor` for the install command")
-    cmd = ["pdftotext", "-layout"] + (["-upw", password] if password else []) + [pdf, out_txt]
-    subprocess.run(cmd, check=True, capture_output=True)
-    os.chmod(out_txt, 0o600)
-    return out_txt
+    src, tmp = pdf, []
+    try:
+        if password:
+            if shutil.which("qpdf"):
+                d = os.path.dirname(out_txt)
+                pwf = os.path.join(d, ".pw"); fd = os.open(pwf, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+                with os.fdopen(fd, "w") as fh: fh.write(password)
+                dec = os.path.join(d, ".decrypted.pdf"); tmp += [pwf, dec]
+                subprocess.run(["qpdf", f"--password-file={pwf}", "--decrypt", pdf, dec], check=True, capture_output=True)
+                os.chmod(dec, 0o600); src = dec
+            elif allow_password_arg:
+                subprocess.run(["pdftotext", "-layout", "-upw", password, pdf, out_txt], check=True, capture_output=True)
+                os.chmod(out_txt, 0o600); return out_txt
+            else:
+                raise RuntimeError("Password-protected PDF: install qpdf so the password isn't passed on the command line "
+                                   "(Linux: sudo apt install -y qpdf, macOS: brew install qpdf), or rerun with --allow-password-arg "
+                                   "if you're the only user on this computer.")
+        fd = os.open(out_txt, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600); os.close(fd)
+        subprocess.run(["pdftotext", "-layout", src, out_txt], check=True, capture_output=True)
+        return out_txt
+    except subprocess.CalledProcessError as e:
+        # the command line may hold the password: report the tool and its own message only
+        msg = (e.stderr or b"").decode(errors="replace").replace(password or "\0", "***").strip()[:300]
+        raise RuntimeError(f"{e.cmd[0]} could not read the PDF (wrong password or not a CAS PDF?): {msg}") from None
+    finally:
+        for t in tmp:
+            if os.path.exists(t): os.remove(t)
 
 def _num(s): return -float(s.strip("()").replace(",", "")) if s.startswith("(") else float(s.replace(",", ""))
 def _date(s): return dt.datetime.strptime(s, "%d-%b-%Y").date()
@@ -188,5 +213,5 @@ def ingest(cas_txt, out_json, investor=None):
                 holdings=[h for h in holdings if h["reconciled"]], excluded=[h["name"] for h in holdings if not h["reconciled"]],
                 sips_active=detect_sips(holdings, today), warnings=warnings)
     os.makedirs(os.path.dirname(out_json), mode=0o700, exist_ok=True)
-    json.dump(data, open(out_json, "w"), indent=1, default=str); os.chmod(out_json, 0o600)
+    with os.fdopen(os.open(out_json, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as fh: json.dump(data, fh, indent=1, default=str)
     return data

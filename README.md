@@ -25,7 +25,7 @@ git clone https://github.com/Alafazam/mf-portfolio-analyser
 
 In Claude Code, add the folder as a plugin (or copy `skills/mf-portfolio-analyser` into `~/.claude/skills/`), then run `/analyse-mf`.
 
-Requirements: Python 3.10+ (standard library only) and `pdftotext` (poppler) for CAS PDFs. Check with:
+Requirements: Python 3.10+ (standard library only), `pdftotext` (poppler) for CAS PDFs, and `qpdf` for password-protected PDFs (so the password never appears on a command line). Check with:
 
 ```bash
 python3 -m mfpa doctor
@@ -54,7 +54,9 @@ Add `--other-ltcg 40000` if you've already booked equity long-term gains this ye
 ## Privacy
 
 - The CAS PDF and its text never leave your computer and are never shown to Claude. The tool extracts what it needs, deletes the raw text, and writes a redacted summary (no name, PAN, address, contact details or folio numbers) to `~/.mfpa/runs/…` with owner-only permissions.
-- The PDF password is asked in a hidden prompt (or read from `MFPA_CAS_PASSWORD`), never in chat.
+- The PDF password is asked in a hidden prompt (or read from `MFPA_CAS_PASSWORD`), never in chat. It reaches `qpdf` through an owner-only temporary file, never the command line, and is kept out of error messages. Without qpdf the run stops, unless you add `--allow-password-arg` (fine if you're the only user of the computer).
+- The raw CAS text is deleted even if a run fails. Every file a run writes is readable only by you.
+- Your report makes no network requests when opened (system fonts, no web fonts).
 - The report contains fund names, amounts and dates only. Text inside fund names or files is cleaned before it reaches the page.
 - The tool never logs in anywhere or places orders. You make every transaction.
 

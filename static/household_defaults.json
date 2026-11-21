@@ -1,0 +1,33 @@
+{
+ "version": 1,
+ "as_of": "2026-11-23",
+ "source": "Planning defaults chosen for illustration; change them in plan.json.",
+ "medical_inflation_extra": 0.04,
+ "premium_age_bands": [
+  [
+   45,
+   1.5
+  ],
+  [
+   55,
+   2.0
+  ],
+  [
+   65,
+   3.0
+  ]
+ ],
+ "education_inflation": 0.08,
+ "rent_growth": 0.05,
+ "vacant_months": 1,
+ "maintenance": 4000,
+ "goal_derisk_months": 36,
+ "unlisted_spending_share": 0.05,
+ "tax_on_retirement_spending": 0.05,
+ "school_until_age": 17,
+ "stress": {
+  "first_year": -0.3,
+  "years": 10,
+  "real": 0.01
+ }
+}

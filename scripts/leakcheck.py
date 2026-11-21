@@ -2,7 +2,7 @@
 (one per line, exact strings) are read from ~/.mfpa/leakcheck/private_patterns.txt, which never enters the repo.
 Usage (git pre-commit): python3 scripts/leakcheck.py  -> exit 1 and list the files on a hit."""
 import os, re, subprocess, sys
-GENERIC = {"PAN": re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b"), "email": re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b"),
+GENERIC = {"PAN": re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b"), "email": re.compile(r"\b[\w.+-]+@[\w-]+(?:\.[A-Za-z]{2,})+\b"),
            "phone": re.compile(r"(?<![\d.])[6-9]\d{9}(?![\d.])")}
 ALLOW_EMAIL = {"noreply@anthropic.com"}
 BINARY = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".woff", ".woff2"}

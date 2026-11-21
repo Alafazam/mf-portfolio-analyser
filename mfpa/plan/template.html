@@ -1,0 +1,208 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Family Money Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column. Headline ages first (with the disclaimer beside them), then the path, yearly milestones, budget by phase, goals, what moves the date, the income-stops check and the to-do list. Display only: every number comes from the Python model. */
+:root{
+  --bg:#f4f7f6; --surface:#ffffff; --fg:#13201d; --fg2:#4b5a56; --muted:#7a8884;
+  --line:#dfe6e3; --ring:rgba(19,32,29,.10); --wash:rgba(15,118,110,.08);
+  --accent:#0f766e; --accent2:#b7791f; --kid:#7c5cc4; --money:#2b7bd1;
+  --good:#16803c; --warn:#b7791f; --crit:#c2410c;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1514; --surface:#161e1c; --fg:#e8efec; --fg2:#b4c2bd; --muted:#87958f;
+  --line:#26312e; --ring:rgba(255,255,255,.09); --wash:rgba(45,180,165,.12);
+  --accent:#2bb3a3; --accent2:#e0a43a; --kid:#a68ce6; --money:#5aa2ee;
+  --good:#3fbf6a; --warn:#e0a43a; --crit:#f07a46; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1514; --surface:#161e1c; --fg:#e8efec; --fg2:#b4c2bd; --muted:#87958f;
+  --line:#26312e; --ring:rgba(255,255,255,.09); --wash:rgba(45,180,165,.12);
+  --accent:#2bb3a3; --accent2:#e0a43a; --kid:#a68ce6; --money:#5aa2ee;
+  --good:#3fbf6a; --warn:#e0a43a; --crit:#f07a46; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:38px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:2.05rem;font-weight:700} h2{font-size:1.32rem;font-weight:700} h3{font-size:1rem;font-weight:600;font-family:var(--body)}
+p{margin:0;max-width:68ch}
+.sub{color:var(--fg2)} .note{font-size:.82rem;color:var(--muted)}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+section{display:grid;gap:14px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px;min-width:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:16px;display:grid;gap:4px;align-content:start}
+.tile .v{font-family:var(--display);font-size:1.9rem;font-weight:700;line-height:1.1}
+.tile .k{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.tile .d{font-size:.84rem;color:var(--fg2)}
+.disc{border-left:3px solid var(--accent2);padding:8px 12px;background:var(--surface);border-radius:0 8px 8px 0;font-size:.84rem;color:var(--fg2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--fg2)} .legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:3px;border-radius:2px;display:inline-block}
+.tablewrap{border:1px solid var(--ring);border-radius:12px;background:var(--surface);overflow:hidden}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.hit td{background:var(--wash)}
+.m2{color:var(--muted);font-size:.75rem}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--ring);margin:1px 3px 1px 0;color:var(--fg)}
+.chip i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px;min-width:50px} .bar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:.86rem;padding:3px 0}
+.row.t{border-top:1px solid var(--line);margin-top:4px;padding-top:6px;font-weight:600}
+ul.todo{margin:0;padding:0;list-style:none;display:grid;gap:8px} ul.todo li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;font-size:.88rem}
+.box{width:16px;height:16px;border:1.5px solid var(--muted);border-radius:4px;margin-top:3px}
+svg text{fill:var(--fg2);font-family:var(--body)}
+.tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--fg);border:1px solid var(--ring);border-radius:8px;padding:8px 10px;font-size:.8rem;box-shadow:0 6px 18px rgba(0,0,0,.15);z-index:20;max-width:260px}
+@media (max-width:600px){
+  table.stack thead{display:none} table.stack tbody, table.stack tr{display:block}
+  table.stack tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  table.stack td{display:block;border:0;padding:0} table.stack td:nth-child(n+3){grid-column:1/-1}
+}
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="title">Family Money Plan</h1>
+    <p class="sub">A monthly money ledger for the whole family, from take-home pay to goals, home loan and pensions, and the age at which investments could replace salary. Every number comes from the plan file; change it and rebuild.</p>
+  </header>
+
+  <section aria-label="Headline">
+    <div class="tiles" id="tiles"></div>
+    <p class="disc">Planning maths with assumed returns, not a forecast and not financial, tax or insurance advice. The base case uses a steady return; the stress case replays a bad first decade. Neither is a probability.</p>
+  </section>
+
+  <section aria-labelledby="h-path">
+    <h2 id="h-path">Investments against what's needed</h2>
+    <div class="panel"><svg id="chart" viewBox="0 0 760 320" role="img" aria-label="Investments against the amount needed, by age" style="width:100%;height:auto;display:block"></svg><div class="legend" id="legend" style="margin-top:8px"></div></div>
+    <p class="note">"Needed" is the smallest amount of investments (in today's rupees) that would last to the end of the plan if the main earner stopped that year, after counting a partner who keeps working, pensions as they start, the loan still to repay and goals still to fund. Goal funds and the emergency fund are not counted as investments.</p>
+  </section>
+
+  <section aria-labelledby="h-mile">
+    <h2 id="h-mile">Yearly milestones</h2>
+    <p class="sub">Where the plan expects you each year. Compare it with your real net worth once a year; if you're ahead, the date moves closer.</p>
+    <div class="tablewrap"><table class="stack" id="mile"></table></div>
+  </section>
+
+  <section aria-labelledby="h-budget">
+    <h2 id="h-budget">Monthly budget by phase</h2>
+    <div class="cols" id="phases"></div>
+    <p class="note">Money left after spending goes to the emergency fund first, then the goal SIPs you set, then investments. SIPs are a share of what's left, not extra money.</p>
+  </section>
+
+  <section aria-labelledby="h-goals">
+    <h2 id="h-goals">Goals</h2>
+    <div class="tablewrap"><table class="stack" id="goals"></table></div>
+    <p class="note">Goal funds move to safer debt returns in their last three years. A shortfall is paid from investments on the day and is already counted in the plan above.</p>
+  </section>
+
+  <section aria-labelledby="h-lev">
+    <h2 id="h-lev">What moves the date</h2>
+    <div class="cols">
+      <div class="panel"><h3 style="margin-bottom:8px">Changes you could make</h3><div id="levers"></div><p class="note" style="margin-top:8px">Each change is tested on its own; the effects don't add up exactly when combined.</p></div>
+      <div class="panel"><h3 style="margin-bottom:8px">Guesses that move it most</h3><div id="geff"></div><p class="note" style="margin-top:8px">Inputs the plan had to assume. Firm these up first.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-term">
+    <h2 id="h-term">If the main earner's income stopped today</h2>
+    <div class="panel" id="term"></div>
+  </section>
+
+  <section aria-labelledby="h-todo">
+    <h2 id="h-todo">To-do list</h2>
+    <div class="cols" id="todos"></div>
+  </section>
+
+  <section aria-labelledby="h-how">
+    <h2 id="h-how">How this is worked out</h2>
+    <div class="panel" style="display:grid;gap:8px;font-size:.88rem;color:var(--fg2)" id="how"></div>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = __DATA__;
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = v => { if (v == null) return "–"; const a = Math.abs(v), s = v < 0 ? "−" : ""; return a >= 1e7 ? s + "₹" + (a / 1e7).toFixed(2) + " Cr" : a >= 1e5 ? s + "₹" + (a / 1e5).toFixed(1) + "L" : s + "₹" + Math.round(a).toLocaleString("en-IN"); };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const KIND = {home: "--accent2", good: "--good", money: "--money", child: "--kid", fi: "--accent"};
+
+$("#eyebrow").textContent = `${D.label} · as of ${D.as_of}${D.share ? " · share copy (amounts rounded)" : ""}`;
+const T = D.tiles;
+$("#tiles").innerHTML = [
+  ["Independent, base case", T.base == null ? "not by retirement" : "age " + Math.round(T.base), T.need == null ? "" : `needs about ${inr(T.need)} in today's money`, "--accent"],
+  ["Independent, stress case", T.stress == null ? "not by retirement" : "age " + Math.round(T.stress), T.need_stress == null ? "" : `if the first decade goes badly: ${inr(T.need_stress)}`, "--accent2"],
+  ["Home loan cleared", T.loan || "–", T.loan_age ? `age ${T.loan_age}; the EMI then goes to savings` : "", "--fg"],
+  ["Emergency fund full", T.emg || "not reached", "target in months of fixed costs", T.emg ? "--good" : "--warn"],
+].map(([k, v, d, c]) => `<div class="tile"><span class="k">${esc(k)}</span><span class="v" style="color:var(${c})">${esc(v)}</span><span class="d">${esc(d)}</span></div>`).join("");
+
+(function chart() {
+  const svg = $("#chart"), W = 760, H = 320, m = {l: 56, r: 16, t: 14, b: 32}, P = D.path;
+  if (!P.length) return;
+  const maxY = Math.max(...P.map(x => Math.max(x.have, x.req_stress))) * 1.05, a0 = P[0].age, a1 = P[P.length - 1].age;
+  const sx = a => m.l + (a - a0) / (a1 - a0 || 1) * (W - m.l - m.r), sy = v => H - m.b - v / maxY * (H - m.t - m.b);
+  const el = (t, at) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); svg.appendChild(e); return e; };
+  const step = maxY > 4e7 ? 1e7 : maxY > 1.5e7 ? 5e6 : 2e6;
+  for (let v = 0; v <= maxY; v += step) { el("line", {x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), stroke: css("--line")}); const t = el("text", {x: m.l - 8, y: sy(v) + 4, "text-anchor": "end", "font-size": 11}); t.textContent = v ? (v / 1e7).toFixed(v % 1e7 ? 1 : 0) + " Cr" : "0"; }
+  for (let a = Math.ceil(a0 / 5) * 5; a <= a1; a += 5) { const t = el("text", {x: sx(a), y: H - 10, "text-anchor": "middle", "font-size": 11}); t.textContent = "age " + a; }
+  const line = (k, col, dash, w) => el("path", {d: P.map((x, i) => (i ? "L" : "M") + sx(x.age).toFixed(1) + " " + sy(x[k]).toFixed(1)).join(""), fill: "none", stroke: css(col), "stroke-width": w, "stroke-dasharray": dash || "", "stroke-linejoin": "round"});
+  el("path", {d: P.map((x, i) => (i ? "L" : "M") + sx(x.age).toFixed(1) + " " + sy(x.have).toFixed(1)).join("") + `L${sx(a1)} ${sy(0)}L${sx(a0)} ${sy(0)}Z`, fill: css("--accent"), "fill-opacity": .1, stroke: "none"});
+  line("req_stress", "--accent2", "3 4", 1.5); line("req", "--accent2", "7 5", 2); line("have", "--accent", "", 2.5);
+  for (const [k, lab] of [["base", "base"], ["stress", "stress"]]) if (T[k] != null) { const x = P.find(q => Math.round(q.age) === Math.round(T[k])); if (x) { el("circle", {cx: sx(x.age), cy: sy(x.have), r: 6, fill: css(k === "base" ? "--accent" : "--accent2"), stroke: css("--surface"), "stroke-width": 2}); const t = el("text", {x: sx(x.age) + 8, y: sy(x.have) - 10, "font-size": 12, "font-weight": 600}); t.style.fill = css("--fg"); t.textContent = `${lab}: ${Math.round(T[k])}`; } }
+  const tip = $("#tip"), hit = el("rect", {x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent"});
+  hit.addEventListener("pointermove", e => { const b = svg.getBoundingClientRect(), age = a0 + ((e.clientX - b.left) / b.width * W - m.l) / (W - m.l - m.r) * (a1 - a0);
+    const x = P.reduce((p, q) => Math.abs(q.age - age) < Math.abs(p.age - age) ? q : p); tip.innerHTML = `<b>Age ${Math.round(x.age)}</b><br>Investments ${inr(x.have)}<br>Needed ${inr(x.req)} · stress ${inr(x.req_stress)}`; tip.hidden = false; tip.style.left = Math.min(e.clientX + 14, innerWidth - 270) + "px"; tip.style.top = e.clientY + 14 + "px"; });
+  hit.addEventListener("pointerleave", () => tip.hidden = true);
+  $("#legend").innerHTML = `<span><i class="sw" style="background:var(--accent)"></i>Investments (today's ₹)</span><span><i class="sw" style="background:var(--accent2)"></i>Needed, base case</span><span><i class="sw" style="background:var(--accent2);opacity:.6"></i>Needed, stress case (dotted)</span>`;
+})();
+
+$("#mile").innerHTML = `<thead><tr><th>Year</th><th class="n">Investments</th><th class="n">Loan left</th><th>To base target</th><th>Milestones</th></tr></thead><tbody>` +
+  D.miles.map(r => { const hit = r.events.some(e => e.kind === "fi"); const kids = r.kids.filter(k => k != null);
+    return `<tr${hit ? ' class="hit"' : ""}><td><b>${esc(r.year)}</b><br><span class="m2">age ${r.age}${kids.length ? " · children " + kids.join(", ") : ""}</span></td>` +
+      `<td class="n"><b>${inr(r.invested)}</b><br><span class="m2">${inr(r.invested_real)} today${r.goals ? " · goal funds " + inr(r.goals) : ""}</span></td>` +
+      `<td class="n">${r.loan > 0 ? inr(r.loan) : "–"}</td>` +
+      `<td>${r.pct == null ? "" : `<span class="num" style="font-size:.82rem">${Math.round(r.pct * 100)}%</span><div class="bar"><i style="width:${r.pct * 100}%"></i></div>`}</td>` +
+      `<td>${r.events.map(e => `<span class="chip"><i style="background:var(${KIND[e.kind] || "--muted"})"></i>${esc(e.text)}</span>`).join("")}</td></tr>`; }).join("") + "</tbody>";
+
+$("#phases").innerHTML = D.phases.map(ph => { const sum = a => a.reduce((s, x) => s + (x.v || 0), 0);
+  const rows = (a, sign) => a.map(x => `<div class="row"><span>${esc(x.name)}</span><span class="num">${sign}${inr(x.v)}</span></div>`).join("");
+  return `<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3>${esc(ph.title)}</h3><span class="note">${esc(ph.when)}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Money in</div>${rows(ph.ins, "")}<div class="row t"><span>Total</span><span class="num">${inr(sum(ph.ins))}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Money out</div>${rows(ph.outs, "")}<div class="row t"><span>Total</span><span class="num">${inr(sum(ph.outs))}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Where the rest goes</div>${rows(ph.alloc, "")}</div>`; }).join("");
+
+$("#goals").innerHTML = `<thead><tr><th>Goal</th><th class="n">Cost then</th><th class="n">Fund covers</th><th class="n">Shortfall</th></tr></thead><tbody>` +
+  D.goals.map(g => `<tr><td><b>${esc(g.name)}</b><br><span class="m2">${esc(g.due)}</span></td><td class="n">${inr(g.cost)}</td><td class="n">${inr(g.paid)}</td><td class="n" style="color:var(${g.short > 1 ? "--crit" : "--good"})">${g.short > 1 ? inr(g.short) : "covered"}</td></tr>`).join("") + "</tbody>";
+
+const ageTxt = a => a == null ? "not by retirement" : "age " + Math.round(a);
+$("#levers").innerHTML = D.levers.map(l => `<div class="row"><span>${esc(l.name)}</span><span class="num">${ageTxt(l.base)}${l.delta ? ` <span class="m2">(${l.delta > 0 ? "+" : "−"}${Math.abs(l.delta).toFixed(0)}y)</span>` : ""}</span></div>`).join("");
+$("#geff").innerHTML = D.guess_effects.map(g => `<div class="row"><span>${esc(g.name)}</span><span class="num">${ageTxt(g.low)} – ${ageTxt(g.high)}</span></div>`).join("") +
+  (D.guesses.length ? `<p class="note" style="margin-top:8px">Assumed: ${D.guesses.map(esc).join("; ")}.</p>` : "");
+
+const t = D.term, NAME = {loan: "Home loan still owed", living: `Household costs for ${t.years} years`, goals: "Goals (today's value)", investments: "Investments and emergency fund", goal_funds: "Goal funds", pf: "PF / GPF balances", others_income: `Other earners' income for ${t.years} years`, cover: "Existing term cover"};
+$("#term").innerHTML = `<div class="cols"><div><div class="eyebrow">Needed</div>${Object.entries(t.need).map(([k, v]) => `<div class="row"><span>${NAME[k]}</span><span class="num">${inr(v)}</span></div>`).join("")}</div>` +
+  `<div><div class="eyebrow">Available</div>${Object.entries(t.have).map(([k, v]) => `<div class="row"><span>${NAME[k]}</span><span class="num">${inr(v)}</span></div>`).join("")}</div></div>` +
+  `<p style="margin-top:12px"><b>${t.gap > 0 ? "Shortfall: " + inr(t.gap) : "No shortfall"}</b> <span class="note">· a gap analysis in today's money, not a recommendation to buy any policy. Check the result against your own cover with a professional.</span></p>`;
+
+const groups = {};
+D.todos.forEach(x => (groups[x.when] = groups[x.when] || []).push(x.text));
+$("#todos").innerHTML = Object.entries(groups).map(([w, items]) => `<div class="panel"><h3 style="margin-bottom:10px">${esc(w[0].toUpperCase() + w.slice(1))}</h3><ul class="todo">${items.map(i => `<li><span class="box"></span><span>${esc(i)}</span></li>`).join("")}</ul></div>`).join("");
+
+const A = D.assumptions;
+$("#how").innerHTML = [
+  `A monthly ledger: each earner's take-home (growing yearly, with any pay commission paid with arrears) plus rent received, minus spending, rent, EMI and premiums. What's left goes to the emergency fund, then goal SIPs, then investments. Medical costs rise ${Math.round(A.medical_inflation_extra * 100)}% a year faster than prices (${Math.round(A.inflation * 100)}%); education ${Math.round(A.education_inflation * 100)}%.`,
+  `Investments earn ${Math.round(A.equity_return * 100)}% a year before the stop date. After it, money left must last to age ${A.live_to} at ${(A.retire_real_return * 100).toFixed(1)}% above inflation (base case), or survive a ${Math.round(A.stress.first_year * 100)}% first year followed by ${A.stress.years} years at ${(A.stress.real * 100).toFixed(0)}% (stress case). About ${Math.round(A.tax_on_retirement_spending * 100)}% is added for tax on money drawn.`,
+  `Pensions: old-scheme pension = % of last basic, pro-rated by service, with dearness relief keeping it in line with prices; UPS and NPS by their own rules (NPS annuity fixed in rupees). PF becomes spendable at its withdrawal age, NPS at 60. A partner who keeps working covers spending only after the stop date; nothing is added to investments after it.`,
+  `Rules and defaults come from the plugin's static files (pension, pay commission, tax, liquidity), each with an as-of date and marked "verify". This is planning maths, not financial, tax or insurance advice; the author is not a SEBI-registered adviser.`,
+].map(s => `<p>${esc(s)}</p>`).join("");
+</script>

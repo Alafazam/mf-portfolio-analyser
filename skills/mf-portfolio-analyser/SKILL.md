@@ -1,6 +1,6 @@
 ---
 name: mf-portfolio-analyser
-description: Analyse a whole Indian mutual fund portfolio — benchmark scorecard, duplicates and overlap, whole-market fund screen, falls and recoveries, a tax-aware sell/switch calendar on real purchase lots (₹1.25L LTCG room, FIFO, ELSS lock-in, exit loads), SIP review, and an HTML report. Use when the user asks to review, clean up or consolidate their mutual funds, switch regular to direct plans, plan LTCG harvesting, check which funds to exit or where to move SIPs, or mentions a CAS statement, MF Central, CAMS, KFintech or INDmoney mutual fund holdings. Educational screen, not advice.
+description: Analyse a whole Indian mutual fund portfolio — benchmark scorecard, duplicates and overlap, whole-market fund screen, falls and recoveries, a tax-aware sell/switch calendar on real purchase lots (₹1.25L LTCG room, FIFO, ELSS lock-in, exit loads), SIP review, and an HTML report. Use when the user asks to review, clean up or consolidate their mutual funds, switch regular to direct plans, plan LTCG harvesting, check which funds to exit or where to move SIPs, or mentions a CAS statement, MF Central, CAMS, KFintech or INDmoney mutual fund holdings. Also builds a family money plan (budget by phase, emergency fund, children's goals, home loan, OPS/NPS/UPS pensions, pay commission, the age the family could stop depending on salary) when the user asks "when can I retire", "is my budget OK" or wants a family financial plan. Educational screen, not advice.
 ---
 
 # Mutual Fund Portfolio Analyser
@@ -40,6 +40,10 @@ See `references/method.md` (every metric, flag and plan rule) and `references/ta
 - SIPs move only to a full-record fund scoring ≥ 5 points higher in the same category; regular-plan SIPs move to direct; option B moves the largest mid/small SIP to the top flexi cap when mid+small exceed half of SIP money.
 - "If it had all been in…" replays purchases into the suggested fund — chosen with hindsight, not evidence.
 
+## Family plan
+
+When the user asks about their budget, goals, children's education, home loan, or when they could stop working: follow `references/plan.md` (10 core questions, then `python3 -m mfpa plan --file …`). Same rules as above: planning maths, not advice; disclaimer next to the age; never publish the full page, only the `--share` copy and only on the user's yes. The `/plan-family` command starts it.
+
 ## Sample
 
-`samples/sample-report.html` is the full report for a made-up investor (real funds, invented purchases). Rebuild it with `python3 -m mfpa sample`.
+`samples/sample-report.html` is the full report for a made-up investor (real funds, invented purchases). Rebuild it with `python3 -m mfpa sample`. `samples/sample-family.html` is the family plan for a made-up family; rebuild it with `python3 -m mfpa plan-sample`.

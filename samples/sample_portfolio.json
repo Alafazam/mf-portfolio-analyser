@@ -1,0 +1,397 @@
+{
+ "_about": "Synthetic sample investor for mf-portfolio-analyser. Made-up purchase pattern on real, well-known funds; units and values are computed from real NAVs. Not anyone's portfolio. Education only, not advice.",
+ "investor": {
+  "name": "Sample Investor",
+  "age": 34,
+  "started": 2016,
+  "tax_regime": "new (old until FY 2023-24)",
+  "apps": [
+   "INDmoney",
+   "Distributor (regular plans)"
+  ],
+  "sample": true
+ },
+ "as_of": "2026-11-20",
+ "holdings": [
+  {
+   "key": "hdfc_flexi",
+   "name": "HDFC Flexi Cap",
+   "plan": "Regular",
+   "code": 101762,
+   "direct_code": 118955,
+   "category": "Flexi cap",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F1",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2016-06-15",
+       80000
+      ],
+      [
+       "2017-03-10",
+       50000
+      ]
+     ]
+    },
+    {
+     "id": "F2",
+     "via": "Distributor",
+     "sip": {
+      "start": "2019-01-05",
+      "end": "2026-11-05",
+      "day": 5,
+      "amount": 3000
+     }
+    }
+   ]
+  },
+  {
+   "key": "axis_large",
+   "name": "Axis Large Cap",
+   "plan": "Regular",
+   "code": 112277,
+   "direct_code": 120465,
+   "category": "Large cap",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F3",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2017-09-12",
+       100000
+      ],
+      [
+       "2019-02-20",
+       80000
+      ]
+     ],
+     "sells": [
+      [
+       "2026-06-18",
+       70000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "uti_n50",
+   "name": "UTI Nifty 50 Index",
+   "plan": "Direct",
+   "code": 120716,
+   "direct_code": 120716,
+   "category": "Large cap",
+   "index": true,
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F4",
+     "via": "INDmoney",
+     "sip": {
+      "start": "2021-07-10",
+      "end": "2026-11-10",
+      "day": 10,
+      "amount": 10000
+     }
+    }
+   ]
+  },
+  {
+   "key": "hdfc_n50",
+   "name": "HDFC Nifty 50 Index",
+   "plan": "Direct",
+   "code": 119063,
+   "direct_code": 119063,
+   "category": "Large cap",
+   "index": true,
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F5",
+     "via": "INDmoney",
+     "buys": [
+      [
+       "2023-05-22",
+       60000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "sbi_small",
+   "name": "SBI Small Cap",
+   "plan": "Regular",
+   "code": 125494,
+   "direct_code": 125497,
+   "category": "Small cap",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F6",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2019-08-12",
+       40000
+      ],
+      [
+       "2020-04-07",
+       40000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "uti_mid",
+   "name": "UTI Mid Cap",
+   "plan": "Regular",
+   "code": 102394,
+   "direct_code": 120726,
+   "category": "Mid cap",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F7",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2019-11-04",
+       70000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "mo_mid",
+   "name": "Motilal Oswal Midcap",
+   "plan": "Direct",
+   "code": 127042,
+   "direct_code": 127042,
+   "category": "Mid cap",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F8",
+     "via": "INDmoney",
+     "sip": {
+      "start": "2024-03-12",
+      "end": "2026-11-12",
+      "day": 12,
+      "amount": 8000
+     }
+    }
+   ]
+  },
+  {
+   "key": "uti_elss",
+   "name": "UTI ELSS Tax Saver",
+   "plan": "Regular",
+   "code": 100821,
+   "direct_code": 120715,
+   "category": "ELSS",
+   "tax_class": "equity",
+   "elss": true,
+   "folios": [
+    {
+     "id": "F9",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2018-03-20",
+       40000
+      ],
+      [
+       "2019-03-18",
+       40000
+      ],
+      [
+       "2020-03-16",
+       40000
+      ],
+      [
+       "2021-03-22",
+       30000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "quant_elss",
+   "name": "Quant ELSS Tax Saver",
+   "plan": "Direct",
+   "code": 120847,
+   "direct_code": 120847,
+   "category": "ELSS",
+   "tax_class": "equity",
+   "elss": true,
+   "folios": [
+    {
+     "id": "F10",
+     "via": "INDmoney",
+     "sip": {
+      "start": "2023-04-29",
+      "end": "2024-03-29",
+      "day": 29,
+      "amount": 2000
+     }
+    }
+   ]
+  },
+  {
+   "key": "sbi_hybrid",
+   "name": "SBI Aggressive Hybrid",
+   "plan": "Regular",
+   "code": 102885,
+   "direct_code": 119609,
+   "category": "Aggressive hybrid",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F11",
+     "via": "Distributor",
+     "buys": [
+      [
+       "2018-07-09",
+       80000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "icici_tech",
+   "name": "ICICI Pru Technology",
+   "plan": "Direct",
+   "code": 120594,
+   "direct_code": 120594,
+   "category": "Sector",
+   "tax_class": "equity",
+   "folios": [
+    {
+     "id": "F12",
+     "via": "INDmoney",
+     "buys": [
+      [
+       "2024-01-15",
+       40000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "mo_nasdaq",
+   "name": "Motilal Oswal Nasdaq 100 FoF",
+   "plan": "Direct",
+   "code": 145552,
+   "direct_code": 145552,
+   "category": "International",
+   "tax_class": "other",
+   "folios": [
+    {
+     "id": "F13",
+     "via": "INDmoney",
+     "sip": {
+      "start": "2021-02-08",
+      "end": "2023-12-08",
+      "day": 8,
+      "amount": 2000
+     }
+    }
+   ]
+  },
+  {
+   "key": "nippon_maa",
+   "name": "Nippon India Multi Asset Allocation",
+   "plan": "Direct",
+   "code": 148457,
+   "direct_code": 148457,
+   "category": "Multi asset",
+   "tax_class": "other",
+   "folios": [
+    {
+     "id": "F14",
+     "via": "INDmoney",
+     "buys": [
+      [
+       "2025-06-16",
+       30000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "hdfc_corp",
+   "name": "HDFC Corporate Bond",
+   "plan": "Direct",
+   "code": 118987,
+   "direct_code": 118987,
+   "category": "Debt",
+   "tax_class": "specified_50AA",
+   "folios": [
+    {
+     "id": "F15",
+     "via": "INDmoney",
+     "buys": [
+      [
+       "2024-02-12",
+       100000
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "axis_liquid",
+   "name": "Axis Liquid",
+   "plan": "Direct",
+   "code": 120389,
+   "direct_code": 120389,
+   "category": "Liquid",
+   "tax_class": "specified_50AA",
+   "folios": [
+    {
+     "id": "F16",
+     "via": "INDmoney",
+     "buys": [
+      [
+       "2022-05-02",
+       50000
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "sips_active": [
+  {
+   "fund": "UTI Nifty 50 Index",
+   "amount": 10000,
+   "day": 10,
+   "via": "INDmoney"
+  },
+  {
+   "fund": "Motilal Oswal Midcap",
+   "amount": 8000,
+   "day": 12,
+   "via": "INDmoney"
+  },
+  {
+   "fund": "HDFC Flexi Cap",
+   "plan": "Regular",
+   "amount": 3000,
+   "day": 5,
+   "via": "Distributor"
+  }
+ ]
+}

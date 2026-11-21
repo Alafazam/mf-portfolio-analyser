@@ -1,0 +1,10 @@
+{
+ "version": 1, "as_of": "2026-11-22", "fy": "2026-27",
+ "source": "Income-tax Act 1961 s.111A/112A/50AA as amended by Finance (No.2) Act 2024; Income-tax Act 2025 in force from 1 Apr 2026 (verify section numbers). Rates assumed unchanged for later years.",
+ "equity": {"ltcg_exemption": 125000, "ltcg_rate": 0.125, "stcg_rate": 0.20, "long_term_after_months": 12},
+ "other": {"ltcg_rate": 0.125, "long_term_after_months": 24, "short_term": "slab rate", "exemption": 0},
+ "specified_50AA": {"from": "2023-04-01", "rate": "slab rate, any holding period"},
+ "cess": 0.04, "elss_lock_months": 36, "grandfather_date": "2018-01-31",
+ "costs": {"stamp_duty": 0.00005, "stt_equity_redemption": 0.00001, "default_exit_load": {"rate": 0.01, "within_days": 365, "note": "check the scheme document; many index funds and ELSS differ"}},
+ "planning": {"buffer": 0.05, "tiny_leftover_share": 0.01}
+}

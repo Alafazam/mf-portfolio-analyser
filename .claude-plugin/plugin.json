@@ -1,0 +1,8 @@
+{
+  "name": "mf-portfolio-analyser",
+  "version": "0.1.0",
+  "description": "Analyse a whole Indian mutual fund portfolio from your CAS statement (or INDmoney / CSV): benchmark scorecard, whole-market fund screen, duplicates, tax-aware sell and switch calendar on real purchase lots, SIP review, and an HTML report. Educational screen, not advice.",
+  "author": { "name": "Alaf Azam" },
+  "license": "MIT",
+  "keywords": ["mutual funds", "india", "portfolio", "cas", "tax", "sip", "ltcg"]
+}

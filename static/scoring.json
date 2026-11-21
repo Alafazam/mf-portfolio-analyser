@@ -1,0 +1,42 @@
+{
+ "version": 2,
+ "as_of": "2026-11-22",
+ "three_year": {
+  "excess": 0.35,
+  "consistency": 0.25,
+  "downside": 0.2,
+  "worst_fall": 0.1,
+  "falls": 0.1
+ },
+ "long_run": {
+  "excess": 0.35,
+  "beat3": 0.25,
+  "beat5": 0.15,
+  "downside": 0.15,
+  "worst_fall": 0.1
+ },
+ "flags": {
+  "lag_excess": -0.01,
+  "lag_beat": 0.4,
+  "steady_beat": 0.6,
+  "steady_down": 0.95,
+  "vol_ratio_hi": 1.1,
+  "down_hi": 1.05,
+  "dd_gap": -0.03,
+  "exit_vol": 1.05
+ },
+ "case": {
+  "clear": 80,
+  "lean": 55,
+  "tie": 0.005,
+  "breakeven_years_clear": 2
+ },
+ "sip_move_points": 5,
+ "short_record_windows": 100,
+ "duplicate_corr": 0.97,
+ "blend": {
+  "three_year": 0.75,
+  "long_run": 0.25
+ },
+ "long_run_start": "2018-06-01"
+}

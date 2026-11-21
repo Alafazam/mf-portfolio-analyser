@@ -1,0 +1,24 @@
+{
+ "version": 1, "as_of": "2026-11-22", "source": "SEBI category benchmarks, proxied by index-fund / ETF NAVs from mfapi.in (direct growth)",
+ "proxies": {"N50": 118741, "N100": 147666, "N500": 147625, "MID150": 146271, "SMALL250": 147623, "BOND": 118987, "GOLD": 140088},
+ "categories": {
+  "Large cap": {"weights": {"N100": 1}, "label": "Nifty 100"},
+  "Large & mid": {"weights": {"N100": 0.5, "MID150": 0.5}, "label": "50/50 Nifty 100 + Midcap 150"},
+  "Mid cap": {"weights": {"MID150": 1}, "label": "Nifty Midcap 150"},
+  "Small cap": {"weights": {"SMALL250": 1}, "label": "Nifty Smallcap 250"},
+  "Flexi cap": {"weights": {"N500": 1}, "label": "Nifty 500"},
+  "Multi cap": {"weights": {"N50": 0.5, "MID150": 0.25, "SMALL250": 0.25}, "label": "50/25/25 large/mid/small"},
+  "Focused": {"weights": {"N500": 1}, "label": "Nifty 500"},
+  "Value": {"weights": {"N500": 1}, "label": "Nifty 500"},
+  "Contra": {"weights": {"N500": 1}, "label": "Nifty 500"},
+  "ELSS": {"weights": {"N500": 1}, "label": "Nifty 500"},
+  "Aggressive hybrid": {"weights": {"N50": 0.65, "BOND": 0.35}, "label": "65/35 Nifty 50 + bonds"},
+  "Multi asset": {"weights": {"N500": 0.65, "BOND": 0.2, "GOLD": 0.15}, "label": "65/20/15 Nifty 500 + bonds + gold"}
+ },
+ "index_alternative": {
+  "Large cap": {"name": "UTI Nifty 50 Index", "code": 120716}, "Mid cap": {"name": "Motilal Oswal Nifty Midcap 150 Index", "code": 147622},
+  "Small cap": {"name": "Motilal Oswal Nifty Smallcap 250 Index", "code": 147623}, "Flexi cap": {"name": "Motilal Oswal Nifty 500 Index", "code": 147625},
+  "Focused": {"name": "Motilal Oswal Nifty 500 Index", "code": 147625}, "Value": {"name": "Motilal Oswal Nifty 500 Index", "code": 147625},
+  "Multi cap": {"name": "Motilal Oswal Nifty 500 Index", "code": 147625}, "Large & mid": {"name": "Motilal Oswal Nifty 500 Index", "code": 147625}
+ }
+}

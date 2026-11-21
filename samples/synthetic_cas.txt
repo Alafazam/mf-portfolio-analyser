@@ -1,0 +1,358 @@
+                                                                                          Consolidated Account Statement
+                                                                                      ( From Date : 01-Jan-2013          To Date : 20-Nov-2026 )
+
+   PAN: XXXXXXXXXX
+   Sample Investor
+
+FOLIO NO: 900001                                                                                KYC : OK
+HDFC Flexi Cap Fund - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF179K01608          Opening Unit Balance: 0.000
+
+ 15-JUN-2016              Purchase                                               80,000.00       175.607    455.5638       175.607
+ 10-MAR-2017              Purchase                                               50,000.00        96.015    520.7510       271.622
+
+Closing Unit Balance: 271.622                              NAV AS ON 20-NOV-2026: INR 2,201.4070                  Valuation on 20-Nov-2026: INR 597,950.57
+
+FOLIO NO: 900002                                                                                KYC : OK
+HDFC Flexi Cap Fund - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF179K01608          Opening Unit Balance: 0.000
+
+ 07-JAN-2019              Systematic Investment (1)                               3,000.00         4.780    627.6614         4.780
+ 05-FEB-2019              Systematic Investment (1)                               3,000.00         4.844    619.3540         9.624
+ 05-MAR-2019              Systematic Investment (1)                               3,000.00         4.741    632.7256        14.365
+ 05-APR-2019              Systematic Investment (1)                               3,000.00         4.426    677.8189        18.791
+ 06-MAY-2019              Systematic Investment (1)                               3,000.00         4.500    666.6073        23.291
+ 06-JUN-2019              Systematic Investment (1)                               3,000.00         4.368    686.8813        27.659
+ 05-JUL-2019              Systematic Investment (1)                               3,000.00         4.311    695.8198        31.970
+ 05-AUG-2019              Systematic Investment (1)                               3,000.00         4.818    622.6111        36.788
+ 05-SEP-2019              Systematic Investment (1)                               3,000.00         4.851    618.4239        41.639
+ 07-OCT-2019              Systematic Investment (1)                               3,000.00         4.856    617.7899        46.495
+ 05-NOV-2019              Systematic Investment (1)                               3,000.00         4.485    668.8794        50.980
+ 05-DEC-2019              Systematic Investment (1)                               3,000.00         4.512    664.9462        55.492
+ 06-JAN-2020              Systematic Investment (1)                               3,000.00         4.529    662.4681        60.021
+ 05-FEB-2020              Systematic Investment (1)                               3,000.00         4.537    661.2891        64.558
+ 05-MAR-2020              Systematic Investment (1)                               3,000.00         4.943    606.8863        69.501
+ 07-APR-2020              Systematic Investment (1)                               3,000.00         6.454    464.7962        75.955
+ 05-MAY-2020              Systematic Investment (1)                               3,000.00         6.140    488.5674        82.095
+ 05-JUN-2020              Systematic Investment (1)                               3,000.00         5.611    534.6667        87.706
+ 06-JUL-2020              Systematic Investment (1)                               3,000.00         5.405    555.0608        93.111
+ 05-AUG-2020              Systematic Investment (1)                               3,000.00         5.339    561.8961        98.450
+ 07-SEP-2020              Systematic Investment (1)                               3,000.00         5.161    581.2811       103.611
+ 05-OCT-2020              Systematic Investment (1)                               3,000.00         5.278    568.4284       108.889
+ 05-NOV-2020              Systematic Investment (1)                               3,000.00         4.983    602.0431       113.872
+ 07-DEC-2020              Systematic Investment (1)                               3,000.00         4.315    695.2158       118.187
+ 05-JAN-2021              Systematic Investment (1)                               3,000.00         4.096    732.4976       122.283
+ 05-FEB-2021              Systematic Investment (1)                               3,000.00         3.712    808.1704       125.995
+ 05-MAR-2021              Systematic Investment (1)                               3,000.00         3.644    823.3752       129.639
+ 05-APR-2021              Systematic Investment (1)                               3,000.00         3.778    794.0047       133.417
+ 05-MAY-2021              Systematic Investment (1)                               3,000.00         3.722    806.0753       137.139
+ 07-JUN-2021              Systematic Investment (1)                               3,000.00         3.345    896.9018       140.484
+ 05-JUL-2021              Systematic Investment (1)                               3,000.00         3.345    896.7878       143.829
+ 05-AUG-2021              Systematic Investment (1)                               3,000.00         3.269    917.8209       147.098
+ 06-SEP-2021              Systematic Investment (1)                               3,000.00         3.202    936.9278       150.300
+ 05-OCT-2021              Systematic Investment (1)                               3,000.00         3.006    997.9909       153.306
+ 08-NOV-2021              Systematic Investment (1)                               3,000.00         2.925  1,025.7063       156.231
+ 06-DEC-2021              Systematic Investment (1)                               3,000.00         3.132    957.9009       159.363
+ 05-JAN-2022              Systematic Investment (1)                               3,000.00         2.981  1,006.3993       162.344
+ 07-FEB-2022              Systematic Investment (1)                               3,000.00         2.972  1,009.2755       165.316
+ 07-MAR-2022              Systematic Investment (1)                               3,000.00         3.222    931.0106       168.538
+ 05-APR-2022              Systematic Investment (1)                               3,000.00         2.861  1,048.4644       171.399
+ 05-MAY-2022              Systematic Investment (1)                               3,000.00         3.001    999.6110       174.400
+ 06-JUN-2022              Systematic Investment (1)                               3,000.00         3.013    995.7318       177.413
+ 05-JUL-2022              Systematic Investment (1)                               3,000.00         3.114    963.2452       180.527
+ 05-AUG-2022              Systematic Investment (1)                               3,000.00         2.831  1,059.8710       183.358
+ 05-SEP-2022              Systematic Investment (1)                               3,000.00         2.734  1,097.1739       186.092
+ 06-OCT-2022              Systematic Investment (1)                               3,000.00         2.755  1,089.0435       188.847
+ 07-NOV-2022              Systematic Investment (1)                               3,000.00         2.610  1,149.2055       191.457
+ 05-DEC-2022              Systematic Investment (1)                               3,000.00         2.533  1,184.4932       193.990
+ 05-JAN-2023              Systematic Investment (1)                               3,000.00         2.606  1,151.1236       196.596
+ 06-FEB-2023              Systematic Investment (1)                               3,000.00         2.635  1,138.6429       199.231
+ 06-MAR-2023              Systematic Investment (1)                               3,000.00         2.631  1,140.1780       201.862
+ 05-APR-2023              Systematic Investment (1)                               3,000.00         2.659  1,128.2924       204.521
+ 05-MAY-2023              Systematic Investment (1)                               3,000.00         2.584  1,161.2061       207.105
+ 05-JUN-2023              Systematic Investment (1)                               3,000.00         2.480  1,209.5485       209.585
+ 05-JUL-2023              Systematic Investment (1)                               3,000.00         2.376  1,262.8331       211.961
+ 07-AUG-2023              Systematic Investment (1)                               3,000.00         2.304  1,302.1981       214.265
+ 05-SEP-2023              Systematic Investment (1)                               3,000.00         2.249  1,333.8187       216.514
+ 05-OCT-2023              Systematic Investment (1)                               3,000.00         2.264  1,325.3643       218.778
+ 06-NOV-2023              Systematic Investment (1)                               3,000.00         2.261  1,326.9823       221.039
+ 05-DEC-2023              Systematic Investment (1)                               3,000.00         2.067  1,451.0356       223.106
+ 05-JAN-2024              Systematic Investment (1)                               3,000.00         1.973  1,520.5340       225.079
+ 05-FEB-2024              Systematic Investment (1)                               3,000.00         1.938  1,547.6974       227.017
+ 05-MAR-2024              Systematic Investment (1)                               3,000.00         1.860  1,612.9726       228.877
+ 05-APR-2024              Systematic Investment (1)                               3,000.00         1.838  1,631.8646       230.715
+ 06-MAY-2024              Systematic Investment (1)                               3,000.00         1.814  1,654.2277       232.529
+ 05-JUN-2024              Systematic Investment (1)                               3,000.00         1.767  1,697.3419       234.296
+ 05-JUL-2024              Systematic Investment (1)                               3,000.00         1.639  1,830.1295       235.935
+ 05-AUG-2024              Systematic Investment (1)                               3,000.00         1.659  1,807.8664       237.594
+ 05-SEP-2024              Systematic Investment (1)                               3,000.00         1.578  1,901.6741       239.172
+ 07-OCT-2024              Systematic Investment (1)                               3,000.00         1.591  1,885.6183       240.763
+ 05-NOV-2024              Systematic Investment (1)                               3,000.00         1.589  1,887.9414       242.352
+ 05-DEC-2024              Systematic Investment (1)                               3,000.00         1.566  1,916.2328       243.918
+ 06-JAN-2025              Systematic Investment (1)                               3,000.00         1.618  1,854.4707       245.536
+ 05-FEB-2025              Systematic Investment (1)                               3,000.00         1.635  1,834.3817       247.171
+ 05-MAR-2025              Systematic Investment (1)                               3,000.00         1.711  1,753.3717       248.882
+ 07-APR-2025              Systematic Investment (1)                               3,000.00         1.701  1,763.6112       250.583
+ 05-MAY-2025              Systematic Investment (1)                               3,000.00         1.564  1,918.2619       252.147
+ 05-JUN-2025              Systematic Investment (1)                               3,000.00         1.544  1,942.9781       253.691
+ 07-JUL-2025              Systematic Investment (1)                               3,000.00         1.506  1,992.5286       255.197
+ 05-AUG-2025              Systematic Investment (1)                               3,000.00         1.528  1,962.7611       256.725
+ 05-SEP-2025              Systematic Investment (1)                               3,000.00         1.504  1,995.3238       258.229
+ 06-OCT-2025              Systematic Investment (1)                               3,000.00         1.474  2,035.7458       259.703
+ 06-NOV-2025              Systematic Investment (1)                               3,000.00         1.464  2,049.6895       261.167
+ 05-DEC-2025              Systematic Investment (1)                               3,000.00         1.440  2,083.7402       262.607
+ 05-JAN-2026              Systematic Investment (1)                               3,000.00         1.432  2,094.4297       264.039
+ 05-FEB-2026              Systematic Investment (1)                               3,000.00         1.452  2,065.8873       265.491
+ 05-MAR-2026              Systematic Investment (1)                               3,000.00         1.490  2,013.4317       266.981
+ 06-APR-2026              Systematic Investment (1)                               3,000.00         1.603  1,872.0356       268.584
+ 05-MAY-2026              Systematic Investment (1)                               3,000.00         1.543  1,944.1392       270.127
+ 05-JUN-2026              Systematic Investment (1)                               3,000.00         1.556  1,927.5954       271.683
+ 06-JUL-2026              Systematic Investment (1)                               3,000.00         1.468  2,043.7382       273.151
+ 05-AUG-2026              Systematic Investment (1)                               3,000.00         1.436  2,089.8105       274.587
+ 07-SEP-2026              Systematic Investment (1)                               3,000.00         1.457  2,058.8929       276.044
+ 05-OCT-2026              Systematic Investment (1)                               3,000.00         1.534  1,955.6748       277.578
+ 05-NOV-2026              Systematic Investment (1)                               3,000.00         1.435  2,091.2376       279.013
+
+Closing Unit Balance: 279.013                              NAV AS ON 20-NOV-2026: INR 2,201.4070                  Valuation on 20-Nov-2026: INR 614,221.17
+
+FOLIO NO: 900003                                                                                KYC : OK
+Axis Large Cap Fund - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF846K01164          Opening Unit Balance: 0.000
+
+ 12-SEP-2017              Purchase                                               70,849.71     2,890.501     24.5112     2,890.501
+ 20-FEB-2019              Purchase                                               80,000.00     2,990.505     26.7513     5,881.006
+
+Closing Unit Balance: 5,881.006                              NAV AS ON 20-NOV-2026: INR 64.8600                  Valuation on 20-Nov-2026: INR 381,442.05
+
+FOLIO NO: 900004                                                                                KYC : OK
+UTI Nifty 50 Index Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF789F01XA0          Opening Unit Balance: 0.000
+
+ 12-JUL-2021              Systematic Investment (1)                              10,000.00        95.091    105.1621        95.091
+ 10-AUG-2021              Systematic Investment (1)                              10,000.00        91.541    109.2410       186.632
+ 13-SEP-2021              Systematic Investment (1)                              10,000.00        85.826    116.5150       272.458
+ 11-OCT-2021              Systematic Investment (1)                              10,000.00        83.014    120.4622       355.472
+ 10-NOV-2021              Systematic Investment (1)                              10,000.00        82.595    121.0729       438.067
+ 10-DEC-2021              Systematic Investment (1)                              10,000.00        84.955    117.7098       523.022
+ 10-JAN-2022              Systematic Investment (1)                              10,000.00        82.624    121.0308       605.646
+ 10-FEB-2022              Systematic Investment (1)                              10,000.00        84.440    118.4274       690.086
+ 10-MAR-2022              Systematic Investment (1)                              10,000.00        89.502    111.7298       779.588
+ 11-APR-2022              Systematic Investment (1)                              10,000.00        84.040    118.9909       863.628
+ 10-MAY-2022              Systematic Investment (1)                              10,000.00        91.450    109.3496       955.078
+ 10-JUN-2022              Systematic Investment (1)                              10,000.00        91.306    109.5217     1,046.384
+ 11-JUL-2022              Systematic Investment (1)                              10,000.00        91.090    109.7819     1,137.474
+ 10-AUG-2022              Systematic Investment (1)                              10,000.00        84.081    118.9325     1,221.555
+ 12-SEP-2022              Systematic Investment (1)                              10,000.00        82.123    121.7693     1,303.678
+ 10-OCT-2022              Systematic Investment (1)                              10,000.00        85.444    117.0354     1,389.122
+ 10-NOV-2022              Systematic Investment (1)                              10,000.00        81.613    122.5289     1,470.735
+ 12-DEC-2022              Systematic Investment (1)                              10,000.00        79.561    125.6890     1,550.296
+ 10-JAN-2023              Systematic Investment (1)                              10,000.00        82.166    121.7043     1,632.462
+ 10-FEB-2023              Systematic Investment (1)                              10,000.00        82.427    121.3196     1,714.889
+ 10-MAR-2023              Systematic Investment (1)                              10,000.00        84.482    118.3678     1,799.371
+ 10-APR-2023              Systematic Investment (1)                              10,000.00        83.491    119.7739     1,882.862
+ 10-MAY-2023              Systematic Investment (1)                              10,000.00        80.322    124.4981     1,963.184
+ 12-JUN-2023              Systematic Investment (1)                              10,000.00        78.818    126.8747     2,042.002
+ 10-JUL-2023              Systematic Investment (1)                              10,000.00        75.716    132.0719     2,117.718
+ 10-AUG-2023              Systematic Investment (1)                              10,000.00        74.818    133.6574     2,192.536
+ 11-SEP-2023              Systematic Investment (1)                              10,000.00        73.063    136.8673     2,265.599
+ 10-OCT-2023              Systematic Investment (1)                              10,000.00        74.214    134.7451     2,339.813
+ 10-NOV-2023              Systematic Investment (1)                              10,000.00        75.126    133.1097     2,414.939
+ 11-DEC-2023              Systematic Investment (1)                              10,000.00        69.504    143.8760     2,484.443
+ 10-JAN-2024              Systematic Investment (1)                              10,000.00        67.519    148.1060     2,551.962
+ 12-FEB-2024              Systematic Investment (1)                              10,000.00        67.456    148.2441     2,619.418
+ 11-MAR-2024              Systematic Investment (1)                              10,000.00        65.269    153.2128     2,684.687
+ 10-APR-2024              Systematic Investment (1)                              10,000.00        64.079    156.0562     2,748.766
+ 10-MAY-2024              Systematic Investment (1)                              10,000.00        66.006    151.5012     2,814.772
+ 10-JUN-2024              Systematic Investment (1)                              10,000.00        62.453    160.1212     2,877.225
+ 10-JUL-2024              Systematic Investment (1)                              10,000.00        59.651    167.6427     2,936.876
+ 12-AUG-2024              Systematic Investment (1)                              10,000.00        59.487    168.1034     2,996.363
+ 10-SEP-2024              Systematic Investment (1)                              10,000.00        57.815    172.9648     3,054.178
+ 10-OCT-2024              Systematic Investment (1)                              10,000.00        57.926    172.6336     3,112.104
+ 11-NOV-2024              Systematic Investment (1)                              10,000.00        59.911    166.9135     3,172.015
+ 10-DEC-2024              Systematic Investment (1)                              10,000.00        58.766    170.1653     3,230.781
+ 10-JAN-2025              Systematic Investment (1)                              10,000.00        61.732    161.9900     3,292.513
+ 10-FEB-2025              Systematic Investment (1)                              10,000.00        61.765    161.9044     3,354.278
+ 10-MAR-2025              Systematic Investment (1)                              10,000.00        64.267    155.6014     3,418.545
+ 11-APR-2025              Systematic Investment (1)                              10,000.00        63.242    158.1229     3,481.787
+ 12-MAY-2025              Systematic Investment (1)                              10,000.00        57.920    172.6526     3,539.707
+ 10-JUN-2025              Systematic Investment (1)                              10,000.00        57.352    174.3603     3,597.059
+ 10-JUL-2025              Systematic Investment (1)                              10,000.00        56.670    176.4595     3,653.729
+ 11-AUG-2025              Systematic Investment (1)                              10,000.00        58.350    171.3802     3,712.079
+ 10-SEP-2025              Systematic Investment (1)                              10,000.00        57.369    174.3110     3,769.448
+ 10-OCT-2025              Systematic Investment (1)                              10,000.00        56.674    176.4492     3,826.122
+ 10-NOV-2025              Systematic Investment (1)                              10,000.00        55.958    178.7041     3,882.080
+ 10-DEC-2025              Systematic Investment (1)                              10,000.00        55.559    179.9874     3,937.639
+ 12-JAN-2026              Systematic Investment (1)                              10,000.00        55.502    180.1749     3,993.141
+ 10-FEB-2026              Systematic Investment (1)                              10,000.00        55.147    181.3335     4,048.288
+ 10-MAR-2026              Systematic Investment (1)                              10,000.00        58.947    169.6437     4,107.235
+ 10-APR-2026              Systematic Investment (1)                              10,000.00        59.478    168.1297     4,166.713
+ 11-MAY-2026              Systematic Investment (1)                              10,000.00        60.061    166.4977     4,226.774
+ 10-JUN-2026              Systematic Investment (1)                              10,000.00        61.495    162.6150     4,288.269
+ 10-JUL-2026              Systematic Investment (1)                              10,000.00        58.781    170.1219     4,347.050
+ 10-AUG-2026              Systematic Investment (1)                              10,000.00        57.765    173.1157     4,404.815
+ 10-SEP-2026              Systematic Investment (1)                              10,000.00        60.474    165.3595     4,465.289
+ 12-OCT-2026              Systematic Investment (1)                              10,000.00        63.502    157.4751     4,528.791
+ 11-NOV-2026              Systematic Investment (1)                              10,000.00        56.203    177.9280     4,584.994
+
+Closing Unit Balance: 4,584.994                              NAV AS ON 20-NOV-2026: INR 181.7794                  Valuation on 20-Nov-2026: INR 833,457.46
+
+FOLIO NO: 900005                                                                                KYC : OK
+HDFC Nifty 50 Index Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF179K01WM1          Opening Unit Balance: 0.000
+
+ 22-MAY-2023              Purchase                                               60,000.00       345.475    173.6740       345.475
+
+Closing Unit Balance: 345.475                              NAV AS ON 20-NOV-2026: INR 252.6065                  Valuation on 20-Nov-2026: INR 87,269.23
+
+FOLIO NO: 900006                                                                                KYC : OK
+SBI SMALL CAP FUND - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF200K01T28          Opening Unit Balance: 0.000
+
+ 13-AUG-2019              Purchase                                               40,000.00       842.100     47.5003       842.100
+ 07-APR-2020              Purchase                                               40,000.00       961.370     41.6073     1,803.470
+
+Closing Unit Balance: 1,803.470                              NAV AS ON 20-NOV-2026: INR 181.5420                  Valuation on 20-Nov-2026: INR 327,405.55
+
+FOLIO NO: 900007                                                                                KYC : OK
+UTI - Mid Cap Fund - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF789F01810          Opening Unit Balance: 0.000
+
+ 04-NOV-2019              Purchase                                               70,000.00       706.496     99.0806       706.496
+
+Closing Unit Balance: 706.496                              NAV AS ON 20-NOV-2026: INR 312.7039                  Valuation on 20-Nov-2026: INR 220,924.05
+
+FOLIO NO: 900008                                                                                KYC : OK
+Motilal Oswal Midcap Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF247L01445          Opening Unit Balance: 0.000
+
+ 12-MAR-2024              Systematic Investment (1)                               8,000.00        91.860     87.0892        91.860
+ 12-APR-2024              Systematic Investment (1)                               8,000.00        87.003     91.9504       178.863
+ 13-MAY-2024              Systematic Investment (1)                               8,000.00        86.940     92.0180       265.803
+ 12-JUN-2024              Systematic Investment (1)                               8,000.00        78.871    101.4321       344.674
+ 12-JUL-2024              Systematic Investment (1)                               8,000.00        72.363    110.5541       417.037
+ 12-AUG-2024              Systematic Investment (1)                               8,000.00        71.606    111.7218       488.643
+ 12-SEP-2024              Systematic Investment (1)                               8,000.00        66.446    120.3987       555.089
+ 14-OCT-2024              Systematic Investment (1)                               8,000.00        64.365    124.2917       619.454
+ 12-NOV-2024              Systematic Investment (1)                               8,000.00        67.621    118.3056       687.075
+ 12-DEC-2024              Systematic Investment (1)                               8,000.00        61.912    129.2153       748.987
+ 13-JAN-2025              Systematic Investment (1)                               8,000.00        69.915    114.4239       818.902
+ 12-FEB-2025              Systematic Investment (1)                               8,000.00        75.208    106.3719       894.110
+ 12-MAR-2025              Systematic Investment (1)                               8,000.00        78.863    101.4414       972.973
+ 15-APR-2025              Systematic Investment (1)                               8,000.00        78.114    102.4141     1,051.087
+ 12-MAY-2025              Systematic Investment (1)                               8,000.00        71.038    112.6158     1,122.125
+ 12-JUN-2025              Systematic Investment (1)                               8,000.00        69.852    114.5276     1,191.977
+ 14-JUL-2025              Systematic Investment (1)                               8,000.00        68.175    117.3448     1,260.152
+ 12-AUG-2025              Systematic Investment (1)                               8,000.00        69.516    115.0821     1,329.668
+ 12-SEP-2025              Systematic Investment (1)                               8,000.00        66.540    120.2284     1,396.208
+ 13-OCT-2025              Systematic Investment (1)                               8,000.00        67.233    118.9900     1,463.441
+ 12-NOV-2025              Systematic Investment (1)                               8,000.00        67.244    118.9704     1,530.685
+ 12-DEC-2025              Systematic Investment (1)                               8,000.00        69.326    115.3972     1,600.011
+ 12-JAN-2026              Systematic Investment (1)                               8,000.00        70.970    112.7231     1,670.981
+ 12-FEB-2026              Systematic Investment (1)                               8,000.00        73.605    108.6882     1,744.586
+ 12-MAR-2026              Systematic Investment (1)                               8,000.00        82.420     97.0634     1,827.006
+ 13-APR-2026              Systematic Investment (1)                               8,000.00        77.259    103.5473     1,904.265
+ 12-MAY-2026              Systematic Investment (1)                               8,000.00        77.274    103.5274     1,981.539
+ 12-JUN-2026              Systematic Investment (1)                               8,000.00        76.502    104.5728     2,058.041
+ 13-JUL-2026              Systematic Investment (1)                               8,000.00        69.843    114.5432     2,127.884
+ 12-AUG-2026              Systematic Investment (1)                               8,000.00        66.584    120.1488     2,194.468
+ 15-SEP-2026              Systematic Investment (1)                               8,000.00        67.798    117.9971     2,262.266
+ 12-OCT-2026              Systematic Investment (1)                               8,000.00        69.205    115.5982     2,331.471
+ 12-NOV-2026              Systematic Investment (1)                               8,000.00        64.683    123.6805     2,396.154
+
+Closing Unit Balance: 2,396.154                              NAV AS ON 20-NOV-2026: INR 120.5351                  Valuation on 20-Nov-2026: INR 288,820.66
+
+FOLIO NO: 900009                                                                                KYC : OK
+UTI ELSS Tax Saver Fund - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF789F01547          Opening Unit Balance: 0.000
+
+ 20-MAR-2018              Purchase                                               40,000.00       482.060     82.9771       482.060
+ 18-MAR-2019              Purchase                                               40,000.00       461.883     86.6019       943.943
+ 16-MAR-2020              Purchase                                               40,000.00       530.259     75.4349     1,474.202
+ 22-MAR-2021              Purchase                                               30,000.00       254.253    117.9927     1,728.455
+
+Closing Unit Balance: 1,728.455                              NAV AS ON 20-NOV-2026: INR 209.0499                  Valuation on 20-Nov-2026: INR 361,333.34
+
+FOLIO NO: 900010                                                                                KYC : OK
+Quant ELSS Tax Saver Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF966L01986          Opening Unit Balance: 0.000
+
+ 02-MAY-2023              Systematic Investment (1)                               2,000.00         7.723    258.9684         7.723
+ 29-MAY-2023              Systematic Investment (1)                               2,000.00         7.589    263.5241        15.312
+ 30-JUN-2023              Systematic Investment (1)                               2,000.00         7.226    276.7867        22.538
+ 31-JUL-2023              Systematic Investment (1)                               2,000.00         6.817    293.3847        29.355
+ 29-AUG-2023              Systematic Investment (1)                               2,000.00         6.842    292.2924        36.197
+ 29-SEP-2023              Systematic Investment (1)                               2,000.00         6.578    304.0302        42.775
+ 30-OCT-2023              Systematic Investment (1)                               2,000.00         6.772    295.3352        49.547
+ 29-NOV-2023              Systematic Investment (1)                               2,000.00         6.203    322.4374        55.750
+ 29-DEC-2023              Systematic Investment (1)                               2,000.00         5.624    355.6445        61.374
+ 29-JAN-2024              Systematic Investment (1)                               2,000.00         5.335    374.9110        66.709
+ 29-FEB-2024              Systematic Investment (1)                               2,000.00         5.174    386.5167        71.883
+ 31-MAR-2024              Systematic Investment (1)                               2,000.00         5.165    387.1905        77.048
+
+Closing Unit Balance: 77.048                              NAV AS ON 20-NOV-2026: INR 473.3949                  Valuation on 20-Nov-2026: INR 36,474.13
+
+FOLIO NO: 900011                                                                                KYC : OK
+SBI AGGRESSIVE HYBRID FUND - Regular Plan - Growth (Advisor: ARN-000000/SAMPLE DISTRIBUTOR) ISIN: INF200K01107          Opening Unit Balance: 0.000
+
+ 09-JUL-2018              Purchase                                               80,000.00       635.279    125.9289       635.279
+
+Closing Unit Balance: 635.279                              NAV AS ON 20-NOV-2026: INR 327.2385                  Valuation on 20-Nov-2026: INR 207,887.75
+
+FOLIO NO: 900012                                                                                KYC : OK
+ICICI Prudential Technology Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF109K01Z48          Opening Unit Balance: 0.000
+
+ 15-JAN-2024              Purchase                                               40,000.00       204.551    195.5498       204.551
+
+Closing Unit Balance: 204.551                              NAV AS ON 20-NOV-2026: INR 207.4700                  Valuation on 20-Nov-2026: INR 42,438.20
+
+FOLIO NO: 900013                                                                                KYC : OK
+Motilal Oswal Nasdaq 100 Fund of Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF247L01718          Opening Unit Balance: 0.000
+
+ 08-FEB-2021              Systematic Investment (1)                               2,000.00        94.637     21.1334        94.637
+ 08-MAR-2021              Systematic Investment (1)                               2,000.00       103.259     19.3688       197.896
+ 08-APR-2021              Systematic Investment (1)                               2,000.00        92.835     21.5436       290.731
+ 10-MAY-2021              Systematic Investment (1)                               2,000.00        93.815     21.3187       384.546
+ 08-JUN-2021              Systematic Investment (1)                               2,000.00        93.673     21.3510       478.219
+ 08-JUL-2021              Systematic Investment (1)                               2,000.00        86.288     23.1782       564.507
+ 09-AUG-2021              Systematic Investment (1)                               2,000.00        84.320     23.7191       648.827
+ 08-SEP-2021              Systematic Investment (1)                               2,000.00        82.193     24.3331       731.020
+ 08-OCT-2021              Systematic Investment (1)                               2,000.00        85.499     23.3922       816.519
+ 08-NOV-2021              Systematic Investment (1)                               2,000.00        78.264     25.5547       894.783
+ 08-DEC-2021              Systematic Investment (1)                               2,000.00        77.408     25.8371       972.191
+ 10-JAN-2022              Systematic Investment (1)                               2,000.00        81.455     24.5535     1,053.646
+ 08-FEB-2022              Systematic Investment (1)                               2,000.00        86.753     23.0540     1,140.399
+ 08-MAR-2022              Systematic Investment (1)                               2,000.00        90.580     22.0799     1,230.979
+ 08-APR-2022              Systematic Investment (1)                               2,000.00        88.313     22.6466     1,319.292
+ 09-MAY-2022              Systematic Investment (1)                               2,000.00       101.206     19.7616     1,420.498
+ 08-JUN-2022              Systematic Investment (1)                               2,000.00        97.554     20.5015     1,518.052
+ 08-JUL-2022              Systematic Investment (1)                               2,000.00        99.209     20.1595     1,617.261
+ 08-AUG-2022              Systematic Investment (1)                               2,000.00        92.352     21.6564     1,709.613
+ 08-SEP-2022              Systematic Investment (1)                               2,000.00        96.985     20.6217     1,806.598
+ 10-OCT-2022              Systematic Investment (1)                               2,000.00       105.990     18.8697     1,912.588
+ 09-NOV-2022              Systematic Investment (1)                               2,000.00       108.570     18.4212     2,021.158
+ 08-DEC-2022              Systematic Investment (1)                               2,000.00        99.526     20.0953     2,120.684
+ 09-JAN-2023              Systematic Investment (1)                               2,000.00       104.299     19.1757     2,224.983
+ 08-FEB-2023              Systematic Investment (1)                               2,000.00        91.641     21.8244     2,316.624
+ 08-MAR-2023              Systematic Investment (1)                               2,000.00        95.256     20.9959     2,411.880
+ 10-APR-2023              Systematic Investment (1)                               2,000.00        90.233     22.1648     2,502.113
+ 08-MAY-2023              Systematic Investment (1)                               2,000.00        89.307     22.3947     2,591.420
+ 08-JUN-2023              Systematic Investment (1)                               2,000.00        81.616     24.5050     2,673.036
+ 10-JUL-2023              Systematic Investment (1)                               2,000.00        77.592     25.7759     2,750.628
+ 08-AUG-2023              Systematic Investment (1)                               2,000.00        76.110     26.2778     2,826.738
+ 08-SEP-2023              Systematic Investment (1)                               2,000.00        76.187     26.2513     2,902.925
+ 09-OCT-2023              Systematic Investment (1)                               2,000.00        78.356     25.5244     2,981.281
+ 08-NOV-2023              Systematic Investment (1)                               2,000.00        75.782     26.3915     3,057.063
+ 08-DEC-2023              Systematic Investment (1)                               2,000.00        72.064     27.7533     3,129.127
+
+Closing Unit Balance: 3,129.127                              NAV AS ON 20-NOV-2026: INR 63.0251                  Valuation on 20-Nov-2026: INR 197,213.54
+
+FOLIO NO: 900014                                                                                KYC : OK
+Nippon India Multi Asset Allocation Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF204KB19V4          Opening Unit Balance: 0.000
+
+ 16-JUN-2025              Purchase                                               30,000.00     1,310.459     22.8927     1,310.459
+
+Closing Unit Balance: 1,310.459                              NAV AS ON 20-NOV-2026: INR 26.5679                  Valuation on 20-Nov-2026: INR 34,816.14
+
+FOLIO NO: 900015                                                                                KYC : OK
+HDFC Corporate Bond Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF179K01XD8          Opening Unit Balance: 0.000
+
+ 12-FEB-2024              Purchase                                              100,000.00     3,387.169     29.5232     3,387.169
+
+Closing Unit Balance: 3,387.169                              NAV AS ON 20-NOV-2026: INR 35.3157                  Valuation on 20-Nov-2026: INR 119,620.24
+
+FOLIO NO: 900016                                                                                KYC : OK
+Axis Liquid Fund - Direct Plan - Growth (Advisor: INZ000305337/INDMONEY PRIVATE LIMITED) ISIN: INF846K01CX4          Opening Unit Balance: 0.000
+
+ 02-MAY-2022              Purchase                                               50,000.00        21.081  2,371.8339        21.081
+
+Closing Unit Balance: 21.081                              NAV AS ON 20-NOV-2026: INR 3,198.0992                  Valuation on 20-Nov-2026: INR 67,419.13

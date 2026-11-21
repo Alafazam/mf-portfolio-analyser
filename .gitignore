@@ -1,0 +1,10 @@
+# personal data never belongs in this repo
+*.pdf
+cas*.txt
+!samples/synthetic_cas.txt
+work/
+runs/
+samples/out/
+__pycache__/
+*.pyc
+.claude/

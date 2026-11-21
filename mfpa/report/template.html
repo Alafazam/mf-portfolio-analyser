@@ -1,0 +1,769 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fund Risk–Return Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; the 2x2 is the hero, then verdict groups, scorecard table, per-fund drill-down, method. */
+:root{
+  --bg:#f7f8f6; --surface:#fcfcfb; --fg:#0b0b0b; --fg2:#52514e; --muted:#7a7972;
+  --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10); --wash:rgba(42,120,214,.07);
+  --s1:#2a78d6; --s2:#eb6834; --bench:#7a7972;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --idx:#8a8981; --ok:#2a78d6;
+  --good-ink:#006300; --crit-ink:#b42f2f; --banner:#fff6df;
+  --display:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  --body:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121211; --surface:#1a1a19; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
+  --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10); --wash:rgba(57,135,229,.12);
+  --s1:#3987e5; --s2:#d95926; --bench:#97968d; --idx:#8f8e86; --ok:#3987e5;
+  --good-ink:#0ca30c; --crit-ink:#e66767; --banner:#2b2615; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121211; --surface:#1a1a19; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
+  --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10); --wash:rgba(57,135,229,.12);
+  --s1:#3987e5; --s2:#d95926; --bench:#97968d; --idx:#8f8e86; --ok:#3987e5;
+  --good-ink:#0ca30c; --crit-ink:#e66767; --banner:#2b2615; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:2rem;font-weight:700}
+h2{font-size:1.3rem;font-weight:600}
+h3{font-size:1rem;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.sub{color:var(--fg2)}
+.num,td.n,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{display:grid;gap:10px}
+section{display:grid;gap:16px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:18px;min-width:0}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--ring);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:.85rem;border:0;background:transparent;color:var(--fg2);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--wash);color:var(--fg);font-weight:600}
+.seg button:focus-visible,select:focus-visible{outline:2px solid var(--s1);outline-offset:1px}
+.ctl-label{font-size:.8rem;color:var(--muted)}
+svg text{fill:var(--fg2);font-family:var(--body)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--fg2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.ringdot{width:10px;height:10px;border-radius:50%;display:inline-block;border:2px solid var(--fg2);box-sizing:border-box}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.group{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.group header{display:flex;align-items:center;gap:8px;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--ring);white-space:nowrap;color:var(--fg)}
+.group ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.group li{display:grid;gap:2px;font-size:.9rem}
+.group li b{font-weight:600}
+.group li .why{color:var(--fg2);font-size:.82rem}
+.tablewrap{overflow-x:auto;border:1px solid var(--ring);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:1000px}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;position:sticky;top:0;background:var(--surface)}
+td.n,th.n{text-align:right}
+tr.reg td{color:var(--fg2)}
+tr.reg td:first-child{padding-left:22px}
+.pos{color:var(--good-ink)} .neg{color:var(--crit-ink)}
+.banner{background:var(--banner);border:1px solid var(--ring);border-radius:10px;padding:12px 14px;font-size:.88rem;max-width:none}
+.tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--fg);border:1px solid var(--ring);border-radius:8px;padding:9px 11px;font-size:.8rem;box-shadow:0 6px 20px rgba(0,0,0,.14);max-width:280px;z-index:20}
+.tip .t{font-weight:600;margin-bottom:4px}
+.tip .row{display:flex;justify-content:space-between;gap:14px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tip .row span:first-child{font-family:var(--body);color:var(--fg2)}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+select{font:inherit;font-size:.9rem;padding:6px 10px;border-radius:8px;border:1px solid var(--ring);background:var(--surface);color:var(--fg);max-width:100%}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.kv div{display:grid;gap:2px}
+.kv .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kv .v{font-family:var(--mono);font-size:1.05rem}
+.method{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;font-size:.88rem;color:var(--fg2)}
+.method h3{color:var(--fg);margin-bottom:6px}
+.method ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.note{font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.pt{transition:opacity .15s}}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem}
+nav.toc a{color:var(--s1);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+.keep{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.keep div{display:grid;gap:3px;padding:12px;border:1px solid var(--grid);border-radius:8px;min-width:0}
+.keep .role{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.keep .why{font-size:.82rem;color:var(--fg2)}
+.sipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.sipcol{display:grid;gap:6px;align-content:start}
+.sipbar{display:grid;grid-template-columns:minmax(0,1fr) 80px;gap:8px;align-items:center;font-size:.85rem}
+.sipbar .track{height:8px;border-radius:4px;background:var(--grid);overflow:hidden}
+.sipbar .fill{height:100%;border-radius:4px}
+.years{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.year{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.year ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.year li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:.85rem}
+.year li .into{grid-column:1/-1;font-size:.78rem;color:var(--muted)}
+.room{height:10px;border-radius:5px;background:var(--grid);overflow:hidden;display:flex}
+.room span{height:100%}
+.hbar{display:grid;grid-template-columns:130px minmax(0,1fr) 92px;gap:8px;align-items:center;font-size:.82rem;margin-bottom:6px}
+.hbar .tr{display:grid;gap:2px}
+.hbar .b{height:7px;border-radius:0 4px 4px 0}
+table.compact{min-width:0}
+table.compact th,table.compact td{white-space:normal;vertical-align:top}
+table.compact td:first-child{min-width:150px}
+@media (max-width:600px){
+  table.compact thead{display:none}
+  table.compact tbody,table.compact tr{display:block}
+  table.compact tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border-bottom:1px solid var(--grid)}
+  table.compact td{display:block;border:0;padding:0;min-width:0}
+  table.compact td:first-child{min-width:0}
+  table.compact td:nth-child(n+3){grid-column:1/-1}
+  table.compact td:empty{display:none}
+}
+td.cellv{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.uni-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.uni-picks div{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:12px;display:grid;gap:3px;min-width:0}
+.uni-picks .cat{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.uni-picks .alt{font-size:.8rem;color:var(--fg2)}
+.score{display:inline-grid;grid-template-columns:28px 70px;gap:6px;align-items:center}
+.score .t{height:6px;border-radius:3px;background:var(--grid);overflow:hidden}
+.score .f{height:100%;background:var(--s1)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Portfolio review · NAV data to <span id="asof"></span></div>
+    <h1>Which funds earn their volatility?</h1>
+    <div class="banner" id="banner"></div>
+    <p class="sub" id="intro"></p>
+    <nav class="toc" aria-label="Sections"><a href="#h-quad">2×2</a><a href="#h-groups">Flags</a><a href="#plan">Consolidation plan</a><a href="#screen">Where to invest next</a><a href="#replace">Replacements</a><a href="#tax">Tax calendar</a><a href="#peers">Peer check</a><a href="#regime">Falls and recoveries</a><a href="#look">Where your money sits</a><a href="#h-table">Scorecard</a><a href="#h-detail">Fund detail</a><a href="#full">Full plan</a></nav>
+  </header>
+
+  <section aria-labelledby="h-quad">
+    <div class="controls">
+      <h2 id="h-quad" style="margin-right:auto">Return vs volatility, 3 years</h2>
+      <span class="ctl-label">Axes</span>
+      <div class="seg" role="group" aria-label="Axes">
+        <button id="m-rel" aria-pressed="true">vs benchmark</button>
+        <button id="m-abs" aria-pressed="false">Absolute</button>
+      </div>
+      <span class="ctl-label">Plan</span>
+      <div class="seg" role="group" aria-label="Plan">
+        <button id="p-dir" aria-pressed="true">Direct</button>
+        <button id="p-reg" aria-pressed="false">Regular</button>
+        <button id="p-both" aria-pressed="false">Both</button>
+      </div>
+    </div>
+    <div class="panel">
+      <svg id="quad" viewBox="0 0 760 500" role="img" aria-label="Scatter of fund return against volatility" style="width:100%;height:auto;display:block"></svg>
+      <div class="legend" id="quad-legend" style="margin-top:10px"></div>
+      <p class="note" id="quad-note" style="margin-top:8px"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-groups">
+    <h2 id="h-groups">What the flags say</h2>
+    <p class="sub">Groups are set from the <b>direct</b> plan, which shows the fund manager's skill. The regular plan returns about 0.7–1.4% a year less, and in several funds that cost turns a winner into a laggard. The table shows both.</p>
+    <div class="groups" id="groups"></div>
+  </section>
+
+  <section aria-labelledby="h-plan" id="plan">
+    <h2 id="h-plan">Consolidation plan</h2>
+    <p class="sub">This pulls the flags, the overlap check, the fund screen and the tax room together. Switching a regular plan to direct is a sale anyway, so the money can go to the best fund in the screen rather than the same fund's direct plan. It is a rules-based screen to weigh, not advice.</p>
+    <div class="panel" style="display:grid;gap:14px">
+      <h3 id="keep-h">Funds to hold</h3>
+      <div class="keep" id="keep"></div>
+    </div>
+    <p class="note">What to sell and when, fund by fund, plus your monthly SIPs, are in <a href="#full" style="color:var(--s1)">Full plan: every holding</a> at the end.</p>
+  </section>
+
+  <section aria-labelledby="h-uni" id="screen">
+    <div class="controls">
+      <h2 id="h-uni" style="margin-right:auto">Where to invest next</h2>
+      <label class="ctl-label" for="uni-cat">Category</label>
+      <select id="uni-cat"></select>
+    </div>
+    <p class="sub" id="uni-sub">Every open-ended direct-growth fund in these categories from AMFI's list, put through the same tests as your funds. Each gets a score out of 100 against the other funds in its category: 75% for the last 3 years, 25% for its record against the category median since June 2018.</p>
+    <div class="uni-picks" id="uni-picks"></div>
+    <div class="tablewrap"><table id="uni-tbl" style="min-width:1180px"></table></div>
+    <p class="note"><b>3Y score</b> = 35% return vs benchmark + 25% share of rolling 3-year windows ahead of it + 20% downside capture + 10% worst fall vs benchmark + 10% result across the four market falls since 2019. <b>Long-run score</b> (funds with 5+ years) compares the fund with the median fund in its category every week since June 2018, when SEBI's current categories began: 35% yearly lead over the median + 25% share of rolling 3Y windows ahead + 15% rolling 5Y windows ahead + 15% downside capture + 10% worst fall. <b>Overall</b> = 75% 3Y score + 25% long-run score, or the 3Y score alone when there is no long record. The median is of funds alive today, so it slightly flatters the category. "Short record": under 2 years of rolling windows. Large caps use the Nifty 50 as benchmark, multi caps a 50/25/25 blend. Fund managers change; a long record under a past manager says less about the future.</p>
+  </section>
+
+  <section aria-labelledby="h-repl" id="replace">
+    <h2 id="h-repl">Replacement candidates</h2>
+    <p class="sub">For each fund the plan sells or switches: the best funds in the same category that beat their benchmark and take no more than 100% of falls, ranked by overall score. Long-record funds first; the best newer fund is shown last.</p>
+    <div class="years" id="repl"></div>
+  </section>
+
+  <section aria-labelledby="h-tax" id="tax">
+    <h2 id="h-tax">Tax calendar</h2>
+    <p class="sub">Regular-to-direct switches spread over four financial years so equity gains stay within the ₹1.25L yearly exemption. Each full year of room saves up to ₹16,250 of tax (12.5% + 4% cess).</p>
+    <div class="years" id="years"></div>
+    <p class="note">Figures use today's gains, which will grow, so later years will hold slightly fewer units; recheck the gain on the day. Every lot is checked against its purchase date: it is sold or switched only once it is long-term and past any ELSS lock-in, on that date if it falls inside the year. Losses from funds held under the long-term period are short-term and can offset any gain. Your other stock sales share the same ₹1.25L. India has no wash-sale rule, so a loss can be booked and the fund bought back.</p>
+  </section>
+
+  <section aria-labelledby="h-peers" id="peers">
+    <div class="controls">
+      <h2 id="h-peers" style="margin-right:auto">Peer check</h2>
+      <label class="ctl-label" for="peer-cat">Category</label>
+      <select id="peer-cat"></select>
+    </div>
+    <p class="sub">The top-scored funds in the whole-market screen for each of your categories, put through the same 3-year test against the same benchmark (direct plans). Your funds are marked.</p>
+    <div class="tablewrap"><table id="peer-tbl" style="min-width:820px"></table></div>
+    <p class="note">Beats % comes from fewer windows for funds with a short record, so read those with care.</p>
+  </section>
+
+  <section aria-labelledby="h-regime" id="regime">
+    <h2 id="h-regime">Falls and recoveries</h2>
+    <p class="sub">Every 10%+ fall in the Nifty 500 since 2019, the recovery back to the old high, and the rising stretches in between. The table compares each fund with its own benchmark in each phase.</p>
+    <div class="panel"><svg id="reg-chart" viewBox="0 0 760 220" style="width:100%;height:auto;display:block"></svg><div class="legend" id="reg-legend" style="margin-top:6px"></div></div>
+    <div class="tablewrap"><table id="reg-tbl" style="min-width:900px"></table></div>
+    <p class="note">Episode cells: fund return / benchmark return over that stretch. Phase columns: how much better (green) or worse (red) the fund ended up than its benchmark over all weeks of that phase put together. The latest recovery has not yet regained the Sep 2024 high. Hybrid and multi-asset funds use my blended benchmarks, so their figures are rough.</p>
+  </section>
+
+  <section aria-labelledby="h-look" id="look">
+    <h2 id="h-look">Where your money sits</h2>
+    <p class="sub">All your scored funds combined, weighted by what you hold, compared with the Nifty 500. From each fund's latest sector and market-cap split (needs INDmoney data).</p>
+    <div class="detail-grid">
+      <div class="panel" style="display:grid;gap:10px;align-content:start"><h3>Company size</h3><div id="look-caps"></div></div>
+      <div class="panel" style="display:grid;gap:10px"><h3>Sectors</h3><div id="look-sect"></div></div>
+    </div>
+    <p class="note" id="look-note"></p>
+  </section>
+
+  <section aria-labelledby="h-table">
+    <div class="controls">
+      <h2 id="h-table" style="margin-right:auto">Scorecard</h2>
+      <span class="ctl-label">Plan</span>
+      <div class="seg" role="group" aria-label="Table plan">
+        <button id="t-dir" aria-pressed="false">Direct</button>
+        <button id="t-reg" aria-pressed="false">Regular</button>
+        <button id="t-both" aria-pressed="true">Both</button>
+      </div>
+    </div>
+    <div class="tablewrap"><table id="tbl"></table></div>
+    <p class="note">3Y = the last 3 years of weekly returns to the data date. Excess = fund 3Y CAGR − benchmark 3Y CAGR. Vol ratio = fund volatility ÷ benchmark volatility. Up/Down = upside and downside capture. Beats % = share of rolling 3-year windows (since 2022) in which the fund beat its benchmark. Long run = excess CAGR over the longest period both fund and benchmark have data (5.6–10 yrs). Invested, value and profit are your own holding in that plan. Your profit depends on when you bought, so a fund can beat its benchmark and still show little profit if most of it was bought recently. Sector, international, debt and liquid funds are listed in the full plan, not here.</p>
+  </section>
+
+  <section aria-labelledby="h-detail">
+    <div class="controls">
+      <h2 id="h-detail" style="margin-right:auto">One fund in detail</h2>
+      <label class="ctl-label" for="pick">Fund</label>
+      <select id="pick"></select>
+    </div>
+    <div class="panel" style="display:grid;gap:16px">
+      <p class="note" id="port-note" hidden>Your whole portfolio is today's mix of these funds, at current weights and rebalanced weekly, compared with each fund's benchmark at the same weights. It shows how your current mix would have done. It is not your actual money-weighted return, because your SIPs and lump sums went in at different times. "Your actual plans" keeps your regular-plan holdings in regular; "Same mix, all direct" shows the same mix with every fund in its direct plan. History starts when the benchmark data begins (2019).</p>
+      <div class="kv" id="kv"></div>
+      <div class="detail-grid">
+        <div style="min-width:0"><h3>Growth of ₹1 vs benchmark</h3><svg id="g-growth" viewBox="0 0 520 300" style="width:100%;height:auto;display:block"></svg><div class="legend" id="lg-growth"></div></div>
+        <div style="min-width:0"><h3>Rolling 3-year return, ahead of benchmark by</h3><svg id="g-roll" viewBox="0 0 520 300" style="width:100%;height:auto;display:block"></svg><div class="legend" id="lg-roll"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-method">
+    <h2 id="h-method">How this was worked out</h2>
+    <div class="method">
+      <div><h3>Data</h3><ul>
+        <li>Daily NAVs for each fund's direct and regular plan from mfapi.in (AMFI data), sampled every Friday.</li>
+        <li>Benchmarks use index fund and ETF NAVs (Nifty 100, Nifty 500, Midcap 150, Smallcap 250, Nifty 50, a corporate bond fund and gold for blends). These carry a small cost (0.1–0.3% a year), so benchmarks look slightly worse than the true index.</li>
+        <li>Index fund history starts in 2019; the long-run score compares each fund with its category median instead.</li>
+      </ul></div>
+      <div><h3>The regression</h3><ul>
+        <li>Weekly fund return = α + β × weekly benchmark return + error.</li>
+        <li>β: how much the fund moves for a 1% benchmark move. α: yearly return beyond that, the manager's edge. R²: how much of the fund's movement the benchmark explains. Tracking error: spread of the error term.</li>
+        <li>Capture: average fund return in benchmark-up weeks ÷ the benchmark's (upside), and the same for down weeks (downside).</li>
+      </ul></div>
+      <div><h3>Flag rules (direct plan, 3Y)</h3><ul>
+        <li><b>Exit candidate</b>: behind the benchmark and bumpier (vol ratio &gt; 1.05, downside capture &gt; 1, or a drawdown 3+ points worse).</li>
+        <li><b>Lagging</b>: more than 1% a year behind the benchmark <i>and</i> ahead in under 40% of rolling 3Y windows.</li>
+        <li><b>Volatile, but ahead</b>: beating the benchmark, but vol ratio &gt; 1.10, downside capture &gt; 1.05, or a drawdown 3+ points worse.</li>
+        <li><b>Steady compounder</b>: ahead, beats in ≥ 60% of windows, downside capture &lt; 0.95, vol ratio ≤ 1.05.</li>
+      </ul></div>
+      <div><h3>Limits</h3><ul>
+        <li>Past returns don't predict future ones. 3 years is one market cycle at most.</li>
+        <li>Hybrid and multi-asset benchmarks are blends (65/35 and 65/20/15), so those funds are only roughly placed.</li>
+        <li>This is an educational, rules-based screen, not investment, tax or legal advice. The author is not a SEBI-registered adviser.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-full" id="full">
+    <h2 id="h-full">Full plan: every holding</h2>
+    <p class="sub" id="full-sub"></p>
+    <p class="note" id="full-opp"></p>
+    <div id="full-plan" style="display:grid;gap:22px"></div>
+    <p class="note">Values and gains are from your holdings file and will move. Holding periods and lock-ins are checked lot by lot: a lot is sold only once it is long-term (more than 12 months for equity funds) and past any ELSS lock-in. Your other equity sales share the same ₹1.25L. <b>Case</b> = share of tests the replacement wins against the fund being sold (3Y return vs benchmark, 3Y consistency, share of falls taken, worst fall, long-run lead over the category median, long-run 3Y and 5Y windows ahead; ties ignored): Clear ≥ 80 with a break-even under 2 years, Lean 55–79, Close call below 55. Close calls are left out of the plan. Duplicate index funds and regular-to-direct switches of the same fund are always Clear. <b>Held since</b> = first purchase still held, from your statement (Jan 2023 onwards; "before 2023" means older units). <b>XIRR</b> = annual return on your actual purchase dates and amounts; <b>CAGR</b> = (value ÷ invested) from the first purchase, so it reads lower than XIRR for SIPs. "≤" marks funds with units bought before 2023: they are counted from 1 Jan 2023, so the true figure is somewhat lower. Holdings under a year show the plain return so far instead. <b>"If it had all been in …"</b> replays each purchase you still hold, on its date and for its amount, into the suggested fund's direct plan, and compares the result with what you hold today (NAVs of 20 Nov 2026). For same-fund switches it shows what the direct plan would have earned. Units bought before 2023 are compared from 1 Jan 2023 only. It looks backwards: a fund that would have earned less over this stretch can still be the better pick on the full record, and the reverse.</p>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = __DATA__;
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const pct = (x, d=1, sign=false) => x==null ? "–" : (sign && x>0 ? "+" : "") + (x*100).toFixed(d) + "%";
+const fx = (x, d=2) => x==null ? "–" : x.toFixed(d);
+const inr = v => "₹" + (v>=1e5 ? (v/1e5).toFixed(2)+"L" : Math.round(v/1e3)+"k");
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+$("#asof").textContent = new Date(D.end).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+
+
+// fund objects
+const F = [];
+for (const r of D.funds) {
+  let f = F.find(x => x.name === r.name);
+  if (!f) { f = {name:r.name, category:r.category, benchmark:r.benchmark, value:r.value, held:r.regular, index:r.index}; F.push(f); }
+  f[r.plan === "Direct" ? "d" : "r"] = r;
+}
+const G = {
+  exit:    {label:"Exit candidate",       color:"--crit",    rank:0},
+  lag:     {label:"Lagging",              color:"--serious", rank:1},
+  vol:     {label:"Volatile, but ahead",  color:"--warn",    rank:2},
+  ok:      {label:"Neither clearly ahead nor behind", color:"--ok", rank:3},
+  steady:  {label:"Steady compounder",    color:"--good",    rank:4},
+  index:   {label:"Index fund",           color:"--idx",     rank:5},
+};
+function flag(f, p) {
+  const s = p.s3;
+  if (!s) return {k:"ok", why:"Not enough history for the 3-year tests."};
+  if (f.index) return {k:"index", why:`Tracks its index (R² ${fx(s.r2)}); judged on cost and tracking, not on beating it.`};
+  const dd = s.mdd - s.bench_mdd;
+  const bumpy = s.vol_ratio > 1.10 || s.down_cap > 1.05 || dd < -0.03;
+  const reasons = [];
+  if (s.vol_ratio > 1.05) reasons.push(`swings ${fx(s.vol_ratio)}× the benchmark`);
+  if (s.down_cap > 1.0) reasons.push(`falls ${Math.round(s.down_cap*100)}% as much as the benchmark in down weeks`);
+  if (dd < -0.03) reasons.push(`worst fall ${pct(s.mdd,0)} vs ${pct(s.bench_mdd,0)}`);
+  const ret = `${pct(s.excess,1,true)} a year vs benchmark`;
+  const beat = `beat it in ${Math.round(p.roll_beat*100)}% of rolling 3Y windows`;
+  if (s.excess < 0 && (bumpy || s.vol_ratio > 1.05 || s.down_cap > 1.0)) return {k:"exit", why:`${ret}, ${reasons.join(", ")}.`};
+  if (s.excess < -0.01 && p.roll_beat < 0.4) return {k:"lag", why:`${ret}, and only ${beat}.`};
+  if (bumpy) return {k:"vol", why:`${ret}, but ${reasons.join(", ")}.`};
+  if (s.excess > 0 && p.roll_beat >= 0.6 && s.down_cap < 0.95 && s.vol_ratio <= 1.05) return {k:"steady", why:`${ret}, ${beat}, takes ${Math.round(s.down_cap*100)}% of the falls.`};
+  return {k:"ok", why:`${ret}; ${beat}.`};
+}
+for (const f of F) { f.fd = flag(f, f.d); f.fr = f.r ? flag(f, f.r) : f.fd; if (!f.r) f.r = f.d; }
+// What you hold, from INDmoney (holdings.json): [invested, current value] per plan
+const HOLD = {};  // from scorecard/data/holdings.json: [invested, current value] per plan
+for (const [f, plan, inv, val] of D.holdings.equity) (HOLD[f] = HOLD[f] || {})[plan === "Direct" ? "d" : "r"] = [inv, val];
+for (const f of F) { const h = HOLD[f.name] || {}; f.h = h; const s = ["d","r"].filter(k => h[k]);
+  f.inv = s.reduce((a,k) => a + h[k][0], 0); f.value = s.reduce((a,k) => a + h[k][1], 0); f.pnl = f.value - f.inv; }
+const PORT = {name:"My whole portfolio", category:"Portfolio", benchmark:"Each fund's own benchmark, weighted like your holdings",
+  d:D.portfolio.Direct, r:D.portfolio.Regular, h:{}, labels:["Same mix, all direct","Your actual plans"],
+  inv:F.reduce((s,f) => s + f.inv, 0), value:F.reduce((s,f) => s + f.value, 0)};
+PORT.pnl = PORT.value - PORT.inv; PORT.fd = flag(PORT, PORT.d);
+const inrFull = v => (v < 0 ? "−₹" : "₹") + Math.round(Math.abs(v)).toLocaleString("en-IN");
+const pnlSpan = (pnl, inv) => `<span class="${pnl>0?"pos":pnl<0?"neg":""}">${pnl<0?"−":"+"}₹${Math.round(Math.abs(pnl)).toLocaleString("en-IN")} (${pct(pnl/inv,1,true)})</span>`;
+
+// ---------- 2x2 ----------
+let MODE = "rel", PLAN = "Direct", TPLAN = "Both";
+const tip = $("#tip");
+function showTip(e, html) { tip.innerHTML = html; tip.hidden = false; moveTip(e); }
+function moveTip(e) { const w = tip.offsetWidth, h = tip.offsetHeight; let x = e.clientX + 14, y = e.clientY + 14; if (x + w > innerWidth - 8) x = e.clientX - w - 14; if (y + h > innerHeight - 8) y = e.clientY - h - 14; tip.style.left = x + "px"; tip.style.top = y + "px"; }
+function hideTip() { tip.hidden = true; }
+function tipHtml(f, p, fl) {
+  const s = p.s3;
+  return `<div class="t">${f.name} · ${p.plan}</div><div style="margin-bottom:6px"><span class="pill"><span class="dot" style="background:var(${G[fl.k].color})"></span>${G[fl.k].label}</span></div>` +
+    [["3Y CAGR", pct(s.cagr)], ["Benchmark", pct(s.bench_cagr)], ["Excess", pct(s.excess,1,true)], ["Volatility", pct(s.vol)], ["Vol ratio", fx(s.vol_ratio)], ["Beta", fx(s.beta)], ["Alpha /yr", pct(s.alpha,1,true)], ["Downside capture", fx(s.down_cap)], ["Worst fall", pct(s.mdd,0) + " (bm " + pct(s.bench_mdd,0) + ")"], ["Beats (rolling 3Y)", Math.round(p.roll_beat*100) + "%"]]
+    .map(([a,b]) => `<div class="row"><span>${a}</span><span>${b}</span></div>`).join("") + holdRows(f, p.plan === "Direct" ? "d" : "r");
+}
+function holdRows(f, k) {
+  const h = f.h[k], line = (a, b) => `<div class="row"><span>${a}</span><span>${b}</span></div>`;
+  let out = `<div style="border-top:1px solid var(--grid);margin:6px 0 4px"></div>`;
+  out += h ? line(`Your ${k === "d" ? "direct" : "regular"} holding`, `${inr(h[1])} · ${pnlSpan(h[1]-h[0], h[0])}`) + line("Invested", inrFull(h[0]))
+           : line(`Your ${k === "d" ? "direct" : "regular"} holding`, `<span style="color:var(--muted)">not held</span>`);
+  if (f.h.d && f.h.r) out += line("Both plans", `${inr(f.value)} · ${pnlSpan(f.pnl, f.inv)}`);
+  return out;
+}
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function niceTicks(lo, hi, n) { const step0 = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(step0))); const step = [1,2,2.5,5,10].map(m => m*mag).find(s => s >= step0); const out = []; for (let v = Math.ceil(lo/step)*step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10)); return out; }
+
+function drawQuad() {
+  const svg = $("#quad"); svg.innerHTML = "";
+  const W = 760, H = 500, m = {l:64, r:24, t:20, b:52};
+  const X = p => MODE === "rel" ? p.s3.vol_ratio : p.s3.vol;
+  const Y = p => MODE === "rel" ? p.s3.excess : p.s3.cagr;
+  const plans = PLAN === "Both" ? ["d","r"] : [PLAN === "Direct" ? "d" : "r"];
+  const pts = []; for (const f of F) for (const k of plans) if (f[k] && f[k].s3) pts.push({f, k, p:f[k], fl: f.fd});
+  const all = F.flatMap(f => [f.d, f.r]).filter(p => p && p.s3);
+  let x0 = Math.min(...all.map(X)), x1 = Math.max(...all.map(X)), y0 = Math.min(...all.map(Y)), y1 = Math.max(...all.map(Y));
+  // reference lines
+  const n500 = (F.find(f => f.benchmark === "Nifty 500" && f.d.s3) || F.find(f => f.d.s3)).d.s3;
+  const refX = MODE === "rel" ? 1 : n500.bench_vol, refY = MODE === "rel" ? 0 : n500.bench_cagr;
+  x0 = Math.min(x0, refX); x1 = Math.max(x1, refX); y0 = Math.min(y0, refY); y1 = Math.max(y1, refY);
+  const px = (x1-x0)*.08, py = (y1-y0)*.1; x0 -= px; x1 += px; y0 -= py; y1 += py;
+  const sx = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const sy = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  // quadrant wash for exit zone
+  el("rect", {x:sx(refX), y:sy(refY), width:W - m.r - sx(refX), height:H - m.b - sy(refY), fill:css("--crit"), "fill-opacity":.07}, svg);
+  el("rect", {x:m.l, y:m.t, width:sx(refX) - m.l, height:sy(refY) - m.t, fill:css("--good"), "fill-opacity":.06}, svg);
+  // grid + ticks
+  for (const t of niceTicks(x0, x1, 6)) { el("line", {x1:sx(t), x2:sx(t), y1:m.t, y2:H-m.b, stroke:css("--grid")}, svg); const tx = el("text", {x:sx(t), y:H-m.b+18, "text-anchor":"middle", "font-size":11}, svg); tx.textContent = MODE === "rel" ? t.toFixed(2) + "×" : Math.round(t*100) + "%"; }
+  for (const t of niceTicks(y0, y1, 6)) { el("line", {x1:m.l, x2:W-m.r, y1:sy(t), y2:sy(t), stroke:css("--grid")}, svg); const tx = el("text", {x:m.l-8, y:sy(t)+4, "text-anchor":"end", "font-size":11}, svg); tx.textContent = (MODE === "rel" && t > 0 ? "+" : "") + Math.round(t*100) + "%"; }
+  el("line", {x1:sx(refX), x2:sx(refX), y1:m.t, y2:H-m.b, stroke:css("--fg2"), "stroke-dasharray":"4 4"}, svg);
+  el("line", {x1:m.l, x2:W-m.r, y1:sy(refY), y2:sy(refY), stroke:css("--fg2"), "stroke-dasharray":"4 4"}, svg);
+  const ax = el("text", {x:(m.l + W - m.r)/2, y:H-10, "text-anchor":"middle", "font-size":12}, svg);
+  ax.textContent = MODE === "rel" ? "Volatility ÷ benchmark volatility  →  bumpier" : "3Y volatility (annualised)  →  bumpier";
+  const ay = el("text", {x:16, y:(m.t + H - m.b)/2, "text-anchor":"middle", "font-size":12, transform:`rotate(-90 16 ${(m.t + H - m.b)/2})`}, svg);
+  ay.textContent = MODE === "rel" ? "3Y return minus benchmark  →  better" : "3Y CAGR  →  better";
+  // quadrant labels
+  const ql = (x, y, a, t, c) => { const e = el("text", {x, y, "text-anchor":a, "font-size":11.5, "font-weight":600, fill:c}, svg); e.textContent = t; };
+  ql(m.l+8, m.t+16, "start", "Better return, calmer", css("--good-ink"));
+  ql(W-m.r-8, m.t+16, "end", "Better return, bumpier", css("--fg2"));
+  ql(m.l+8, H-m.b-10, "start", "Lower return, calmer", css("--fg2"));
+  ql(W-m.r-8, H-m.b-10, "end", "Lower return, bumpier: exit zone", css("--crit-ink"));
+  if (MODE === "abs") { const e = el("text", {x:sx(refX)+6, y:sy(refY)-6, "font-size":10.5}, svg); e.textContent = "Nifty 500"; }
+  // connectors for Both
+  if (PLAN === "Both") for (const f of F) el("line", {x1:sx(X(f.d)), y1:sy(Y(f.d)), x2:sx(X(f.r)), y2:sy(Y(f.r)), stroke:css(G[f.fd.k].color), "stroke-width":1.5, "stroke-opacity":.6}, svg);
+  // labels (direct, or regular when only regular shown), simple vertical de-collision
+  const labK = plans[0];
+  const pl = f => (f.pnl < 0 ? " −" : " +") + inr(Math.abs(f.pnl));
+  const short = n => n.replace(/\s+(Fund|Tax Saver|Allocation)$/i, "").replace(/^(Aditya Birla Sun Life|Motilal Oswal)/, m => m === "Motilal Oswal" ? "MO" : "ABSL");
+  const labs = F.filter(f => f[labK] && f[labK].s3).map(f => ({f, x:sx(X(f[labK])), y:sy(Y(f[labK])), t:short(f.name) + pl(f)}));
+  labs.forEach(l => { l.w = l.t.length * 6.3; l.right = l.x + 10 + l.w < W - m.r; l.lx = l.right ? l.x + 10 : l.x - 10; l.ly = l.y + 4; });
+  labs.sort((a,b) => a.ly - b.ly);
+  for (let it = 0; it < 40; it++) { let moved = false;
+    for (let i = 0; i < labs.length; i++) for (let j = i+1; j < labs.length; j++) { const a = labs[i], b = labs[j];
+      const ax0 = a.right ? a.lx : a.lx - a.w, bx0 = b.right ? b.lx : b.lx - b.w;
+      if (ax0 < bx0 + b.w && bx0 < ax0 + a.w && Math.abs(a.ly - b.ly) < 13) { const d = (13 - Math.abs(a.ly - b.ly)) / 2 + .5; if (a.ly <= b.ly) { a.ly -= d; b.ly += d; } else { a.ly += d; b.ly -= d; } moved = true; } }
+    if (!moved) break; }
+  for (const l of labs) { if (Math.abs(l.ly - 4 - l.y) > 6) el("line", {x1:l.x + (l.right?6:-6), y1:l.y, x2:l.lx + (l.right?-2:2), y2:l.ly - 4, stroke:css("--axis")}, svg);
+    const t = el("text", {x:l.lx, y:l.ly, "text-anchor":l.right ? "start" : "end", "font-size":11.5, fill:css("--fg")}, svg); t.textContent = l.t; }
+  // points
+  for (const q of pts) {
+    const c = css(G[q.fl.k].color), cx = sx(X(q.p)), cy = sy(Y(q.p));
+    const g = el("g", {class:"pt", tabindex:0, role:"img", "aria-label":`${q.f.name} ${q.p.plan}`}, svg);
+    if (q.k === "d") el("circle", {cx, cy, r:7, fill:c, stroke:css("--surface"), "stroke-width":2}, g);
+    else el("circle", {cx, cy, r:5.5, fill:css("--surface"), stroke:c, "stroke-width":2.5}, g);
+    el("circle", {cx, cy, r:14, fill:"transparent"}, g);
+    const fl = q.k === "d" ? q.f.fd : q.f.fr;
+    g.addEventListener("pointerenter", e => showTip(e, tipHtml(q.f, q.p, fl)));
+    g.addEventListener("pointermove", moveTip); g.addEventListener("pointerleave", hideTip);
+    g.addEventListener("focus", () => { const r = g.getBoundingClientRect(); showTip({clientX:r.right, clientY:r.bottom}, tipHtml(q.f, q.p, fl)); });
+    g.addEventListener("blur", hideTip);
+    g.addEventListener("click", () => { $("#pick").value = q.f.name; drawDetail(); $("#h-detail").scrollIntoView({behavior:"smooth"}); });
+  }
+  $("#quad-legend").innerHTML = Object.values(G).map(g => `<span><span class="dot" style="background:var(${g.color})"></span>${g.label}</span>`).join("") +
+    (PLAN === "Both" ? `<span><span class="ringdot"></span>Hollow = regular plan, joined to its direct plan</span>` : "");
+  $("#quad-note").textContent = MODE === "rel"
+    ? "Each fund is measured against its own benchmark, so a small-cap fund isn't punished for being a small-cap. The dashed lines mark the benchmark. Colours follow the direct plan's flag. Hover or tap a dot for numbers; click to open it below."
+    : "Raw numbers: higher means more return, further right means more swing. Mid and small caps naturally sit further right. The dashed lines mark the Nifty 500 index fund. Use the vs benchmark view to judge funds fairly.";
+}
+
+// ---------- groups ----------
+function drawGroups() {
+  const box = $("#groups"); box.innerHTML = "";
+  const order = ["exit","lag","vol","index","ok","steady"];
+  const advice = {
+    exit:"Behind the benchmark and rougher on the way down. These are the clearest exits; a Nifty Midcap 150 index fund would have done better with less pain.",
+    lag:"Not clearly losing, but not earning an active fund's fee either. Review, or move to an index fund.",
+    vol:"Ahead of the benchmark, but the ride is rougher. Fine to keep if you can sit through deeper falls. Size them sensibly.",
+    index:"Index funds track their index; they are judged on cost and tracking. Two funds on the same index are duplicates: keep one.",
+    ok:"Neither clearly ahead nor clearly behind the benchmark. Keep, and check again next year.",
+    steady:"Beat the benchmark most of the time and fall less than it. These are the core holdings to keep.",
+  };
+  for (const k of order) {
+    const fs = F.filter(f => f.fd.k === k).sort((a,b) => b.value - a.value);
+    if (!fs.length) continue;
+    const tot = fs.reduce((s,f) => s + f.value, 0), tinv = fs.reduce((s,f) => s + f.inv, 0);
+    const d = document.createElement("div"); d.className = "group";
+    d.innerHTML = `<header><span class="pill"><span class="dot" style="background:var(${G[k].color})"></span>${G[k].label}</span><span class="num" style="margin-left:auto;color:var(--fg2);font-size:.85rem">${fs.length} fund${fs.length>1?"s":""} · ${inr(tot)}</span></header><div class="num" style="font-size:.82rem;color:var(--fg2)">Invested ${inr(tinv)} → now ${inr(tot)} · ${pnlSpan(tot - tinv, tinv)}</div><p style="font-size:.85rem;color:var(--fg2)">${advice[k]}</p><ul>` +
+      fs.map(f => `<li><b>${f.name}</b><span class="num" style="font-size:.8rem;color:var(--fg2)">${inrFull(f.inv)} → ${inrFull(f.value)} · ${pnlSpan(f.pnl, f.inv)}${f.h.d && f.h.r ? ` <span style="color:var(--muted)">(direct + regular)</span>` : f.h.r ? ` <span style="color:var(--muted)">(regular)</span>` : ""}</span><span class="why">${k === "index" ? `3Y ${pct(f.d.s3.cagr)} vs index ${pct(f.d.s3.bench_cagr)}` : f.fd.why}${f.fr.k !== f.fd.k ? ` <br>Regular plan: <b>${G[f.fr.k].label.toLowerCase()}</b> (${pct(f.r.s3.excess,1,true)} vs benchmark).` : ""}</span></li>`).join("") + "</ul>";
+    box.appendChild(d);
+  }
+}
+
+// ---------- table ----------
+function drawTable() {
+  const cols = [["Fund",""],["Plan",""],["Flag",""],["Benchmark",""],["3Y CAGR","n"],["Bench","n"],["Excess","n"],["Vol","n"],["Vol ratio","n"],["Beta","n"],["Alpha/yr","n"],["R²","n"],["Up","n"],["Down","n"],["Worst fall","n"],["Bench fall","n"],["Beats %","n"],["Long run","n"],["Invested","n"],["Value now","n"],["Profit","n"]];
+  const rows = [...F].sort((a,b) => G[a.fd.k].rank - G[b.fd.k].rank || b.value - a.value);
+  const sg = v => `<span class="${v>0?"pos":v<0?"neg":""}">${pct(v,1,true)}</span>`;
+  let h = "<thead><tr>" + cols.map(([c,n]) => `<th class="${n}">${c}</th>`).join("") + "</tr></thead><tbody>";
+  for (const f of rows) for (const k of ["d","r"]) {
+    if (TPLAN === "Direct" && k === "r" || TPLAN === "Regular" && k === "d") continue;
+    const p = f[k], s = p.s3, fl = k === "d" ? f.fd : f.fr;
+    const cls = TPLAN === "Both" && k === "r" ? "reg" : "";
+    h += `<tr class="${cls}"><td>${TPLAN === "Both" && k === "r" ? "" : f.name}</td><td>${p.plan}</td><td><span class="pill"><span class="dot" style="background:var(${G[fl.k].color})"></span>${G[fl.k].label}</span></td><td>${TPLAN === "Both" && k === "r" ? "" : f.benchmark.replace(/ \(.*\)/, "")}</td>` +
+      `<td class="n">${pct(s.cagr)}</td><td class="n">${pct(s.bench_cagr)}</td><td class="n">${sg(s.excess)}</td><td class="n">${pct(s.vol)}</td><td class="n">${fx(s.vol_ratio)}</td><td class="n">${fx(s.beta)}</td><td class="n">${sg(s.alpha)}</td><td class="n">${fx(s.r2)}</td><td class="n">${fx(s.up_cap)}</td><td class="n">${fx(s.down_cap)}</td><td class="n">${pct(s.mdd,0)}</td><td class="n">${pct(s.bench_mdd,0)}</td><td class="n">${Math.round(p.roll_beat*100)}%</td><td class="n">${sg(p.full.excess)} <span style="color:var(--muted)">${(p.full.weeks/52).toFixed(1)}y</span></td>` + (f.h[k] ? `<td class="n">${inrFull(f.h[k][0])}</td><td class="n">${inrFull(f.h[k][1])}</td><td class="n">${pnlSpan(f.h[k][1]-f.h[k][0], f.h[k][0])}</td>` : `<td class="n" colspan="3" style="color:var(--muted);text-align:center">not held</td>`) + `</tr>`;
+  }
+  const ti = F.reduce((s,f) => s + f.inv, 0), tv = F.reduce((s,f) => s + f.value, 0);
+  h += `<tr><td colspan="${cols.length-3}" style="font-weight:600">Total, these ${F.length} funds</td><td class="n" style="font-weight:600">${inrFull(ti)}</td><td class="n" style="font-weight:600">${inrFull(tv)}</td><td class="n" style="font-weight:600">${pnlSpan(tv-ti, ti)}</td></tr>`;
+  $("#tbl").innerHTML = h + "</tbody>";
+}
+
+// ---------- detail ----------
+function lineChart(svg, series, opts) {
+  svg.innerHTML = "";
+  const W = 520, H = 300, m = {l:52, r:14, t:12, b:30};
+  const all = series.flatMap(s => s.pts);
+  const t0 = Math.min(...all.map(p => p[0])), t1 = Math.max(...all.map(p => p[0]));
+  let y0 = Math.min(...all.map(p => p[1]), opts.base ?? Infinity), y1 = Math.max(...all.map(p => p[1]), opts.base ?? -Infinity);
+  const pad = (y1 - y0) * .06; y0 -= pad; y1 += pad;
+  const sx = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r), sy = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  for (const t of niceTicks(y0, y1, 5)) { el("line", {x1:m.l, x2:W-m.r, y1:sy(t), y2:sy(t), stroke:css("--grid")}, svg); const e = el("text", {x:m.l-6, y:sy(t)+4, "text-anchor":"end", "font-size":11}, svg); e.textContent = opts.fmt(t); }
+  if (opts.base != null) el("line", {x1:m.l, x2:W-m.r, y1:sy(opts.base), y2:sy(opts.base), stroke:css("--axis"), "stroke-width":1.5}, svg);
+  const y0d = new Date(t0).getFullYear(), y1d = new Date(t1).getFullYear();
+  for (let y = y0d + 1; y <= y1d; y++) { const t = +new Date(y, 0, 1); if (t < t0 || t > t1) continue; el("line", {x1:sx(t), x2:sx(t), y1:H-m.b, y2:H-m.b+4, stroke:css("--axis")}, svg); const e = el("text", {x:sx(t), y:H-m.b+17, "text-anchor":"middle", "font-size":11}, svg); e.textContent = y; }
+  for (const s of series) el("path", {d: s.pts.map((p,i) => (i?"L":"M") + sx(p[0]).toFixed(1) + " " + sy(p[1]).toFixed(1)).join(""), fill:"none", stroke:css(s.color), "stroke-width":2, "stroke-dasharray":s.dash || "", "stroke-linejoin":"round"}, svg);
+  // crosshair
+  const cross = el("line", {y1:m.t, y2:H-m.b, stroke:css("--axis"), visibility:"hidden"}, svg);
+  const dots = series.map(s => el("circle", {r:4, fill:css(s.color), stroke:css("--surface"), "stroke-width":2, visibility:"hidden"}, svg));
+  const hit = el("rect", {x:m.l, y:m.t, width:W-m.l-m.r, height:H-m.t-m.b, fill:"transparent"}, svg);
+  hit.addEventListener("pointermove", e => {
+    const r = svg.getBoundingClientRect(), t = t0 + ((e.clientX - r.left) / r.width * W - m.l) / (W - m.l - m.r) * (t1 - t0);
+    const near = series.map(s => s.pts.reduce((a,b) => Math.abs(b[0]-t) < Math.abs(a[0]-t) ? b : a));
+    cross.setAttribute("x1", sx(near[0][0])); cross.setAttribute("x2", sx(near[0][0])); cross.setAttribute("visibility","visible");
+    near.forEach((p,i) => { dots[i].setAttribute("cx", sx(p[0])); dots[i].setAttribute("cy", sy(p[1])); dots[i].setAttribute("visibility","visible"); });
+    showTip(e, `<div class="t">${new Date(near[0][0]).toLocaleDateString("en-IN",{month:"short",year:"numeric"})}</div>` + series.map((s,i) => `<div class="row"><span><span class="dot" style="background:var(${s.color});margin-right:6px"></span>${s.name}</span><span>${opts.fmt(near[i][1], true)}</span></div>`).join(""));
+  });
+  hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility","hidden"); dots.forEach(d => d.setAttribute("visibility","hidden")); hideTip(); });
+  return series.map(s => `<span><span class="dot" style="background:var(${s.color})"></span>${s.name}</span>`).join("");
+}
+function drawDetail() {
+  const f = $("#pick").value === "__port" ? PORT : F.find(x => x.name === $("#pick").value);
+  const s = f.d.s3, sr = f.r.s3, L = f.labels || ["Direct","Regular"], isP = f === PORT;
+  $("#port-note").hidden = !isP;
+  $("#kv").innerHTML = [
+    ["Flag (direct)", `<span class="pill" style="font-family:var(--body)"><span class="dot" style="background:var(${G[f.fd.k].color})"></span>${G[f.fd.k].label}</span>`],
+    ["Benchmark", `<span style="font-family:var(--body);font-size:.9rem">${f.benchmark}</span>`],
+    [isP ? "3Y CAGR actual / all direct" : "3Y CAGR dir / reg", isP ? `${pct(sr.cagr)} / ${pct(s.cagr)}` : `${pct(s.cagr)} / ${pct(sr.cagr)}`], ["Benchmark 3Y", pct(s.bench_cagr)],
+    ["Beta · R²", `${fx(s.beta)} · ${fx(s.r2)}`], [isP ? "Alpha /yr (actual)" : "Alpha /yr (dir)", pct(isP ? sr.alpha : s.alpha,1,true)],
+    ["Beats (rolling 3Y)", `${Math.round((isP ? f.r : f.d).roll_beat*100)}%`],
+    ["Up / down capture", `${fx(s.up_cap)} / ${fx(s.down_cap)}`], ["Tracking error", pct(s.te)],
+    ["Invested → value now", `${inrFull(f.inv)} → ${inrFull(f.value)}`], ["Your profit", pnlSpan(f.pnl, f.inv)],
+    ["Worst fall vs bench", `${pct(s.mdd,0)} / ${pct(s.bench_mdd,0)}`], ["Fund's own CAGR", `${pct(f.d.own_cagr)} <span style="font-size:.8rem;color:var(--muted)">${f.d.own_years}y</span>`],
+  ].map(([k,v]) => `<div><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
+  const T = d => +new Date(d);
+  $("#lg-growth").innerHTML = lineChart($("#g-growth"), [
+    {name:L[0], color:"--s1", pts:f.d.growth.map(p => [T(p[0]), p[1]])},
+    {name:L[1], color:"--s2", pts:f.r.growth.map(p => [T(p[0]), p[1]])},
+    {name:"Benchmark", color:"--bench", dash:"5 4", pts:f.d.growth.map(p => [T(p[0]), p[2]])},
+  ], {fmt:(v, tip) => "₹" + v.toFixed(2), base:1});
+  $("#lg-roll").innerHTML = lineChart($("#g-roll"), [
+    {name:L[0], color:"--s1", pts:f.d.roll.map(p => [T(p[0]), p[1]-p[2]])},
+    {name:L[1], color:"--s2", pts:f.r.roll.map(p => [T(p[0]), p[1]-p[2]])},
+  ], {fmt:(v) => (v>0?"+":"") + (v*100).toFixed(Math.abs(v) < .1 ? 1 : 0) + "%", base:0}) + `<span style="color:var(--muted)">Above the line = ahead of benchmark over the previous 3 years</span>`;
+}
+
+// ---------- wiring ----------
+const pick = $("#pick");
+{ const o = document.createElement("option"); o.value = "__port"; o.textContent = `My whole portfolio, ${F.length} funds (${inr(PORT.value)}, ${PORT.pnl < 0 ? "−" : "+"}${inr(Math.abs(PORT.pnl))} profit)`; pick.appendChild(o);
+  const sep = document.createElement("option"); sep.disabled = true; sep.textContent = "──────────"; pick.appendChild(sep); }
+[...F].sort((a,b) => b.value - a.value).forEach(f => { const o = document.createElement("option"); o.value = f.name; o.textContent = `${f.name} (${inr(f.value)}, ${f.pnl < 0 ? "−" : "+"}${inr(Math.abs(f.pnl))} ${f.pnl < 0 ? "loss" : "profit"})`; pick.appendChild(o); });
+pick.value = (F.find(f => ["exit","lag"].includes(f.fd.k)) || F[0]).name;
+pick.addEventListener("change", drawDetail);
+const seg = (ids, set) => ids.forEach(id => $("#"+id).addEventListener("click", () => { ids.forEach(j => $("#"+j).setAttribute("aria-pressed", j === id)); set(id); }));
+seg(["m-rel","m-abs"], id => { MODE = id === "m-rel" ? "rel" : "abs"; drawQuad(); });
+seg(["p-dir","p-reg","p-both"], id => { PLAN = {"p-dir":"Direct","p-reg":"Regular","p-both":"Both"}[id]; drawQuad(); });
+seg(["t-dir","t-reg","t-both"], id => { TPLAN = {"t-dir":"Direct","t-reg":"Regular","t-both":"Both"}[id]; drawTable(); });
+// ---------- consolidation plan ----------
+const MIDS = (D.plan && D.plan.sips && D.plan.sips.mids) || [];
+function drawPlan() {
+  const P = D.plan; if (!P) return;
+  $("#keep").innerHTML = P.target.map(t => { const f = F.find(x => x.name === t.fund);
+    return `<div${t.new ? ' style="border-color:var(--s1)"' : ""}><span class="role">${t.role}</span><b>${t.fund}${t.new ? ' <span class="pill" style="margin-left:4px">new</span>' : ""}</b><span class="num" style="font-size:.8rem;color:var(--fg2)">${f ? "Now " + inr(f.value) + (f.h.r ? " · has regular units" : "") : "Not held yet"}</span><span class="why">${t.why}</span></div>`; }).join("");
+}
+function sipBlock(P) {
+  const S = P.sips, mx = Math.max(...S.now.map(r => r[1]));
+  const col = (title, rows, sub) => { const tot = rows.reduce((s,r) => s + r[1], 0), mid = rows.filter(r => MIDS.includes(r[0])).reduce((s,r) => s + r[1], 0);
+    const agg = {}; rows.forEach(([n, v]) => agg[n] = (agg[n] || 0) + v);
+    return `<div class="sipcol"><div style="display:grid;gap:2px"><b>${title}</b><span class="num" style="font-size:.8rem;color:var(--fg2)">mid cap ${Math.round(mid/tot*100)}% · ${sub}</span></div>` +
+      Object.entries(agg).map(([n, v]) => `<div class="sipbar"><div class="tr" style="display:grid;gap:3px"><span>${n}</span><div class="track"><div class="fill" style="width:${Math.min(100, v/mx*100)}%;background:var(${MIDS.includes(n) ? "--s2" : "--s1"})"></div></div></div><span class="num" style="text-align:right">${inrFull(v)}</span></div>`).join("") + "</div>"; };
+  const sc = f => f ? `<span class="num">${f.score}</span> <span style="color:var(--muted);font-size:.78rem">#${f.rank}/${f.of}</span>` : `<span style="color:var(--muted)">not screened</span>`;
+  const dest = (x, k) => x[k] ? `${x[k].name} ${sc(x[k])}` : `<span style="color:var(--fg2)">keep</span>`;
+  const ord = d => d + (d % 10 === 1 && d !== 11 ? "st" : d % 10 === 2 && d !== 12 ? "nd" : d % 10 === 3 && d !== 13 ? "rd" : "th");
+  const accA = {sum: 0, base: 0}, accB = {sum: 0, base: 0};
+  const skip = x => (x.skipped || []).length ? `<br><span style="font-size:.75rem;color:var(--muted)">Passed over: ${x.skipped.map(k => `${k.name} (#${k.rank}, ${k.score}): ${k.why}`).join("; ")}</span>` : "";
+  const wiA = x => x.same ? skip(x) + whatIf(x.fund, "Direct", ["sip_a", "sip"], null, accA) : "";
+  const wiB = x => x.rebal ? whatIf(x.fund, "Direct", ["sip_b", "sip"], null, accB) : "";
+  const sipOpp = a => a.base ? `<span style="font-size:.78rem;color:var(--muted)">Had these SIPs been in the suggested funds: <span class="${a.sum > 0 ? "pos" : a.sum < 0 ? "neg" : ""}">${a.sum >= 0 ? "+" : "−"}₹${Math.abs(Math.round(a.sum)).toLocaleString("en-IN")}</span></span>` : "";
+  const rows = S.list.map(x => `<tr><td><b>${x.fund}</b> <span class="num">${inrFull(x.amount)}</span><br><span style="color:var(--muted);font-size:.75rem">${x.day ? ord(x.day) + " · " : ""}${x.via}</span>${x.note ? `<br><span style="color:var(--fg2);font-size:.75rem">${x.note}</span>` : ""}${x.status && x.status_text !== "Running" ? `<br><span class="pill" style="margin-top:4px;white-space:normal"><span class="dot" style="background:var(${x.status === "done" ? "--good" : "--warn"})"></span>${x.status_text}</span>` : ""}</td><td>${sc(x.now)}</td><td>${x.action === "new" ? `<span class="pill"><span class="dot" style="background:var(--s1)"></span>Start new</span>` : dest(x, "same") + wiA(x)}</td><td>${x.action === "new" ? `<span class="pill"><span class="dot" style="background:var(--s1)"></span>Start new</span>` : (x.rebal && (!x.same || x.rebal.name !== x.same.name) ? `<b>${x.rebal.name}</b> ${sc(x.rebal)}` : dest(x, "rebal")) + wiB(x)}</td></tr>`);
+  return `<p class="note">${S.note.replace(/Rs/g, "₹")}</p>` +
+    `<div class="tablewrap"><table class="compact"><thead><tr><th>SIP · monthly</th><th>Score now</th><th>Option A: best in same category</th><th>Option B: rebalance</th></tr></thead><tbody>${rows.join("")}<tr><td style="font-weight:600">Total <span class="num">${inrFull(S.total)}</span>${S.new_total && S.new_total !== S.total ? `<br><span style="font-size:.75rem;font-weight:400;color:var(--muted)">${inrFull(S.new_total)} with the new SIP</span>` : ""}</td><td></td><td>${sipOpp(accA)}</td><td>${sipOpp(accB)}</td></tr></tbody></table></div>` +
+    `<div class="panel"><div class="sipgrid">${col("Today", S.now, "as now")}${col("Option A", S.same, "better funds + new large-cap SIP")}${col("Option B", S.option, "also one mid-cap SIP to the top flexi cap")}<div class="legend" style="grid-column:1/-1"><span><span class="dot" style="background:var(--s2)"></span>Mid-cap fund</span><span><span class="dot" style="background:var(--s1)"></span>Other</span></div></div></div>` +
+    (S.mid_rebal !== S.mid_now ? `<p class="note"><b>Option B</b> moves the largest mid- or small-cap SIP to the top-scored flexi cap, bringing mid and small caps from ${S.mid_now}% to ${S.mid_rebal}% of your SIP money. Option A only upgrades funds within each category. Which mix suits you is your call.</p>` : "") +
+    `<p class="note">To change a SIP, cancel it where it runs and start the new one there; it is a new purchase, not a switch, so nothing is sold and no tax is due. Start the new SIP before the old one's next date so no month is missed.</p>`;
+}
+function whatIf(fund, plan, kinds, seen, acc) {
+  const w = D.whatif && D.whatif[fund + "|" + plan]; if (!w) return "";
+  const key = fund + "|" + plan + kinds.join(); if (seen) { if (seen.has(key)) return ""; seen.add(key); }
+  const os = w.options.filter(o => kinds.includes(o.kind) && o.diff != null); if (!os.length) return "";
+  if (acc) { acc.sum += os[0].diff; acc.base += w.actual; }
+  return os.map(o => `<br><span style="font-size:.75rem;color:var(--muted)">If it had all been in ${o.name}: <span class="${o.diff > 0 ? "pos" : o.diff < 0 ? "neg" : ""}">${o.diff >= 0 ? "+" : "−"}₹${Math.abs(o.diff).toLocaleString("en-IN")} (${pct(o.diff_pct,1,true)})</span>${w.approx ? " since Jan 2023" : ""}</span>`).join("");
+}
+function perfCell(r) {  // held since, XIRR and CAGR stacked in one cell
+  const p = r.perf, m = t => `<span style="color:var(--muted);font-size:.75rem">${t}</span>`;
+  if (!p || !p.held_since) return `<td style="color:var(--muted)">–</td>`;
+  const since = p.before_statement ? "before 2023" : new Date(p.held_since).toLocaleDateString("en-IN", {month: "short", year: "numeric"});
+  const fol = p.folios > 1 ? ` · ${p.folios} folios` : "";
+  const cls = v => v > 0 ? "pos" : v < 0 ? "neg" : "";
+  if (p.years < 1) { const abs = r.value && r.gain != null ? r.gain / (r.value - r.gain) : null;
+    return `<td>${since}${m(fol)}<br>${m("under 1 yr" + (abs != null ? ` · <span class="${cls(abs)}">${pct(abs,1,true)}</span> so far` : ""))}</td>`; }
+  const pre = p.before_statement ? "≤ " : "";
+  return `<td>${since}${m(fol)}<br><span class="num" style="font-size:.8rem">XIRR <span class="${cls(p.xirr)}">${p.xirr == null ? "–" : pre + pct(p.xirr)}</span><br>CAGR <span class="${cls(p.cagr)}">${p.cagr == null ? "–" : pre + pct(p.cagr)}</span></span></td>`;
+}
+function drawFull() {
+  const P = D.plan; if (!P) return;
+  const m = t => `<span style="color:var(--muted);font-size:.75rem">${t}</span>`;
+  const tbl = (head, rows, total) => `<div class="tablewrap"><table class="compact"><thead><tr>${head.map(h => `<th class="${h[1] || ""}">${h[0]}</th>`).join("")}</tr></thead><tbody>${rows.join("")}${total || ""}</tbody></table></div>`;
+  const sum = (a, k) => a.reduce((s, r) => s + r[k], 0);
+  const vg = r => `<td class="n">${inrFull(r.value)}<br><span style="font-size:.78rem">${pnlSpan(r.gain, r.value - r.gain)}</span></td>`;
+  const opp = acc => acc && acc.base ? `<br><span style="font-size:.75rem;font-weight:400;color:var(--muted)">Had it all been in the suggested funds: <span class="${acc.sum > 0 ? "pos" : acc.sum < 0 ? "neg" : ""}">${acc.sum >= 0 ? "+" : "−"}₹${Math.abs(Math.round(acc.sum)).toLocaleString("en-IN")} (${pct(acc.sum / acc.base, 1, true)})</span></span>` : "";
+  const ALL = {sum: 0, base: 0}; const A = () => ({sum: 0, base: 0}); const add = a => { ALL.sum += a.sum; ALL.base += a.base; return a; };
+  const tot = (a, after, acc) => `<tr><td style="font-weight:600">Total${opp(acc)}</td><td class="n" style="font-weight:600">${inrFull(sum(a, "value"))}<br><span style="font-size:.78rem">${pnlSpan(sum(a, "gain"), sum(a, "value") - sum(a, "gain"))}</span></td>${"<td></td>".repeat(after)}</tr>`;
+  const pctTxt = f => f >= .995 ? "all units" : Math.round(f*100) + "% of units";
+  const block = (title, sub, inner) => `<div style="display:grid;gap:10px"><div style="display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline"><h3>${title}</h3>${sub ? `<span class="note">${sub}</span>` : ""}</div>${inner}</div>`;
+  const VG = ["Value / gain", "n"], HR = ["Held since · returns"];
+  let h = ""; const seen = new Set();
+  P.years.forEach((y, i) => {
+    let inner = "";
+    if (y.consolidation) { const ac = A(); inner += `<div class="eyebrow">A · Sells and consolidation</div>` + tbl([["Sell"], VG, HR, ["Money goes to"]],
+      y.consolidation.map(r => `<tr><td><b>${r.fund}</b> ${m(r.plan)}${whatIf(r.fund, r.plan, ["exit"], seen, ac)}</td>${vg(r)}${perfCell(r)}<td>${caseChip(r.case)}<br><span style="font-size:.82rem">${r.into}</span></td></tr>`), tot(y.consolidation, 2, add(ac))); }
+    if (y.losses) inner += `<div class="eyebrow">B · Optional: book losses to make room for more switching</div>` + tbl([["Fund"], ["Value / loss", "n"], HR, ["What to do"]],
+      y.losses.map(l => `<tr><td><b>${l.fund}</b></td>${vg(l)}${perfCell(l)}<td style="font-size:.82rem">Sell and buy back, or exit</td></tr>`), tot(y.losses, 2));
+    const as = A();
+    if (y.steps.length) inner += `<div class="eyebrow">${y.consolidation ? (y.losses ? "C · " : "B · ") : ""}Regular to direct switches</div>` + tbl([["Switch"], VG, HR, ["Money goes to"]],
+      y.steps.map(st => `<tr><td><b>${st.fund}</b> ${m(st.plan.toLowerCase() + " · " + pctTxt(st.frac) + (st.frac < .995 && st.units ? ` (${st.units.toLocaleString("en-IN")} units, oldest first)` : ""))}${whatIf(st.fund, st.plan, ["exit", "fee"], seen, as)}</td>${vg(st)}${perfCell(st)}<td>${caseChip(st.case)}<br><span style="font-size:.82rem">${st.into}</span></td></tr>`), tot(y.steps, 2, add(as)));
+    h += block(y.fy, `Net gain booked ${inrFull(Math.max(0, y.total_gain))} of the ₹1,25,000 tax-free limit`, inner);
+  });
+  if (P.beyond && P.beyond.length) h += block("Beyond the calendar", "What doesn't fit in the tax-free room within four years", tbl([["Fund"], VG, ["Tax if done now", "n"], ["What waiting costs"]],
+    P.beyond.map(b => `<tr><td><b>${b.fund}</b> ${m(b.plan + " · " + (b.kind === "sell" ? "sell" : "switch to direct"))}</td>${vg(b)}<td class="n">${inrFull(b.tax_now)}</td><td style="font-size:.82rem">${b.cost_per_year ? `about ${inrFull(b.cost_per_year)} a year (${b.cost_why}); the tax pays back in ~${b.payback_years.toFixed(1)} years` : "not estimated"}</td></tr>`),
+    `<tr><td style="font-weight:600">Total</td><td class="n" style="font-weight:600">${inrFull(sum(P.beyond, "value"))}<br><span style="font-size:.78rem">${pnlSpan(sum(P.beyond, "gain"), sum(P.beyond, "value") - sum(P.beyond, "gain"))}</span></td><td class="n" style="font-weight:600">${inrFull(sum(P.beyond, "tax_now"))}</td><td></td></tr>`) +
+    `<p class="note">These keep waiting for room in later years. Doing them sooner means paying long-term capital gains tax (12.5% + cess) above the ₹1.25L; it is worth it when the payback is shorter than you expect to stay invested.</p>`);
+  h += block("No action: hold as is", "Equity funds that stay", tbl([["Fund"], VG, HR, ["Note"]],
+    P.hold.map(r => `<tr><td><b>${r.fund}</b> ${m(r.plan)}</td>${vg(r)}${perfCell(r)}<td style="font-size:.82rem">${r.note}</td></tr>`), tot(P.hold, 2)));
+  h += block("Outside this analysis", "Sector, international, multi-asset, debt and liquid funds: listed with their tax treatment", tbl([["Fund"], VG, HR],
+    P.others.map(r => `<tr><td><b>${r.fund}</b> ${m(r.kind + " · " + r.plan)}</td>${vg(r)}${perfCell(r)}</tr>`), tot(P.others, 1)));
+  h += block("Monthly SIPs", `${P.sips.list.length} SIPs, ${inrFull(P.sips.total)} a month`, sipBlock(P));
+  $("#full-plan").innerHTML = h;
+  const y0 = P.years[0] || {consolidation: [], steps: [], losses: []}, sw = P.years.flatMap(y => y.steps), sells = P.years.flatMap(y => y.consolidation || []);
+  const later = sum(sells, "value") - sum(y0.consolidation || [], "value");
+  const n = new Set([...sells, ...sw, ...(P.beyond || []), ...P.hold, ...P.others].map(r => r.fund + "|" + r.plan)).size + (y0.losses || []).length;
+  const waiting = sum((P.beyond || []).filter(b => !sw.some(x => x.fund === b.fund && x.plan === b.plan) && !sells.some(x => x.fund === b.fund && x.plan === b.plan)), "value");
+  $("#full-opp").innerHTML = ALL.base ? `Across every sell and switch above (each holding counted once), had the money been in the suggested funds from the start (chosen with hindsight, so not evidence) it would be worth <b class="${ALL.sum > 0 ? "pos" : "neg"}">${ALL.sum >= 0 ? "+" : "−"}₹${Math.abs(Math.round(ALL.sum)).toLocaleString("en-IN")}</b> (${pct(ALL.sum / ALL.base, 1, true)}) ${ALL.sum >= 0 ? "more" : "less"} today. Sells count the suggested replacement; switches of the same fund count its direct plan.` : "";
+  $("#full-sub").textContent = `Every holding (values as of ${D.holdings.as_of}), by when it happens: ${n} holdings. About ${inr(sum(y0.consolidation || [], "value"))} sold this year${later > 0 ? ` and ${inr(later)} more in later years, within each year's tax-free room` : ""}, ${inr(sum(sw, "value"))} switched within the calendar, ${inr(sum(P.hold, "value") + sum(P.others, "value"))} left as is${waiting ? `, ${inr(waiting)} waiting beyond the calendar` : ""}.`;
+}
+function caseChip(c) {
+  if (!c) return "";
+  const col = c.label === "Clear" ? "--good" : c.label === "Lean" ? "--warn" : "--crit";
+  const tip = c.kind === "fee" ? "Same fund, direct plan: only the commission goes" : c.kind === "duplicate" ? "Duplicate of a fund you keep" : `Replacement (${c.replacement}) wins ${c.wins} of ${c.tests} tests`;
+  return `<span class="pill" title="${tip}"><span class="dot" style="background:var(${col})"></span>${c.label} ${c.score}</span>`;
+}
+function drawTax() {
+  const P = D.plan; if (!P) return;
+  const pctTxt = f => f >= .995 ? "all units" : Math.round(f*100) + "% of units";
+  $("#years").innerHTML = P.years.map((y, i) => {
+    const used = Math.max(0, y.total_gain), w = Math.min(100, used / P.exempt * 100);
+    let h = `<div class="year"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3>${y.fy}</h3><span class="num" style="font-size:.82rem;color:var(--fg2)">${inrFull(used)} of ₹1,25,000</span></div><div class="room" title="Share of the yearly exemption used"><span style="width:${w}%;background:var(--good)"></span></div>`;
+    if (y.consolidation) { const fs = [...new Set(y.consolidation.map(r => r.fund))];
+      h += `<div class="eyebrow">1 · Consolidation sells</div><ul><li><span>${fs.join(", ")}</span><span class="num">${inrFull(y.consolidation.reduce((s,r)=>s+r.gain,0))}</span></li></ul>`; }
+    if (y.losses) h += `<div class="eyebrow">2 · Optional: book losses</div><ul>` + y.losses.map(l => `<li><span>${l.fund}</span><span class="num">${pnlSpan(l.gain, l.value - l.gain)}</span><span class="into">Sell and buy back, or exit</span></li>`).join("") + `</ul>`;
+    if (y.steps.length) h += `<div class="eyebrow">${y.consolidation ? (y.losses ? "3 · " : "2 · ") : ""}Switch regular to direct</div><ul>` + y.steps.map(s => `<li><span>${s.fund}: ${pctTxt(s.frac)}${s.frac < .995 && s.units ? ` (${s.units.toLocaleString("en-IN")} units, oldest first)` : ""} ${caseChip(s.case)}</span><span class="num">${inrFull(s.gain)}</span><span class="into">→ ${s.into}</span></li>`).join("") + `</ul>`;
+    if (y.note) h += `<p class="note">${y.note.replace(/Rs/g, "₹")}</p>`;
+    return h + `</div>`; }).join("");
+}
+// ---------- peers ----------
+function drawPeers() {
+  const P = D.peers; if (!P) return;
+  const sel = $("#peer-cat"); if (!sel.options.length) { Object.keys(P).forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o); }); sel.addEventListener("change", drawPeers); }
+  const rows = P[sel.value], mx = Math.max(...rows.map(r => Math.abs(r.excess)));
+  const sg = v => `<span class="${v>0?"pos":v<0?"neg":""}">${pct(v,1,true)}</span>`;
+  $("#peer-tbl").innerHTML = `<thead><tr><th>Fund</th><th class="n">3Y CAGR</th><th class="n">vs benchmark</th><th style="width:140px"></th><th class="n">Vol ratio</th><th class="n">Down capture</th><th class="n">Worst fall</th><th class="n">Beats %</th></tr></thead><tbody>` +
+    rows.map(r => `<tr${r.mine ? ' style="background:var(--wash)"' : ""}><td>${r.mine ? `<b>${r.name}</b> <span class="pill" style="margin-left:4px">yours</span>` : r.name}</td><td class="n">${pct(r.cagr)}</td><td class="n">${sg(r.excess)}</td>` +
+      `<td><svg viewBox="0 0 140 10" style="width:140px;height:10px;display:block"><line x1="70" x2="70" y1="0" y2="10" stroke="${css("--axis")}"/><rect x="${r.excess >= 0 ? 70 : 70 - Math.abs(r.excess)/mx*68}" y="1" width="${Math.max(1, Math.abs(r.excess)/mx*68)}" height="8" rx="2" fill="${css(r.excess >= 0 ? "--good" : "--crit")}"/></svg></td>` +
+      `<td class="n">${fx(r.vol_ratio)}</td><td class="n">${fx(r.down_cap)}</td><td class="n">${pct(r.mdd,0)}</td><td class="n">${r.beat == null ? "–" : Math.round(r.beat*100) + "%"} <span style="color:var(--muted)">${r.windows < 120 ? "(new)" : ""}</span></td></tr>`).join("") +
+    `</tbody><caption style="caption-side:bottom;text-align:left;padding:8px 10px;color:var(--muted);font-size:.78rem">Benchmark 3Y CAGR: ${pct(rows[0].bench_cagr)}</caption>`;
+}
+// ---------- regime ----------
+const mon = d => new Date(d).toLocaleDateString("en-IN", {month:"short", year:"numeric"});
+function drawRegime() {
+  const RG = D.regime; if (!RG) return;
+  const ref = (RG.ref || []).map(p => [+new Date(p[0]), p[1]]);
+  const svg = $("#reg-chart"); svg.innerHTML = "";
+  const W = 760, H = 220, m = {l:44, r:12, t:10, b:26};
+  const t0 = ref[0][0], t1 = ref[ref.length-1][0], y0 = Math.min(...ref.map(p => p[1])) * .95, y1 = Math.max(...ref.map(p => p[1])) * 1.03;
+  const sx = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r), sy = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  for (const e of RG.episodes) { const a = Math.max(t0, +new Date(e.start)), b = Math.min(t1, +new Date(e.end));
+    el("rect", {x:sx(a), y:m.t, width:Math.max(1, sx(b) - sx(a)), height:H-m.t-m.b, fill:css(e.type === "fall" ? "--crit" : "--good"), "fill-opacity":e.type === "fall" ? .14 : .08}, svg);
+    if (e.type === "fall") { const t = el("text", {x:(sx(a)+sx(b))/2, y:m.t+12, "text-anchor":"middle", "font-size":10.5, fill:css("--crit-ink")}, svg); t.textContent = pct(e.depth,0); } }
+  for (const t of niceTicks(y0, y1, 4)) { el("line", {x1:m.l, x2:W-m.r, y1:sy(t), y2:sy(t), stroke:css("--grid")}, svg); const e = el("text", {x:m.l-6, y:sy(t)+4, "text-anchor":"end", "font-size":10.5}, svg); e.textContent = "₹" + t.toFixed(1); }
+  for (let y = new Date(t0).getFullYear() + 1; y <= new Date(t1).getFullYear(); y++) { const t = +new Date(y,0,1); const e = el("text", {x:sx(t), y:H-8, "text-anchor":"middle", "font-size":10.5}, svg); e.textContent = y; }
+  el("path", {d: ref.map((p,i) => (i?"L":"M") + sx(p[0]).toFixed(1) + " " + sy(p[1]).toFixed(1)).join(""), fill:"none", stroke:css("--fg2"), "stroke-width":2}, svg);
+  $("#reg-legend").innerHTML = `<span><span class="dot" style="background:var(--fg2)"></span>Nifty 500, growth of ₹1</span><span><span class="dot" style="background:var(--crit);opacity:.5"></span>Fall of 10%+</span><span><span class="dot" style="background:var(--good);opacity:.4"></span>Recovery to the old high</span>`;
+  const falls = RG.episodes.filter(e => e.type === "fall");
+  const cell = (f, b) => { if (f == null || b == null) return `<td class="cellv" style="color:var(--muted)">–</td>`; const d = (1+f)/(1+b) - 1;
+    return `<td class="cellv" style="background:color-mix(in srgb, var(${d >= 0 ? "--good" : "--crit"}) ${Math.min(30, Math.abs(d)*150)}%, transparent)" title="fund vs benchmark ${pct(d,1,true)}">${pct(f,0)} / ${pct(b,0)}</td>`; };
+  const ph = v => v == null ? `<td class="cellv">–</td>` : `<td class="cellv" style="background:color-mix(in srgb, var(${v.rel >= 0 ? "--good" : "--crit"}) ${Math.min(30, Math.abs(v.rel)*80)}%, transparent)">${pct(v.rel,1,true)}</td>`;
+  const order = [...F].sort((a,b) => G[a.fd.k].rank - G[b.fd.k].rank || b.value - a.value);
+  $("#reg-tbl").innerHTML = `<thead><tr><th>Fund</th>${falls.map(e => `<th class="n">Fall ${mon(e.start)}<br>to ${mon(e.end)}</th>`).join("")}<th class="n">All falls</th><th class="n">All recoveries</th><th class="n">Rising</th></tr></thead><tbody>` +
+    order.map(f => { const r = RG.funds[f.name]; if (!r) return ""; const ep = r.episodes.filter(e => e.type === "fall");
+      return `<tr><td>${f.name}</td>${ep.map(e => cell(e.fund, e.bench)).join("")}${ph(r.phases.fall)}${ph(r.phases.recovery)}${ph(r.phases.rising)}</tr>`; }).join("") + `</tbody>`;
+}
+// ---------- look-through ----------
+function drawLook() {
+  const L = D.look; if (!L) return;
+  const bars = (you, mkt, keys) => { const mx = Math.max(...keys.map(k => Math.max(you[k] || 0, mkt[k] || 0)));
+    return keys.map(k => { const a = you[k] || 0, b = mkt[k] || 0, d = a - b;
+      return `<div class="hbar"><span>${k}</span><div class="tr"><div class="b" style="width:${a/mx*100}%;background:var(--s1)"></div><div class="b" style="width:${b/mx*100}%;background:var(--bench);opacity:.55"></div></div><span class="num" style="text-align:right">${a.toFixed(1)}% <span class="${Math.abs(d) < 1.5 ? "" : d > 0 ? "pos" : "neg"}" style="font-size:.75rem">${d > 0 ? "+" : ""}${d.toFixed(1)}</span></span></div>`; }).join("") +
+      `<div class="legend"><span><span class="dot" style="background:var(--s1)"></span>Your funds</span><span><span class="dot" style="background:var(--bench);opacity:.55"></span>Nifty 500</span><span style="color:var(--muted)">Number after the % = your share minus the index's</span></div>`; };
+  const pc = L.portfolio.caps, eq = Object.values(pc).reduce((s,v) => s + v, 0);
+  const youCaps = Object.fromEntries(Object.entries(pc).map(([k,v]) => [k, v / eq * 100]));
+  $("#look-caps").innerHTML = bars(youCaps, L.market.caps, ["Large cap","Mid cap","Small cap"]);
+  const ps = L.portfolio.sectors, seq = Object.values(ps).reduce((s,v) => s + v, 0);
+  const youS = Object.fromEntries(Object.entries(ps).map(([k,v]) => [k, v / seq * 100]));
+  $("#look-sect").innerHTML = bars(youS, L.market.sectors, Object.keys(L.market.sectors));
+  const a = L.portfolio.alloc;
+  $("#look-note").textContent = `Shares are of the equity part (${(a["Equity"]||0).toFixed(1)}% of these funds; ${(a["Debt & Cash"]||0).toFixed(1)}% is debt and cash, and about ${(100 - eq - (a["Debt & Cash"]||0)).toFixed(1)}% is foreign stocks, gold and other assets that INDmoney leaves out of the size split). A full stock-by-stock overlap and weighted P/E need complete holdings lists; INDmoney only gives a partial list of 20 stocks per fund and mfdata.in was down, so those are left out.`;
+}
+// ---------- fund screen ----------
+function drawUniverse() {
+  if (D.market) return drawMarket();
+  const U = D.universe; if (!U) return;
+  const cats = Object.keys(U.bench), sel = $("#uni-cat");
+  if (!sel.options.length) { cats.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o); }); sel.value = "Flexi cap"; sel.addEventListener("change", drawUniverse); }
+  $("#uni-picks").innerHTML = cats.map(c => { const rs = U.rows.filter(r => r.category === c && !r.index).sort((a,b) => b.score - a.score);
+    const top = rs[0], alt = rs[1], mine = rs.filter(r => r.mine);
+    return `<div><span class="cat">${c}</span><b>${top.name}</b><span class="num" style="font-size:.8rem">score ${top.score} · ${pct(top.excess,1,true)}/yr${top.short ? " · short record" : ""}</span><span class="alt">Next: ${alt ? alt.name + " (" + alt.score + ")" : "–"}</span>${mine.length ? `<span class="alt">Yours: ${mine.map(m => m.name + " #" + m.rank + " (" + m.score + ")").join(", ")}</span>` : ""}</div>`; }).join("");
+  const rows = U.rows.filter(r => r.category === sel.value).sort((a,b) => (a.index - b.index) || b.score - a.score);
+  const sg = v => `<span class="${v>0?"pos":v<0?"neg":""}">${pct(v,1,true)}</span>`;
+  $("#uni-tbl").innerHTML = `<thead><tr><th>#</th><th>Fund</th><th>Score</th><th class="n">3Y CAGR</th><th class="n">vs benchmark</th><th class="n">Beats %</th><th class="n">Down capture</th><th class="n">Worst fall</th><th class="n">Bench fall</th><th class="n">In falls</th><th class="n">Data since</th></tr></thead><tbody>` +
+    rows.map(r => `<tr${r.mine ? ' style="background:var(--wash)"' : ""}><td class="n">${r.index ? "–" : r.rank}</td><td>${r.mine ? `<b>${r.name}</b> <span class="pill" style="margin-left:4px">yours</span>` : r.index ? `<i>${r.name}</i>` : r.name}${r.short ? ' <span style="color:var(--muted);font-size:.75rem">short record</span>' : ""}</td>` +
+      `<td>${r.index ? "<span style='color:var(--muted)'>baseline</span>" : `<span class="score"><span class="num">${r.score}</span><span class="t"><span class="f" style="width:${r.score}%;display:block"></span></span></span>`}</td>` +
+      `<td class="n">${pct(r.cagr)}</td><td class="n">${sg(r.excess)}</td><td class="n">${r.beat == null ? "–" : Math.round(r.beat*100) + "%"}</td><td class="n">${fx(r.down_cap)}</td><td class="n">${pct(r.mdd,0)}</td><td class="n">${pct(r.bench_mdd,0)}</td><td class="n">${r.falls_rel == null ? "–" : sg(r.falls_rel)}</td><td class="n">${mon(r.since)}</td></tr>`).join("") +
+    `</tbody><caption style="caption-side:bottom;text-align:left;padding:8px 10px;color:var(--muted);font-size:.78rem">Benchmark: ${U.bench[sel.value]}, 3Y CAGR ${pct(rows[0].bench_cagr)}</caption>`;
+}
+function scoreBar(v) { return v == null ? "<span style='color:var(--muted)'>–</span>" : `<span class="score"><span class="num">${v}</span><span class="t"><span class="f" style="width:${v}%;display:block"></span></span></span>`; }
+function drawMarket() {
+  const M = D.market, cats = Object.keys(M.bench), sel = $("#uni-cat");
+  if (!sel.options.length) { cats.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = `${c} (${M.rows.filter(r => r.category === c).length})`; sel.appendChild(o); }); sel.value = "Flexi cap"; sel.addEventListener("change", drawMarket); }
+  $("#uni-sub").textContent = `All ${M.listed} open-ended direct-growth funds in these categories from AMFI's list; ${M.screened} have the 3 years of history the tests need (${M.under3y} newer funds left out). Each gets a score out of 100 against the other funds in its category: 75% for the last 3 years, 25% for its record against the category median since June 2018.`;
+  const sg = v => v == null ? "–" : `<span class="${v>0?"pos":v<0?"neg":""}">${pct(v,1,true)}</span>`;
+  $("#uni-picks").innerHTML = cats.filter(c => c !== "Contra").map(c => { const rs = M.rows.filter(r => r.category === c).sort((a,b) => a.rank - b.rank);
+    const top = rs[0], lng = rs.find(r => r.long), mine = rs.filter(r => r.mine);
+    return `<div><span class="cat">${c} · ${rs.length} funds</span><b>${top.name.replace(/ Fund.*$/i, "")}</b><span class="num" style="font-size:.8rem">overall ${top.score}${top.no_long ? " · no long record" : ""}</span>${lng && lng !== top ? `<span class="alt">Best with 7+ yrs: ${lng.name.replace(/ Fund.*$/i, "")} (${lng.score})</span>` : ""}${mine.length ? `<span class="alt">Yours: ${mine.map(m => m.mine + " #" + m.rank).join(", ")}</span>` : ""}</div>`; }).join("");
+  const rows = M.rows.filter(r => r.category === sel.value).sort((a,b) => a.rank - b.rank);
+  $("#uni-tbl").innerHTML = `<thead><tr><th>#</th><th>Fund</th><th>Overall</th><th class="n">3Y score</th><th class="n">Long score</th><th class="n">3Y CAGR</th><th class="n">3Y vs bench</th><th class="n">Down capt.</th><th class="n">5Y CAGR</th><th class="n">vs median /yr</th><th class="n">3Y wins</th><th class="n">5Y wins</th><th class="n">History</th></tr></thead><tbody>` +
+    rows.map(r => { const L = r.long; return `<tr${r.mine ? ' style="background:var(--wash)"' : ""}><td class="n">${r.rank}</td><td style="white-space:normal;min-width:220px">${r.mine ? `<b>${r.name}</b> <span class="pill" style="margin-left:4px">yours</span>` : r.name}${r.short ? ' <span style="color:var(--muted);font-size:.75rem">short record</span>' : ""}</td>` +
+      `<td>${scoreBar(r.score)}</td><td class="n">${r.score3}</td><td class="n">${L ? L.score : "–"}</td><td class="n">${pct(r.cagr)}</td><td class="n">${sg(r.excess)}</td><td class="n">${fx(r.down_cap)}</td>` +
+      `<td class="n">${r.cagr_5y == null ? "–" : pct(r.cagr_5y)}</td><td class="n">${L ? sg(L.excess) : "–"}</td><td class="n">${L ? Math.round(L.beat3*100) + "%" : "–"}</td><td class="n">${L && L.beat5 != null ? Math.round(L.beat5*100) + "%" : "–"}</td><td class="n">${r.long_years}y</td></tr>`; }).join("") +
+    `</tbody><caption style="caption-side:bottom;text-align:left;padding:8px 10px;color:var(--muted);font-size:.78rem">3Y benchmark: ${M.bench[sel.value]}, 3Y CAGR ${pct(rows[0].bench_cagr)}. "vs median /yr", "3Y wins" and "5Y wins" compare with the category median over the fund's whole history. 3Y and 5Y wins = share of rolling 3- and 5-year windows ahead of the median.</caption>`;
+}
+function drawRepl() {
+  const M = D.market; if (!M) return;
+  $("#repl").innerHTML = M.replacements.map(x => { const c = x.current;
+    return `<div class="year"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3>${x.fund}</h3><span class="num" style="font-size:.8rem;color:var(--fg2)">${inr(x.value)}</span></div>` +
+      `<span class="note">${x.when} · into ${x.category.toLowerCase()}${c ? ` · yours ranks #${c.rank} of ${c.of} (overall ${c.score})` : ""}</span><ul>` +
+      x.picks.map((p, i) => `<li><span>${i + 1}. <b>${p.name.replace(/ Fund.*$/i, "")}</b>${p.mine ? ' <span class="pill">yours</span>' : ""}${p.no_long ? ' <span style="color:var(--muted);font-size:.75rem">no long record</span>' : ""}</span><span class="num">${p.score}</span>` +
+        `<span class="into">3Y ${pct(p.cagr)} (${pct(p.excess,1,true)} vs bench) · down capture ${fx(p.down_cap)}${p.long ? ` · ${p.long.years}y: ${pct(p.long.excess,1,true)}/yr vs median, ahead in ${Math.round(p.long.beat3*100)}% of 3Y windows` : ""}</span></li>`).join("") + `</ul></div>`; }).join("");
+}
+function headerText() {
+  const inv = D.holdings.investor || {};
+  $("#banner").innerHTML = (inv.sample ? "<b>Made-up investor, real funds.</b> The holdings and purchase dates are invented to exercise every part of the analyser; units and values come from real NAVs. " : "") +
+    "This is an educational, rules-based screen built by an individual investor, <b>not investment, tax or legal advice</b>. The author is not a SEBI-registered adviser. Past returns don't predict future returns; tax rules change. Check with a registered professional before acting.";
+  $("#intro").textContent = `Each of ${inv.sample ? "this investor's" : "your"} ${F.length} equity and hybrid funds is compared with the index it is supposed to beat, over the last 3 years, for both its direct and regular plan. The funds to look at first are in the bottom-right square of the chart: lower return than their benchmark, with more swing.`;
+  if (D.plan) { const n = new Set([...D.plan.years.flatMap(y => (y.consolidation || []).map(r => r.fund))]).size;
+    $("#h-plan").textContent = `Consolidation plan: ${F.length} funds to ${D.plan.target.length}`;
+    $("#keep-h").textContent = `Hold these ${D.plan.target.length}${D.plan.target.some(t => t.new) ? ` (${D.plan.target.filter(t => t.new).length} new)` : ""}`; }
+  if (!D.look) { const L = document.getElementById("look"); if (L) L.hidden = true; const a = document.querySelector('nav.toc a[href="#look"]'); if (a) a.hidden = true; }
+}
+function all() { headerText(); drawQuad(); drawGroups(); drawPlan(); drawUniverse(); drawRepl(); drawTax(); drawFull(); drawPeers(); drawRegime(); drawLook(); drawTable(); drawDetail(); }
+all();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", all);
+new MutationObserver(all).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+</script>

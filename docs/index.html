@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mutual Fund Portfolio Analyser</title>
+<meta name="description" content="A free, open-source Claude Code plugin that reviews a whole Indian mutual fund portfolio from your CAS statement: benchmark scorecard, whole-market fund screen, duplicates, and a tax-aware switch calendar on your real purchase lots. Runs on your computer. Educational, not advice.">
+<meta property="og:title" content="Mutual Fund Portfolio Analyser">
+<meta property="og:description" content="Which of your mutual funds earn their place? A Claude Code plugin that screens your whole Indian MF portfolio and plans switches around the ₹1.25L LTCG room.">
+<meta property="og:image" content="https://alafazam.com/mf-portfolio-analyser/img/hero.webp">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://alafazam.com/mf-portfolio-analyser/">
+<style>
+:root{
+  --bg:#f7f8f6; --surface:#fcfcfb; --wash:#eef0ec; --fg:#0b0b0b; --fg2:#52514e; --muted:#7a7972;
+  --ring:#dddcd5; --accent:#1f6feb; --accent-fg:#fff; --good:#1a8f2e; --warn-bg:#fff6dc; --warn-ring:#efd58a;
+  --code-bg:#f0f1ed;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121211; --surface:#1a1a19; --wash:#232321; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
+  --ring:#33332f; --accent:#5b9bff; --accent-fg:#0b0b0b; --good:#4cc061; --warn-bg:#2b2615; --warn-ring:#574a1f; --code-bg:#1f1f1d;
+}}
+:root[data-theme="dark"]{
+  --bg:#121211; --surface:#1a1a19; --wash:#232321; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
+  --ring:#33332f; --accent:#5b9bff; --accent-fg:#0b0b0b; --good:#4cc061; --warn-bg:#2b2615; --warn-ring:#574a1f; --code-bg:#1f1f1d;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+a{color:var(--accent)}
+img{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header.top{display:flex;align-items:center;gap:16px;padding:18px 0}
+header.top .brand{font-weight:700;letter-spacing:-.01em;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top nav{display:flex;gap:18px;font-size:.92rem}
+header.top nav a{color:var(--fg2);text-decoration:none}
+header.top nav a:hover{color:var(--fg)}
+h1,h2,h3{text-wrap:balance;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(2rem,5.2vw,3.3rem);line-height:1.08}
+h2{font-size:clamp(1.5rem,3.2vw,2rem);line-height:1.15}
+h3{font-size:1.08rem;letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.15rem;color:var(--fg2);max-width:62ch}
+.hero{padding:40px 0 28px}
+.hero .eyebrow{margin-bottom:14px}
+.hero .lead{margin-top:18px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--ring);color:var(--fg);background:var(--surface)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn:hover{filter:brightness(1.05)}
+.note{margin-top:22px;font-size:.88rem;color:var(--fg2);background:var(--warn-bg);border:1px solid var(--warn-ring);border-radius:10px;padding:10px 14px;max-width:760px}
+.shot{border:1px solid var(--ring);border-radius:14px;overflow:hidden;background:#f7f8f6;box-shadow:0 18px 50px -24px rgba(0,0,0,.35)}
+.shot img{width:100%;height:auto}
+.hero .shot{margin-top:36px}
+section{padding:56px 0;border-top:1px solid var(--ring)}
+section > .wrap > h2 + p{margin-top:12px}
+.grid{display:grid;gap:16px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px}
+.card p{color:var(--fg2);font-size:.94rem;margin-top:6px}
+.feature{display:grid;gap:28px;align-items:center;grid-template-columns:1fr;margin-top:40px}
+@media (min-width:860px){.feature{grid-template-columns:5fr 7fr}.feature.flip{grid-template-columns:7fr 5fr}.feature.flip .text{order:2}}
+.feature .text p{color:var(--fg2);margin-top:10px}
+.feature ul{margin:12px 0 0;padding-left:20px;color:var(--fg2)}
+.feature li{margin:4px 0}
+.steps{counter-reset:s;display:grid;gap:16px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.step{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px;min-width:0}
+.step::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--wash);font-weight:700;font-size:.9rem;margin-bottom:10px}
+.step p{color:var(--fg2);font-size:.94rem;margin-top:6px}
+pre{background:var(--code-bg);border:1px solid var(--ring);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-family:var(--mono);font-size:.84rem;overflow-x:auto;white-space:pre}
+code{font-family:var(--mono);font-size:.9em}
+.checks{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.checks li{padding-left:28px;position:relative;color:var(--fg2)}
+.checks li::before{content:"";position:absolute;left:4px;top:.5em;width:12px;height:7px;border-left:2px solid var(--good);border-bottom:2px solid var(--good);transform:rotate(-45deg)}
+.checks b{color:var(--fg)}
+table{border-collapse:collapse;width:100%;margin-top:22px;font-size:.93rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--ring);vertical-align:top}
+th{font-weight:600;width:28%;color:var(--fg)}
+td{color:var(--fg2)}
+@media (max-width:600px){th,td{display:block;width:auto;padding:4px 0}th{padding-top:12px}tr{display:block;border-bottom:1px solid var(--ring);padding-bottom:10px}th,td{border:0}}
+footer{padding:36px 0 56px;border-top:1px solid var(--ring);color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px}
+footer a{color:var(--fg2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./">MF Portfolio Analyser</a>
+    <nav>
+      <a href="sample-report.html">Sample report</a>
+      <a href="https://github.com/Alafazam/mf-portfolio-analyser">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Claude Code plugin · Indian mutual funds · free and open source</p>
+    <h1>Which of your mutual funds earn their place?</h1>
+    <p class="lead">Give it your CAS statement. It checks every fund against its benchmark and against every other fund in its category, finds duplicates, and plans the switches year by year so the gains stay inside the ₹1.25L tax-free room. Everything runs on your computer.</p>
+    <div class="ctas">
+      <a class="btn primary" href="sample-report.html">Open the sample report →</a>
+      <a class="btn" href="https://github.com/Alafazam/mf-portfolio-analyser">Get it on GitHub</a>
+    </div>
+    <p class="note"><b>Educational sample, not advice.</b> Built by an individual investor to review their own portfolio and shared as an example. Not investment, tax or legal advice; the author is not a SEBI-registered adviser. Past returns don't predict future returns.</p>
+    <div class="shot"><img src="img/hero.webp" width="1280" height="860" alt="The sample report's return-versus-volatility chart: each fund plotted by its 3-year return minus its benchmark against how much more it swings, with profit labels."></div>
+  </div>
+</div>
+
+<section id="what">
+  <div class="wrap">
+    <h2>One report for the whole portfolio, not one fund at a time</h2>
+    <p class="lead">Most fund pages tell you how a single fund did. The questions that matter are about the whole set: which funds lag, which overlap, where the money should go instead, and what moving it costs in tax.</p>
+
+    <div class="feature">
+      <div class="text">
+        <h3>Scorecard against the benchmark</h3>
+        <p>Every fund is compared with the index it's meant to beat over 3 years, for its direct and regular plan, then placed in a return-vs-volatility 2×2.</p>
+        <ul>
+          <li>Return, volatility, beta, alpha, up/down capture, worst fall</li>
+          <li>How often it beat the index over rolling 3-year windows</li>
+          <li>Flags: exit candidates, laggards, volatile-but-ahead, steady, duplicate index funds</li>
+        </ul>
+      </div>
+      <div class="shot"><img loading="lazy" src="img/flags.webp" width="1120" height="780" alt="The flags section, grouping funds into exit candidates, laggards and steady compounders."></div>
+    </div>
+
+    <div class="feature flip">
+      <div class="text">
+        <h3>A whole-market screen</h3>
+        <p>Every open-ended direct-growth fund in your categories from AMFI's list (311 with enough history) gets a score out of 100 within its category: 75% the last 3 years, 25% its record against the category median since 2018.</p>
+        <p>So a replacement is picked from the whole market, not from a list someone is paid to show you. The index fund is always an option.</p>
+      </div>
+      <div class="shot"><img loading="lazy" src="img/screen.webp" width="1120" height="800" alt="The whole-market screen: the top-scoring fund in each category, with where the investor's own fund ranks."></div>
+    </div>
+
+    <div class="feature">
+      <div class="text">
+        <h3>A consolidation plan with a case for each move</h3>
+        <p>Holdings are cut down to one fund per job. Each move gets a case-for-change score from seven tests and a break-even time, so close calls show as close calls instead of hiding in a list.</p>
+      </div>
+      <div class="shot"><img loading="lazy" src="img/plan.webp" width="1120" height="800" alt="The consolidation plan: cards for each fund to hold, including two new replacements."></div>
+    </div>
+
+    <div class="feature flip">
+      <div class="text">
+        <h3>A tax calendar on your real purchase lots</h3>
+        <p>Your CAS has every purchase. Sells and regular-to-direct switches are planned on those lots, year by year:</p>
+        <ul>
+          <li>Oldest units first, the way redemptions actually work</li>
+          <li>Only long-term, unlocked lots (ELSS 3-year lock per instalment)</li>
+          <li>Within each year's ₹1.25L room, after gains you've already booked</li>
+          <li>Anything beyond four years is shown with the tax of doing it now</li>
+        </ul>
+      </div>
+      <div class="shot"><img loading="lazy" src="img/tax.webp" width="1120" height="800" alt="The tax calendar: each financial year's sells and switches filling the ₹1.25L exemption."></div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><h3>SIP review</h3><p>Where each running SIP would go by score, with a rebalance option when mid and small caps dominate.</p></div>
+      <div class="card"><h3>Falls and recoveries</h3><p>How each fund held up in the big market falls of recent years, and how fast it got back.</p></div>
+      <div class="card"><h3>Peer check and fund detail</h3><p>Any fund against its category, and a deep dive on one fund or the whole portfolio.</p></div>
+      <div class="card"><h3>Full plan, every holding</h3><p>One table of every fund: hold, sell or switch, when, held since, XIRR and CAGR.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How to run it</h2>
+    <p class="lead">You need <a href="https://claude.com/claude-code">Claude Code</a>, Python 3.10+, and poppler's <code>pdftotext</code>. No accounts or API keys.</p>
+    <div class="steps">
+      <div class="step">
+        <h3>Get the plugin</h3>
+        <p>Clone it, then add the folder as a plugin in Claude Code (or copy <code>skills/mf-portfolio-analyser</code> into <code>~/.claude/skills/</code>).</p>
+        <pre>git clone https://github.com/Alafazam/mf-portfolio-analyser</pre>
+        <pre>python3 -m mfpa doctor</pre>
+      </div>
+      <div class="step">
+        <h3>Download your CAS</h3>
+        <p>From MF Central, ask for the <b>Detailed</b> statement from inception. It covers every AMC and folio and has every purchase date. A CSV or INDmoney export also works, with estimated tax figures.</p>
+      </div>
+      <div class="step">
+        <h3>Run it</h3>
+        <p>Type <code>/analyse-mf</code> in Claude Code, or run it yourself in a terminal so the PDF password prompt stays hidden:</p>
+        <pre>python3 -m mfpa run --cas ~/Downloads/cas.pdf</pre>
+        <p>The first run downloads NAV histories and takes a few minutes. You get one HTML report.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <h2>Your statement stays on your computer</h2>
+    <ul class="checks">
+      <li><b>Claude never sees the CAS.</b> Only the local script reads it, and it writes a redacted summary with no name, PAN, address, contact details or folio numbers.</li>
+      <li><b>Raw text deleted every time</b>, even when a run fails.</li>
+      <li><b>The password never touches a command line or the chat.</b> It's asked in a hidden prompt and handed to <code>qpdf</code> through an owner-only temporary file.</li>
+      <li><b>Owner-only files.</b> Everything a run writes can only be read by you.</li>
+      <li><b>Your report works offline.</b> No fonts, scripts or trackers loaded from anywhere.</li>
+      <li><b>It never logs in or places orders.</b> The only network calls fetch public NAV data and AMFI's scheme list.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <h2>Under the hood</h2>
+    <table>
+      <tr><th>Data</th><td>Daily NAVs from <a href="https://www.mfapi.in">mfapi.in</a> and AMFI's scheme list, both free and public. Benchmarks are index-fund NAVs. Cached locally for a day.</td></tr>
+      <tr><th>Statistics</th><td>Weekly returns on a Friday grid; 3-year CAGR, excess return, volatility ratio, beta, alpha, R², tracking error, capture ratios, max drawdown, rolling 3-year beat rate.</td></tr>
+      <tr><th>Tax rules (FY 2026-27)</th><td>Equity LTCG 12.5% above ₹1.25L after more than 12 months; STCG 20%; slab rate for Sec 50AA debt funds; 24 months for gold and international FoFs; grandfathering at 31 Jan 2018; FIFO per folio; exit load and stamp duty.</td></tr>
+      <tr><th>Rules, not a model</th><td>Every score, flag and plan rule is written down in <a href="https://github.com/Alafazam/mf-portfolio-analyser/blob/main/skills/mf-portfolio-analyser/references/method.md">method.md</a>, and the weights live in versioned JSON files you can change.</td></tr>
+      <tr><th>Tested</th><td>Unit tests, including a round trip: the sample portfolio written as a synthetic CAS and parsed back.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="wrap">
+    <h2>Limits</h2>
+    <ul class="checks">
+      <li>Reads the MF Central <b>Detailed</b> CAS layout only. A fund whose units don't reconcile is left out of the plan and listed.</li>
+      <li>The long-run comparison uses funds alive today, so it slightly flatters survivors.</li>
+      <li>Tax classes come from AMFI categories and fund names. Check funds near the 65% equity line against their factsheets.</li>
+      <li>"If it had all been in…" figures are picked with hindsight. They are not evidence.</li>
+    </ul>
+    <p class="note"><b>Not advice.</b> This is a rules-based screen an individual investor wrote for their own portfolio. Tax rules change and past returns don't predict future ones. Check with a SEBI-registered investment adviser and a tax professional before acting. You run it on your own data, at your own risk.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Built by <a href="https://alafazam.com">Alafazam</a></span>
+    <a href="https://github.com/Alafazam/mf-portfolio-analyser">Source on GitHub</a>
+    <span>MIT licence</span>
+  </div>
+</footer>
+</body>
+</html>

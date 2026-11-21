@@ -15,7 +15,7 @@ A Claude Code plugin that looks at a **whole Indian mutual fund portfolio**, not
 - **SIP review:** where each SIP would go by score, with a rebalance option when mid and small caps dominate.
 - **Falls and recoveries, peer check, fund detail,** and a single offline **HTML report**.
 
-See it on made-up data: [`samples/sample-report.html`](samples/sample-report.html) (a made-up investor holding real funds; purchases invented, values from real NAVs).
+Website: **[alafazam.com/mf-portfolio-analyser](https://alafazam.com/mf-portfolio-analyser/)**. See it on made-up data: [`samples/sample-report.html`](samples/sample-report.html) (a made-up investor holding real funds; purchases invented, values from real NAVs).
 
 ## Install
 

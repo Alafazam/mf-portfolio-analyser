@@ -112,6 +112,9 @@ a.inline:active { color: var(--color-accent); }
 
 footer { padding-block: var(--space-3xl) var(--space-2xl); border-top: var(--rule-hair) solid var(--color-rule); }
 footer .statement { font-size: var(--text-section); font-weight: 500; letter-spacing: var(--tracking-display); line-height: 1.08; max-width: 22ch; text-wrap: balance; }
+footer .byline { margin-top: var(--space-lg); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 52ch; }
+footer .byline a { color: var(--color-ink); text-decoration-color: var(--color-rule-2); }
+footer .byline a:hover { color: var(--color-accent); }
 footer .links { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-top: var(--space-2xl); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); font-size: var(--text-sm); color: var(--color-muted); }
 footer .links a { color: var(--color-ink-2); }
 footer .links span { margin-left: auto; }
@@ -295,10 +298,11 @@ python3 -m mfpa doctor</pre></figure>
 <footer>
   <div class="container">
     <p class="statement">Built for one portfolio. Shared so you can check yours.</p>
+    <p class="byline">I’m <a href="https://alafazam.com">Alaf Azam Khan</a>, Director of Engineering &amp; Product at Increff. I built this to review my own mutual funds.</p>
     <div class="links">
       <a href="https://github.com/Alafazam/mf-portfolio-analyser">Source on GitHub</a>
       <a href="sample-report.html">Sample report</a>
-      <a href="https://alafazam.com">Alafazam</a>
+      <a href="https://alafazam.com">alafazam.com</a>
       <span>MIT licence</span>
     </div>
   </div>

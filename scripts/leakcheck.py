@@ -13,6 +13,9 @@ def main(files=None):
     files = files or staged(); priv = []
     p = os.path.expanduser("~/.mfpa/leakcheck/private_patterns.txt")
     if os.path.exists(p): priv = [l.strip() for l in open(p) if l.strip()]
+    # files allowed to carry private values on purpose (e.g. the author's name on the landing page), local only
+    a = os.path.expanduser("~/.mfpa/leakcheck/allow_files.txt")
+    allow = {l.strip() for l in open(a) if l.strip()} if os.path.exists(a) else set()
     hits = []
     for f in files:
         # text patterns are meaningless inside image bytes (random matches); screenshots are checked by eye
@@ -24,7 +27,7 @@ def main(files=None):
                 if name == "email" and m.group(0) in ALLOW_EMAIL: continue
                 hits.append(f"{f}: looks like a {name}")
                 break
-        if any(s in txt for s in priv): hits.append(f"{f}: contains a private value from ~/.mfpa/leakcheck")
+        if f not in allow and any(s in txt for s in priv): hits.append(f"{f}: contains a private value from ~/.mfpa/leakcheck")
     for h in sorted(set(hits)): print("LEAK CHECK:", h)
     return 1 if hits else 0
 if __name__ == "__main__": sys.exit(main(sys.argv[1:] or None))

@@ -4,239 +4,330 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mutual Fund Portfolio Analyser</title>
-<meta name="description" content="A free, open-source Claude Code plugin that reviews a whole Indian mutual fund portfolio from your CAS statement: benchmark scorecard, whole-market fund screen, duplicates, and a tax-aware switch calendar on your real purchase lots. Runs on your computer. Educational, not advice.">
+<meta name="description" content="A free, open-source Claude Code plugin that reviews a whole Indian mutual fund portfolio from your CAS statement and plans switches inside the ₹1.25L yearly tax-free room. Runs on your computer. Educational, not advice.">
 <meta property="og:title" content="Mutual Fund Portfolio Analyser">
-<meta property="og:description" content="Which of your mutual funds earn their place? A Claude Code plugin that screens your whole Indian MF portfolio and plans switches around the ₹1.25L LTCG room.">
-<meta property="og:image" content="https://alafazam.com/mf-portfolio-analyser/img/hero.webp">
+<meta property="og:description" content="Switch funds inside the tax-free room. A Claude Code plugin that reviews your whole Indian mutual fund portfolio.">
+<meta property="og:image" content="https://alafazam.com/mf-portfolio-analyser/img/quad-dark.webp">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://alafazam.com/mf-portfolio-analyser/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
 <style>
-:root{
-  --bg:#f7f8f6; --surface:#fcfcfb; --wash:#eef0ec; --fg:#0b0b0b; --fg2:#52514e; --muted:#7a7972;
-  --ring:#dddcd5; --accent:#1f6feb; --accent-fg:#fff; --good:#1a8f2e; --warn-bg:#fff6dc; --warn-ring:#efd58a;
-  --code-bg:#f0f1ed;
-  --body:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;
-  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
+/* Hallmark · shape: Stat-Led (draw 1d987a; figure row dropped at the owner’s call, the hero reading carries the stat) · genre: modern-minimal · theme: Console (deal 2/3, seed free-open-source-claude-code-0467·daef74bb·2026-11-21·r0) · redesign: full
+ * hero: Corridor · nav: masthead · footer: statement · imagery: screenshots 5 (the sample report, dark, headless Chrome) · signature: the ₹1,25,000 yearly room set as the hero reading · console: graphite
+ * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · fold: pass · job: try · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R4 V4 · weakest: P, a tool page tends to list features; argued from the one number the plan is built around (the yearly tax-free room) and let the report's own screens carry the rest */
+/* Hallmark · waive 77 · a four-row tools table beside the install and run commands, the section the try job needs before the download · the commands are the action for a plugin */
+/* Hallmark · dismissed F4 · the selected report tab carries a cool state tint, not an action fill; the only filled control is the amber primary */
+/* Hallmark · finish-review: subagent · fix · 8 findings · 7 resolved 1 partial (report captures stay small on a phone) · gap: none */
+/* Hallmark · reworded ids: what to views, kept on the tab band as id="what"; how kept on the needs band; limits kept on the limits row */
+@import url("./tokens.css");
+@import url("./base.css");
+
+/* product captures keep their own colours: no photo treatment */
+[data-kind="product"] { border-radius: var(--radius-card); border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper-3); }
+[data-kind="product"] > img { filter: none; mix-blend-mode: normal; object-fit: cover; object-position: top left; }
+[data-kind="product"]::before { content: none; }
+
+.wordmark-bar { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.wordmark-bar .container { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; min-height: 72px; gap: var(--space-md); }
+.wordmark { grid-column: 2; font-size: var(--text-xl); font-weight: 500; letter-spacing: -0.02em; text-decoration: none; color: var(--color-ink); white-space: nowrap; }
+.wordmark-bar nav { grid-column: 3; justify-self: end; display: flex; gap: var(--space-lg); }
+.navlink { color: var(--color-muted); font-size: var(--text-sm); font-weight: 500; text-decoration: none; white-space: nowrap; transition: color var(--dur-short) var(--ease-out); }
+.navlink:hover { color: var(--color-ink); }
+.navlink:active { color: var(--color-accent); }
+
+.hero { min-height: calc(100svh - 73px); display: grid; align-items: center; padding-block: var(--space-2xl); }
+.hero .container { display: grid; justify-items: center; text-align: center; gap: var(--space-lg); }
+.reading { font-family: var(--font-outlier); font-size: clamp(3.5rem, 10vw, 9rem); font-weight: 400; letter-spacing: -0.04em; line-height: 1; color: var(--color-cool); font-variant-numeric: tabular-nums slashed-zero; }
+.reading-unit { font-size: var(--text-md); color: var(--color-ink-2); font-weight: 500; margin-top: calc(var(--space-md) * -1); }
+.hero h1 { max-width: 16ch; }
+.hero .lead { color: var(--color-ink-2); max-width: 60ch; }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-sm); margin-top: var(--space-xs); }
+
+.btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-lg); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink); font: 500 var(--text-md)/1 var(--font-body); white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-rule); }
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
+.btn:disabled, .btn[aria-disabled="true"], .tabs button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn--primary:hover { background: color-mix(in oklab, var(--color-accent) 88%, var(--color-ink)); }
+
+section { padding-block: var(--section-gap); }
+.head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-lg) var(--gap-columns); align-items: end; margin-bottom: var(--space-2xl); }
+.head h2 { grid-column: 1 / span 6; }
+.head .lead { grid-column: 1 / span 6; color: var(--color-ink-2); }
+.head .note { grid-column: 8 / span 5; grid-row: 1 / span 2; align-self: end; }
+.note { font-size: var(--text-sm); line-height: 1.55; color: var(--color-ink-2); background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-card); padding: var(--space-md) var(--space-lg); max-width: 60ch; }
+.note b { color: var(--color-ink); font-weight: 500; }
+
+.showcase-shot { aspect-ratio: 1120 / 790; border: 0; background: none; }
+.caption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
+
+.band { background: var(--color-paper-3); color: var(--color-ink); border-block: var(--rule-hair) solid var(--color-rule); padding-block: var(--section-gap-s); }
+.tabs { display: flex; gap: var(--space-2xs); overflow-x: auto; padding: var(--space-2xs); border: var(--rule-hair) solid var(--color-rule); border-radius: calc(var(--radius-pill) + var(--space-2xs)); width: max-content; max-width: 100%; margin-bottom: var(--space-xl); }
+.tabs button { min-height: 44px; padding: 0 var(--space-md); border: var(--rule-hair) solid transparent; border-radius: var(--radius-pill); background: transparent; color: var(--color-muted); font-weight: 500; font-size: var(--text-sm); cursor: pointer; white-space: nowrap; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+.tabs button:hover { color: var(--color-ink); }
+.tabs button:active { background: var(--color-paper-2); }
+.tabs button[aria-selected="true"] { background: var(--color-cool-soft); border-color: color-mix(in oklab, var(--color-cool) 40%, var(--color-cool-soft)); color: var(--color-ink); }
+html:not(.js) .tabs { display: none; }
+@media (max-width: 40rem) { .tabs { flex-wrap: wrap; width: auto; } .tabs button { flex: 1 1 40%; } }
+.panel { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap-columns); align-items: start; }
+html:not(.js) .panel + .panel { margin-top: var(--space-3xl); }
+.panel .shot { grid-column: 1 / span 8; }
+.panel .text { grid-column: 9 / span 4; display: grid; gap: var(--space-sm); padding-top: var(--space-xs); }
+.panel .text p { color: var(--color-muted); }
+.shot-flags { aspect-ratio: 849 / 394; } .shot-screen { aspect-ratio: 849 / 614; } .shot-plan { aspect-ratio: 849 / 594; } .shot-tax { aspect-ratio: 849 / 490; } .shot-fy { aspect-ratio: 427 / 238; }
+
+
+.rows-wrap { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap-columns); }
+.rows-wrap h2 { grid-column: 1 / span 4; align-self: start; }
+.rows { grid-column: 5 / span 8; margin: 0; padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-rule); }
+.rows li { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: var(--gap-columns); padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.rows li b { grid-column: 1 / span 3; font-weight: 500; font-size: var(--text-lg); line-height: 1.3; }
+.rows li span { grid-column: 4 / span 5; color: var(--color-muted); }
+
+.needs { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap-columns); align-items: start; }
+.needs table { grid-column: 1 / span 6; border-collapse: collapse; width: 100%; }
+.needs th, .needs td { text-align: left; padding: var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule); vertical-align: top; font-size: var(--text-md); }
+.needs thead th { font-size: var(--text-sm); color: var(--color-muted); font-weight: 500; padding-top: 0; }
+.needs tbody th { font-weight: 500; color: var(--color-ink); padding-right: var(--space-lg); white-space: nowrap; }
+.needs td { color: var(--color-muted); }
+.code { grid-column: 8 / span 5; display: grid; gap: var(--space-sm); }
+.code figure { margin: 0; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-3); overflow: hidden; }
+.code figcaption { font-size: var(--text-sm); color: var(--color-muted); padding: var(--space-sm) var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.code pre { margin: 0; padding: var(--space-md); font-family: var(--font-outlier); font-size: var(--text-sm); line-height: 1.6; color: var(--color-ink); white-space: pre-wrap; overflow-wrap: break-word; }
+code { font-family: var(--font-outlier); font-size: 0.9em; }
+
+.close { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap-columns); align-items: center; }
+.close .text { grid-column: 1 / span 5; display: grid; gap: var(--space-lg); justify-items: start; }
+.close .actions { justify-content: flex-start; }
+.close .shot { grid-column: 7 / span 6; }
+.close .note { max-width: none; }
+
+a.inline { color: var(--color-ink); text-decoration-color: var(--color-rule-2); transition: color var(--dur-short) var(--ease-out); }
+a.inline:hover { color: var(--color-accent); }
+a.inline:active { color: var(--color-accent); }
+
+footer { padding-block: var(--space-3xl) var(--space-2xl); border-top: var(--rule-hair) solid var(--color-rule); }
+footer .statement { font-size: var(--text-section); font-weight: 500; letter-spacing: var(--tracking-display); line-height: 1.08; max-width: 22ch; text-wrap: balance; }
+footer .links { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-top: var(--space-2xl); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); font-size: var(--text-sm); color: var(--color-muted); }
+footer .links a { color: var(--color-ink-2); }
+footer .links span { margin-left: auto; }
+
+@media (max-width: 60rem) {
+  .wordmark-bar .container { grid-template-columns: minmax(0, 1fr) auto; }
+  .wordmark { grid-column: 1; font-size: var(--text-lg); }
+  .wordmark-bar nav { grid-column: 2; gap: var(--space-md); }
+  .head h2, .head .lead, .head .note { grid-column: 1 / -1; grid-row: auto; }
+  .panel .shot, .panel .text, .rows-wrap h2, .rows, .needs table, .code, .close .text, .close .shot { grid-column: 1 / -1; }
+  .rows li b, .rows li span { grid-column: 1 / -1; }
+  .figures { grid-template-columns: minmax(0, 1fr); }
+  .figures > div { padding: var(--space-lg) 0; border-left: 0; border-top: var(--rule-hair) solid var(--color-rule); }
+  .figures > div:first-child { border-top: 0; }
+  footer .links span { margin-left: 0; }
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#121211; --surface:#1a1a19; --wash:#232321; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
-  --ring:#33332f; --accent:#5b9bff; --accent-fg:#0b0b0b; --good:#4cc061; --warn-bg:#2b2615; --warn-ring:#574a1f; --code-bg:#1f1f1d;
-}}
-:root[data-theme="dark"]{
-  --bg:#121211; --surface:#1a1a19; --wash:#232321; --fg:#f0efec; --fg2:#c3c2b7; --muted:#97968d;
-  --ring:#33332f; --accent:#5b9bff; --accent-fg:#0b0b0b; --good:#4cc061; --warn-bg:#2b2615; --warn-ring:#574a1f; --code-bg:#1f1f1d;
+@media (max-width: 40rem) {
+  .wordmark-bar nav .navlink:first-child { display: none; }
+  .hero { min-height: 0; }
 }
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
-a{color:var(--accent)}
-img{max-width:100%;display:block}
-.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
-header.top{display:flex;align-items:center;gap:16px;padding:18px 0}
-header.top .brand{font-weight:700;letter-spacing:-.01em;color:var(--fg);text-decoration:none;margin-right:auto}
-header.top nav{display:flex;gap:18px;font-size:.92rem}
-header.top nav a{color:var(--fg2);text-decoration:none}
-header.top nav a:hover{color:var(--fg)}
-h1,h2,h3{text-wrap:balance;letter-spacing:-.02em;margin:0}
-h1{font-size:clamp(2rem,5.2vw,3.3rem);line-height:1.08}
-h2{font-size:clamp(1.5rem,3.2vw,2rem);line-height:1.15}
-h3{font-size:1.08rem;letter-spacing:-.01em}
-p{margin:0}
-.eyebrow{font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.lead{font-size:1.15rem;color:var(--fg2);max-width:62ch}
-.hero{padding:40px 0 28px}
-.hero .eyebrow{margin-bottom:14px}
-.hero .lead{margin-top:18px}
-.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--ring);color:var(--fg);background:var(--surface)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
-.btn:hover{filter:brightness(1.05)}
-.note{margin-top:22px;font-size:.88rem;color:var(--fg2);background:var(--warn-bg);border:1px solid var(--warn-ring);border-radius:10px;padding:10px 14px;max-width:760px}
-.shot{border:1px solid var(--ring);border-radius:14px;overflow:hidden;background:#f7f8f6;box-shadow:0 18px 50px -24px rgba(0,0,0,.35)}
-.shot img{width:100%;height:auto}
-.hero .shot{margin-top:36px}
-section{padding:56px 0;border-top:1px solid var(--ring)}
-section > .wrap > h2 + p{margin-top:12px}
-.grid{display:grid;gap:16px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px}
-.card p{color:var(--fg2);font-size:.94rem;margin-top:6px}
-.feature{display:grid;gap:28px;align-items:center;grid-template-columns:1fr;margin-top:40px}
-@media (min-width:860px){.feature{grid-template-columns:5fr 7fr}.feature.flip{grid-template-columns:7fr 5fr}.feature.flip .text{order:2}}
-.feature .text p{color:var(--fg2);margin-top:10px}
-.feature ul{margin:12px 0 0;padding-left:20px;color:var(--fg2)}
-.feature li{margin:4px 0}
-.steps{counter-reset:s;display:grid;gap:16px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.step{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px;min-width:0}
-.step::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--wash);font-weight:700;font-size:.9rem;margin-bottom:10px}
-.step p{color:var(--fg2);font-size:.94rem;margin-top:6px}
-pre{background:var(--code-bg);border:1px solid var(--ring);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-family:var(--mono);font-size:.84rem;overflow-x:auto;white-space:pre}
-code{font-family:var(--mono);font-size:.9em}
-.checks{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-.checks li{padding-left:28px;position:relative;color:var(--fg2)}
-.checks li::before{content:"";position:absolute;left:4px;top:.5em;width:12px;height:7px;border-left:2px solid var(--good);border-bottom:2px solid var(--good);transform:rotate(-45deg)}
-.checks b{color:var(--fg)}
-table{border-collapse:collapse;width:100%;margin-top:22px;font-size:.93rem}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--ring);vertical-align:top}
-th{font-weight:600;width:28%;color:var(--fg)}
-td{color:var(--fg2)}
-@media (max-width:600px){th,td{display:block;width:auto;padding:4px 0}th{padding-top:12px}tr{display:block;border-bottom:1px solid var(--ring);padding-bottom:10px}th,td{border:0}}
-footer{padding:36px 0 56px;border-top:1px solid var(--ring);color:var(--muted);font-size:.88rem}
-footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px}
-footer a{color:var(--fg2)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href="./">MF Portfolio Analyser</a>
-    <nav>
-      <a href="sample-report.html">Sample report</a>
-      <a href="https://github.com/Alafazam/mf-portfolio-analyser">GitHub</a>
+<header class="wordmark-bar">
+  <div class="container">
+    <a class="wordmark" href="./" aria-label="MF Portfolio Analyser, home">MF Portfolio Analyser</a>
+    <nav aria-label="Primary">
+      <a class="navlink" href="sample-report.html">Sample report</a>
+      <a class="navlink" href="https://github.com/Alafazam/mf-portfolio-analyser">GitHub</a>
     </nav>
-  </header>
-
-  <div class="hero">
-    <p class="eyebrow">Claude Code plugin · Indian mutual funds · free and open source</p>
-    <h1>Which of your mutual funds earn their place?</h1>
-    <p class="lead">Give it your CAS statement. It checks every fund against its benchmark and against every other fund in its category, finds duplicates, and plans the switches year by year so the gains stay inside the ₹1.25L tax-free room. Everything runs on your computer.</p>
-    <div class="ctas">
-      <a class="btn primary" href="sample-report.html">Open the sample report →</a>
-      <a class="btn" href="https://github.com/Alafazam/mf-portfolio-analyser">Get it on GitHub</a>
-    </div>
-    <p class="note"><b>Educational sample, not advice.</b> Built by an individual investor to review their own portfolio and shared as an example. Not investment, tax or legal advice; the author is not a SEBI-registered adviser. Past returns don't predict future returns.</p>
-    <div class="shot"><img src="img/hero.webp" width="1280" height="860" alt="The sample report's return-versus-volatility chart: each fund plotted by its 3-year return minus its benchmark against how much more it swings, with profit labels."></div>
   </div>
-</div>
+</header>
 
-<section id="what">
-  <div class="wrap">
-    <h2>One report for the whole portfolio, not one fund at a time</h2>
-    <p class="lead">Most fund pages tell you how a single fund did. The questions that matter are about the whole set: which funds lag, which overlap, where the money should go instead, and what moving it costs in tax.</p>
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="reading" aria-label="1,25,000 rupees">₹1,25,000</p>
+      <p class="reading-unit">of long-term gains on equity funds and shares, tax-free each year</p>
+      <h1>Switch funds inside the tax-free room.</h1>
+      <p class="lead">A Claude Code plugin that reads your CAS and plans your switches.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="sample-report.html">Open the sample report</a>
+        <a class="btn" href="https://github.com/Alafazam/mf-portfolio-analyser">Get it on GitHub</a>
+      </div>
+    </div>
+  </section>
 
-    <div class="feature">
+  <section id="report" aria-labelledby="h-report">
+    <div class="container">
+      <div class="head">
+        <h2 id="h-report">Every fund against its own index</h2>
+        <p class="lead">Three years of return and swing, for direct and regular plans.</p>
+        <p class="note"><b>Educational sample, not advice.</b> Built by an individual investor to review their own portfolio and shared as an example. Not investment, tax or legal advice; the author is not a SEBI-registered adviser. Past returns don’t predict future returns.</p>
+      </div>
+      <figure style="margin:0">
+        <div class="showcase-shot" data-slot="report-2x2" data-kind="product" data-alt="The report’s return-versus-volatility chart for the sample portfolio">
+          <img src="img/quad-dark.webp" width="2240" height="1580" alt="Each fund of the sample portfolio plotted by 3-year return minus its benchmark against how much more it swings, labelled with its profit.">
+        </div>
+        <figcaption class="caption">From the sample report: a made-up investor holding real funds, values from real NAVs.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="what" aria-labelledby="h-views">
+    <div class="container">
+      <div class="head">
+        <h2 id="h-views">Four views of one portfolio</h2>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Report views">
+        <button type="button" role="tab" id="t-flags" aria-controls="p-flags" aria-selected="true">Flags</button>
+        <button type="button" role="tab" id="t-screen" aria-controls="p-screen" aria-selected="false" tabindex="-1">Whole market</button>
+        <button type="button" role="tab" id="t-plan" aria-controls="p-plan" aria-selected="false" tabindex="-1">Consolidation</button>
+        <button type="button" role="tab" id="t-tax" aria-controls="p-tax" aria-selected="false" tabindex="-1">Tax calendar</button>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-flags" aria-labelledby="t-flags">
+        <div class="shot shot-flags" data-slot="flags" data-kind="product" data-alt="The flags section of the report">
+          <img loading="lazy" src="img/flags-dark.webp" width="1698" height="788" alt="">
+        </div>
+        <div class="text">
+          <h3>Which funds lag</h3>
+          <p>Exit candidates, laggards, volatile but ahead, steady compounders and duplicate index funds, each with how often it beat its index. A peer check and a fund detail view sit beside them.</p>
+        </div>
+      </div>
+      <div class="panel" role="tabpanel" id="p-screen" aria-labelledby="t-screen">
+        <div class="shot shot-screen" data-slot="screen" data-kind="product" data-alt="The whole-market screen of the report">
+          <img loading="lazy" src="img/screen-dark.webp" width="1698" height="1228" alt="">
+        </div>
+        <div class="text">
+          <h3>Where the money could go</h3>
+          <p>Every direct-growth fund in your categories from AMFI’s list (311 with three years of history), scored out of 100: 75% the last 3 years, 25% its record since 2018. The index fund is always an option.</p>
+        </div>
+      </div>
+      <div class="panel" role="tabpanel" id="p-plan" aria-labelledby="t-plan">
+        <div class="shot shot-plan" data-slot="plan" data-kind="product" data-alt="The consolidation plan of the report">
+          <img loading="lazy" src="img/plan-dark.webp" width="1698" height="1188" alt="">
+        </div>
+        <div class="text">
+          <h3>One fund per job</h3>
+          <p>Each move carries a case-for-change score from seven tests and a break-even time, so close calls show as close calls.</p>
+        </div>
+      </div>
+      <div class="panel" role="tabpanel" id="p-tax" aria-labelledby="t-tax">
+        <div class="shot shot-tax" data-slot="tax" data-kind="product" data-alt="The tax calendar of the report">
+          <img loading="lazy" src="img/tax-dark.webp" width="1698" height="980" alt="">
+        </div>
+        <div class="text">
+          <h3>Year by year, on your real lots</h3>
+          <p>Four financial years ahead, oldest units first, only long-term and unlocked lots, inside each year’s room after gains you’ve already booked.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy" aria-labelledby="h-privacy">
+    <div class="container rows-wrap">
+      <h2 id="h-privacy">Your statement stays on your computer</h2>
+      <ul class="rows">
+        <li><b>Claude never sees the CAS</b><span>A local script reads it and keeps no name, PAN, address or folio numbers.</span></li>
+        <li><b>Raw text deleted, every run</b><span>Even when a run fails. Its files are yours alone.</span></li>
+        <li><b>No password on a command line</b><span>Asked in a hidden prompt, handed to <code>qpdf</code> through an owner-only file.</span></li>
+        <li><b>A report that works offline</b><span>No fonts, scripts or trackers. It never logs in or places orders.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="how" aria-labelledby="h-run">
+    <div class="container">
+      <div class="head">
+        <h2 id="h-run">Your CAS, Python and two PDF tools</h2>
+        <p class="lead">No accounts or API keys. MF Central’s Detailed CAS from inception works best; a CSV or INDmoney export also works.</p>
+      </div>
+      <div class="needs">
+        <table>
+          <thead><tr><th scope="col">Tool</th><th scope="col">For</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><a class="inline" href="https://claude.com/claude-code">Claude Code</a></th><td>Running <code>/analyse-mf</code></td></tr>
+            <tr><th scope="row">Python 3.10+</th><td>The analysis, standard library only</td></tr>
+            <tr><th scope="row">pdftotext</th><td>Reading the CAS PDF</td></tr>
+            <tr><th scope="row">qpdf</th><td>Password-protected PDFs</td></tr>
+          </tbody>
+        </table>
+        <div class="code">
+          <figure><figcaption>Install, then add the folder as a plugin in Claude Code or copy <code>skills/mf-portfolio-analyser</code> into <code>~/.claude/skills/</code></figcaption><pre>git clone https://github.com/Alafazam/mf-portfolio-analyser
+python3 -m mfpa doctor</pre></figure>
+          <figure><figcaption>Run, in your own terminal</figcaption><pre>python3 -m mfpa run --cas ~/Downloads/cas.pdf</pre></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method" aria-labelledby="h-method">
+    <div class="container rows-wrap">
+      <h2 id="h-method">Every score is in method.md</h2>
+      <ul class="rows">
+        <li><b>Public data</b><span>NAVs from <a class="inline" href="https://www.mfapi.in">mfapi.in</a> and AMFI’s scheme list.</span></li>
+        <li><b>Tax rules, FY 2026-27</b><span>12.5% above ₹1.25L after more than 12 months; FIFO per folio; ELSS lock-in per instalment.</span></li>
+        <li><b>Every rule written down</b><span>Scores, flags and plan rules in <a class="inline" href="https://github.com/Alafazam/mf-portfolio-analyser/blob/main/skills/mf-portfolio-analyser/references/method.md">method.md</a>; weights in versioned files.</span></li>
+        <li id="limits"><b>Limits</b><span>Reads the MF Central Detailed CAS only. Funds near the 65% equity line need a factsheet check. Hindsight figures are not evidence.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="get" aria-labelledby="h-get">
+    <div class="container close">
       <div class="text">
-        <h3>Scorecard against the benchmark</h3>
-        <p>Every fund is compared with the index it's meant to beat over 3 years, for its direct and regular plan, then placed in a return-vs-volatility 2×2.</p>
-        <ul>
-          <li>Return, volatility, beta, alpha, up/down capture, worst fall</li>
-          <li>How often it beat the index over rolling 3-year windows</li>
-          <li>Flags: exit candidates, laggards, volatile-but-ahead, steady, duplicate index funds</li>
-        </ul>
+        <h2 id="h-get">See how much room this year has left</h2>
+        <p class="note"><b>Not advice.</b> This is a rules-based screen an individual investor wrote for their own portfolio. Tax rules change and past returns don’t predict future ones. Check with a SEBI-registered investment adviser and a tax professional before acting. You run it on your own data, at your own risk.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="https://github.com/Alafazam/mf-portfolio-analyser">Get it on GitHub</a>
+          <a class="btn" href="sample-report.html">Open the sample report</a>
+        </div>
       </div>
-      <div class="shot"><img loading="lazy" src="img/flags.webp" width="1120" height="780" alt="The flags section, grouping funds into exit candidates, laggards and steady compounders."></div>
-    </div>
-
-    <div class="feature flip">
-      <div class="text">
-        <h3>A whole-market screen</h3>
-        <p>Every open-ended direct-growth fund in your categories from AMFI's list (311 with enough history) gets a score out of 100 within its category: 75% the last 3 years, 25% its record against the category median since 2018.</p>
-        <p>So a replacement is picked from the whole market, not from a list someone is paid to show you. The index fund is always an option.</p>
-      </div>
-      <div class="shot"><img loading="lazy" src="img/screen.webp" width="1120" height="800" alt="The whole-market screen: the top-scoring fund in each category, with where the investor's own fund ranks."></div>
-    </div>
-
-    <div class="feature">
-      <div class="text">
-        <h3>A consolidation plan with a case for each move</h3>
-        <p>Holdings are cut down to one fund per job. Each move gets a case-for-change score from seven tests and a break-even time, so close calls show as close calls instead of hiding in a list.</p>
-      </div>
-      <div class="shot"><img loading="lazy" src="img/plan.webp" width="1120" height="800" alt="The consolidation plan: cards for each fund to hold, including two new replacements."></div>
-    </div>
-
-    <div class="feature flip">
-      <div class="text">
-        <h3>A tax calendar on your real purchase lots</h3>
-        <p>Your CAS has every purchase. Sells and regular-to-direct switches are planned on those lots, year by year:</p>
-        <ul>
-          <li>Oldest units first, the way redemptions actually work</li>
-          <li>Only long-term, unlocked lots (ELSS 3-year lock per instalment)</li>
-          <li>Within each year's ₹1.25L room, after gains you've already booked</li>
-          <li>Anything beyond four years is shown with the tax of doing it now</li>
-        </ul>
-      </div>
-      <div class="shot"><img loading="lazy" src="img/tax.webp" width="1120" height="800" alt="The tax calendar: each financial year's sells and switches filling the ₹1.25L exemption."></div>
-    </div>
-
-    <div class="grid">
-      <div class="card"><h3>SIP review</h3><p>Where each running SIP would go by score, with a rebalance option when mid and small caps dominate.</p></div>
-      <div class="card"><h3>Falls and recoveries</h3><p>How each fund held up in the big market falls of recent years, and how fast it got back.</p></div>
-      <div class="card"><h3>Peer check and fund detail</h3><p>Any fund against its category, and a deep dive on one fund or the whole portfolio.</p></div>
-      <div class="card"><h3>Full plan, every holding</h3><p>One table of every fund: hold, sell or switch, when, held since, XIRR and CAGR.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="how">
-  <div class="wrap">
-    <h2>How to run it</h2>
-    <p class="lead">You need <a href="https://claude.com/claude-code">Claude Code</a>, Python 3.10+, and poppler's <code>pdftotext</code>. No accounts or API keys.</p>
-    <div class="steps">
-      <div class="step">
-        <h3>Get the plugin</h3>
-        <p>Clone it, then add the folder as a plugin in Claude Code (or copy <code>skills/mf-portfolio-analyser</code> into <code>~/.claude/skills/</code>).</p>
-        <pre>git clone https://github.com/Alafazam/mf-portfolio-analyser</pre>
-        <pre>python3 -m mfpa doctor</pre>
-      </div>
-      <div class="step">
-        <h3>Download your CAS</h3>
-        <p>From MF Central, ask for the <b>Detailed</b> statement from inception. It covers every AMC and folio and has every purchase date. A CSV or INDmoney export also works, with estimated tax figures.</p>
-      </div>
-      <div class="step">
-        <h3>Run it</h3>
-        <p>Type <code>/analyse-mf</code> in Claude Code, or run it yourself in a terminal so the PDF password prompt stays hidden:</p>
-        <pre>python3 -m mfpa run --cas ~/Downloads/cas.pdf</pre>
-        <p>The first run downloads NAV histories and takes a few minutes. You get one HTML report.</p>
+      <div class="shot shot-fy" data-slot="close" data-kind="product" data-alt="One financial year’s card from the report’s tax calendar">
+        <img loading="lazy" src="img/fy-dark.webp" width="854" height="476" alt="The sample report’s FY 2026-27 card: ₹1,18,750 of the ₹1,25,000 room planned, with ₹40,850 of gains already booked this year.">
       </div>
     </div>
-  </div>
-</section>
-
-<section id="privacy">
-  <div class="wrap">
-    <h2>Your statement stays on your computer</h2>
-    <ul class="checks">
-      <li><b>Claude never sees the CAS.</b> Only the local script reads it, and it writes a redacted summary with no name, PAN, address, contact details or folio numbers.</li>
-      <li><b>Raw text deleted every time</b>, even when a run fails.</li>
-      <li><b>The password never touches a command line or the chat.</b> It's asked in a hidden prompt and handed to <code>qpdf</code> through an owner-only temporary file.</li>
-      <li><b>Owner-only files.</b> Everything a run writes can only be read by you.</li>
-      <li><b>Your report works offline.</b> No fonts, scripts or trackers loaded from anywhere.</li>
-      <li><b>It never logs in or places orders.</b> The only network calls fetch public NAV data and AMFI's scheme list.</li>
-    </ul>
-  </div>
-</section>
-
-<section id="method">
-  <div class="wrap">
-    <h2>Under the hood</h2>
-    <table>
-      <tr><th>Data</th><td>Daily NAVs from <a href="https://www.mfapi.in">mfapi.in</a> and AMFI's scheme list, both free and public. Benchmarks are index-fund NAVs. Cached locally for a day.</td></tr>
-      <tr><th>Statistics</th><td>Weekly returns on a Friday grid; 3-year CAGR, excess return, volatility ratio, beta, alpha, R², tracking error, capture ratios, max drawdown, rolling 3-year beat rate.</td></tr>
-      <tr><th>Tax rules (FY 2026-27)</th><td>Equity LTCG 12.5% above ₹1.25L after more than 12 months; STCG 20%; slab rate for Sec 50AA debt funds; 24 months for gold and international FoFs; grandfathering at 31 Jan 2018; FIFO per folio; exit load and stamp duty.</td></tr>
-      <tr><th>Rules, not a model</th><td>Every score, flag and plan rule is written down in <a href="https://github.com/Alafazam/mf-portfolio-analyser/blob/main/skills/mf-portfolio-analyser/references/method.md">method.md</a>, and the weights live in versioned JSON files you can change.</td></tr>
-      <tr><th>Tested</th><td>Unit tests, including a round trip: the sample portfolio written as a synthetic CAS and parsed back.</td></tr>
-    </table>
-  </div>
-</section>
-
-<section id="limits">
-  <div class="wrap">
-    <h2>Limits</h2>
-    <ul class="checks">
-      <li>Reads the MF Central <b>Detailed</b> CAS layout only. A fund whose units don't reconcile is left out of the plan and listed.</li>
-      <li>The long-run comparison uses funds alive today, so it slightly flatters survivors.</li>
-      <li>Tax classes come from AMFI categories and fund names. Check funds near the 65% equity line against their factsheets.</li>
-      <li>"If it had all been in…" figures are picked with hindsight. They are not evidence.</li>
-    </ul>
-    <p class="note"><b>Not advice.</b> This is a rules-based screen an individual investor wrote for their own portfolio. Tax rules change and past returns don't predict future ones. Check with a SEBI-registered investment adviser and a tax professional before acting. You run it on your own data, at your own risk.</p>
-  </div>
-</section>
+  </section>
+</main>
 
 <footer>
-  <div class="wrap">
-    <span>Built by <a href="https://alafazam.com">Alafazam</a></span>
-    <a href="https://github.com/Alafazam/mf-portfolio-analyser">Source on GitHub</a>
-    <span>MIT licence</span>
+  <div class="container">
+    <p class="statement">Built for one portfolio. Shared so you can check yours.</p>
+    <div class="links">
+      <a href="https://github.com/Alafazam/mf-portfolio-analyser">Source on GitHub</a>
+      <a href="sample-report.html">Sample report</a>
+      <a href="https://alafazam.com">Alafazam</a>
+      <span>MIT licence</span>
+    </div>
   </div>
 </footer>
+
+<script>
+(() => {
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  if (!tabs.length) return;
+  const show = (t, focus) => {
+    tabs.forEach((x) => {
+      const on = x === t;
+      x.setAttribute('aria-selected', on);
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) t.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(t));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { e.preventDefault(); show(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
+  show(tabs[0]);
+})();
+</script>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 </body>
 </html>

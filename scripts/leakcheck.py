@@ -5,6 +5,7 @@ import os, re, subprocess, sys
 GENERIC = {"PAN": re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b"), "email": re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b"),
            "phone": re.compile(r"(?<![\d.])[6-9]\d{9}(?![\d.])")}
 ALLOW_EMAIL = {"noreply@anthropic.com"}
+BINARY = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".woff", ".woff2"}
 def staged():
     out = subprocess.run(["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"], capture_output=True, text=True).stdout.split()
     return [f for f in out if os.path.isfile(f)]
@@ -14,6 +15,8 @@ def main(files=None):
     if os.path.exists(p): priv = [l.strip() for l in open(p) if l.strip()]
     hits = []
     for f in files:
+        # text patterns are meaningless inside image bytes (random matches); screenshots are checked by eye
+        if os.path.splitext(f)[1].lower() in BINARY: continue
         try: txt = open(f, encoding="utf-8", errors="ignore").read()
         except Exception: continue
         for name, rx in GENERIC.items():

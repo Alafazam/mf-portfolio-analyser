@@ -1,0 +1,208 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Family Money Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column. Headline ages first (with the disclaimer beside them), then the path, yearly milestones, budget by phase, goals, what moves the date, the income-stops check and the to-do list. Display only: every number comes from the Python model. */
+:root{
+  --bg:#f4f7f6; --surface:#ffffff; --fg:#13201d; --fg2:#4b5a56; --muted:#7a8884;
+  --line:#dfe6e3; --ring:rgba(19,32,29,.10); --wash:rgba(15,118,110,.08);
+  --accent:#0f766e; --accent2:#b7791f; --kid:#7c5cc4; --money:#2b7bd1;
+  --good:#16803c; --warn:#b7791f; --crit:#c2410c;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1514; --surface:#161e1c; --fg:#e8efec; --fg2:#b4c2bd; --muted:#87958f;
+  --line:#26312e; --ring:rgba(255,255,255,.09); --wash:rgba(45,180,165,.12);
+  --accent:#2bb3a3; --accent2:#e0a43a; --kid:#a68ce6; --money:#5aa2ee;
+  --good:#3fbf6a; --warn:#e0a43a; --crit:#f07a46; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1514; --surface:#161e1c; --fg:#e8efec; --fg2:#b4c2bd; --muted:#87958f;
+  --line:#26312e; --ring:rgba(255,255,255,.09); --wash:rgba(45,180,165,.12);
+  --accent:#2bb3a3; --accent2:#e0a43a; --kid:#a68ce6; --money:#5aa2ee;
+  --good:#3fbf6a; --warn:#e0a43a; --crit:#f07a46; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:38px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:2.05rem;font-weight:700} h2{font-size:1.32rem;font-weight:700} h3{font-size:1rem;font-weight:600;font-family:var(--body)}
+p{margin:0;max-width:68ch}
+.sub{color:var(--fg2)} .note{font-size:.82rem;color:var(--muted)}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+section{display:grid;gap:14px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px;min-width:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:16px;display:grid;gap:4px;align-content:start}
+.tile .v{font-family:var(--display);font-size:1.9rem;font-weight:700;line-height:1.1}
+.tile .k{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.tile .d{font-size:.84rem;color:var(--fg2)}
+.disc{border-left:3px solid var(--accent2);padding:8px 12px;background:var(--surface);border-radius:0 8px 8px 0;font-size:.84rem;color:var(--fg2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--fg2)} .legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:3px;border-radius:2px;display:inline-block}
+.tablewrap{border:1px solid var(--ring);border-radius:12px;background:var(--surface);overflow:hidden}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.hit td{background:var(--wash)}
+.m2{color:var(--muted);font-size:.75rem}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--ring);margin:1px 3px 1px 0;color:var(--fg)}
+.chip i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px;min-width:50px} .bar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:.86rem;padding:3px 0}
+.row.t{border-top:1px solid var(--line);margin-top:4px;padding-top:6px;font-weight:600}
+ul.todo{margin:0;padding:0;list-style:none;display:grid;gap:8px} ul.todo li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;font-size:.88rem}
+.box{width:16px;height:16px;border:1.5px solid var(--muted);border-radius:4px;margin-top:3px}
+svg text{fill:var(--fg2);font-family:var(--body)}
+.tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--fg);border:1px solid var(--ring);border-radius:8px;padding:8px 10px;font-size:.8rem;box-shadow:0 6px 18px rgba(0,0,0,.15);z-index:20;max-width:260px}
+@media (max-width:600px){
+  table.stack thead{display:none} table.stack tbody, table.stack tr{display:block}
+  table.stack tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  table.stack td{display:block;border:0;padding:0} table.stack td:nth-child(n+3){grid-column:1/-1}
+}
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="title">Family Money Plan</h1>
+    <p class="sub">A monthly money ledger for the whole family, from take-home pay to goals, home loan and pensions, and the age at which investments could replace salary. Every number comes from the plan file; change it and rebuild.</p>
+  </header>
+
+  <section aria-label="Headline">
+    <div class="tiles" id="tiles"></div>
+    <p class="disc">Planning maths with assumed returns, not a forecast and not financial, tax or insurance advice. The base case uses a steady return; the stress case replays a bad first decade. Neither is a probability.</p>
+  </section>
+
+  <section aria-labelledby="h-path">
+    <h2 id="h-path">Investments against what's needed</h2>
+    <div class="panel"><svg id="chart" viewBox="0 0 760 320" role="img" aria-label="Investments against the amount needed, by age" style="width:100%;height:auto;display:block"></svg><div class="legend" id="legend" style="margin-top:8px"></div></div>
+    <p class="note">"Needed" is the smallest amount of investments (in today's rupees) that would last to the end of the plan if the main earner stopped that year, after counting a partner who keeps working, pensions as they start, the loan still to repay and goals still to fund. Goal funds and the emergency fund are not counted as investments.</p>
+  </section>
+
+  <section aria-labelledby="h-mile">
+    <h2 id="h-mile">Yearly milestones</h2>
+    <p class="sub">Where the plan expects you each year. Compare it with your real net worth once a year; if you're ahead, the date moves closer.</p>
+    <div class="tablewrap"><table class="stack" id="mile"></table></div>
+  </section>
+
+  <section aria-labelledby="h-budget">
+    <h2 id="h-budget">Monthly budget by phase</h2>
+    <div class="cols" id="phases"></div>
+    <p class="note">Money left after spending goes to the emergency fund first, then the goal SIPs you set, then investments. SIPs are a share of what's left, not extra money.</p>
+  </section>
+
+  <section aria-labelledby="h-goals">
+    <h2 id="h-goals">Goals</h2>
+    <div class="tablewrap"><table class="stack" id="goals"></table></div>
+    <p class="note">Goal funds move to safer debt returns in their last three years. A shortfall is paid from investments on the day and is already counted in the plan above.</p>
+  </section>
+
+  <section aria-labelledby="h-lev">
+    <h2 id="h-lev">What moves the date</h2>
+    <div class="cols">
+      <div class="panel"><h3 style="margin-bottom:8px">Changes you could make</h3><div id="levers"></div><p class="note" style="margin-top:8px">Each change is tested on its own; the effects don't add up exactly when combined.</p></div>
+      <div class="panel"><h3 style="margin-bottom:8px">Guesses that move it most</h3><div id="geff"></div><p class="note" style="margin-top:8px">Inputs the plan had to assume. Firm these up first.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-term">
+    <h2 id="h-term">If the main earner's income stopped today</h2>
+    <div class="panel" id="term"></div>
+  </section>
+
+  <section aria-labelledby="h-todo">
+    <h2 id="h-todo">To-do list</h2>
+    <div class="cols" id="todos"></div>
+  </section>
+
+  <section aria-labelledby="h-how">
+    <h2 id="h-how">How this is worked out</h2>
+    <div class="panel" style="display:grid;gap:8px;font-size:.88rem;color:var(--fg2)" id="how"></div>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = {"label":"Sample family (made up)","as_of":"2026-11-01","share":false,"main":"Earner 1","earners":[{"name":"Earner 1","age":36,"employer":"private","pension":"none","keeps":false,"retire":60},{"name":"Earner 2","age":34,"employer":"state_govt","pension":"OPS","keeps":true,"retire":60}],"children":[{"name":"Child 1","age":6},{"name":"Child 2","age":2}],"tiles":{"base":47.0,"stress":51.0,"need":20164247.087,"need_stress":31159868.1185,"loan":"2035","loan_age":44,"emg":"Apr 2032"},"path":[{"age":36.0,"have":1632283.883,"req":29387840.9988,"req_stress":50577223.5943},{"age":37.0,"have":2407475.5078,"req":27958430.6896,"req_stress":48200260.6543},{"age":38.0,"have":3715282.6784,"req":27006201.5502,"req_stress":46514545.7116},{"age":39.0,"have":4979713.3583,"req":26155047.1628,"req_stress":45001855.3557},{"age":40.0,"have":6369480.4249,"req":25304830.3559,"req_stress":43513999.3189},{"age":41.0,"have":7447630.4741,"req":23995796.5545,"req_stress":41387026.9946},{"age":42.0,"have":9206155.4799,"req":23203127.3715,"req_stress":39955216.5188},{"age":43.0,"have":11145822.0091,"req":22400515.6483,"req_stress":38527835.8251},{"age":44.0,"have":13232233.3159,"req":21585950.0558,"req_stress":37102276.7424},{"age":45.0,"have":15674908.7275,"req":20979525.2759,"req_stress":36153280.2306},{"age":46.0,"have":18428273.2073,"req":20582210.1681,"req_stress":35544386.1806},{"age":47.0,"have":21349992.9747,"req":20164247.087,"req_stress":34935670.9392},{"age":48.0,"have":22887740.2984,"req":18105692.5365,"req_stress":31991902.0434},{"age":49.0,"have":26278715.1903,"req":17805546.0131,"req_stress":31663006.5516},{"age":50.0,"have":29867296.1076,"req":17530827.6631,"req_stress":31401746.6538},{"age":51.0,"have":33663201.2755,"req":17249755.8987,"req_stress":31159868.1185},{"age":52.0,"have":35323060.2242,"req":14506365.8562,"req_stress":27434547.9899},{"age":53.0,"have":39519166.2035,"req":14206004.5181,"req_stress":27318554.8623},{"age":54.0,"have":43954932.7598,"req":13902085.7219,"req_stress":27211920.0602},{"age":55.0,"have":48640273.0857,"req":13594470.7078,"req_stress":31218286.5553},{"age":56.0,"have":53568669.6733,"req":13366932.7276,"req_stress":31196900.5112},{"age":57.0,"have":58772785.2055,"req":13145000.0111,"req_stress":31175594.6516},{"age":58.0,"have":64266142.0541,"req":12928982.2882,"req_stress":31153802.4514},{"age":59.0,"have":70062906.1357,"req":12719195.9882,"req_stress":31130916.1689}],"miles":[{"year":"2027","age":37,"kids":[6,2],"invested":4986179.782,"invested_real":4726839.8719,"goals":460161.2374,"loan":3513867.8695,"pct":0.0555,"events":[{"text":"Possession","kind":"home"},{"text":"Child 1 starts class 1","kind":"child"}]},{"year":"2028","age":38,"kids":[7,3],"invested":7125822.723,"invested_real":6372826.6513,"goals":734784.8199,"loan":3161603.969,"pct":0.0861,"events":[{"text":"Pay commission for Earner 2 (with arrears)","kind":"money"}]},{"year":"2029","age":39,"kids":[8,4],"invested":9475162.4015,"invested_real":7994253.0022,"goals":1043803.693,"loan":2779723.1907,"pct":0.1376,"events":[]},{"year":"2030","age":40,"kids":[9,5],"invested":12251861.6013,"invested_real":9751859.6752,"goals":1395560.9123,"loan":2365735.4713,"pct":0.1904,"events":[{"text":"Crossed ₹1 Cr","kind":"money"}]},{"year":"2031","age":41,"kids":[10,6],"invested":14921689.4301,"invested_real":11204629.2934,"goals":1223039.8906,"loan":1916941.3931,"pct":0.2517,"events":[{"text":"Child 2 starts class 1","kind":"child"}]},{"year":"2032","age":42,"kids":[11,7],"invested":18845539.5874,"invested_real":13350028.9426,"goals":1541707.784,"loan":1430414.5831,"pct":0.3104,"events":[{"text":"Emergency fund full","kind":"good"}]},{"year":"2033","age":43,"kids":[12,8],"invested":23472697.7077,"invested_real":15686670.383,"goals":1913842.4962,"loan":902982.6305,"pct":0.3968,"events":[{"text":"Crossed ₹2 Cr","kind":"money"}]},{"year":"2034","age":44,"kids":[13,9],"invested":28846270.9939,"invested_real":18186602.688,"goals":2347166.7123,"loan":331206.4019,"pct":0.4976,"events":[]},{"year":"2035","age":45,"kids":[14,10],"invested":35349412.5319,"invested_real":21025108.0048,"goals":2850436.7464,"loan":0.0,"pct":0.613,"events":[{"text":"Home loan cleared","kind":"good"},{"text":"Crossed ₹3 Cr","kind":"money"}]},{"year":"2036","age":46,"kids":[15,11],"invested":43158757.3447,"invested_real":24216930.8212,"goals":3340190.0447,"loan":0.0,"pct":0.7472,"events":[]},{"year":"2037","age":47,"kids":[16,12],"invested":52105805.4254,"invested_real":27582296.1768,"goals":3896657.8413,"loan":0.0,"pct":0.8953,"events":[{"text":"Crossed ₹5 Cr","kind":"money"}]},{"year":"2038","age":48,"kids":[17,13],"invested":62512582.6555,"invested_real":31218057.8248,"goals":4528152.2667,"loan":0.0,"pct":1.0,"events":[{"text":"Independent (base case)","kind":"fi"}]},{"year":"2039","age":49,"kids":[18,14],"invested":70995784.6765,"invested_real":33447613.5843,"goals":1797941.0734,"loan":0.0,"pct":1.0,"events":[{"text":"Child 1 starts college","kind":"child"}]},{"year":"2040","age":50,"kids":[19,15],"invested":84431432.1444,"invested_real":37525878.1753,"goals":2043422.6637,"loan":0.0,"pct":1.0,"events":[]},{"year":"2041","age":51,"kids":[20,16],"invested":99751089.3145,"invested_real":41825244.6672,"goals":2317722.0994,"loan":0.0,"pct":1.0,"events":[]},{"year":"2042","age":52,"kids":[21,17],"invested":117190644.7904,"invested_real":46356210.0041,"goals":2623998.6946,"loan":0.0,"pct":1.0,"events":[{"text":"Crossed ₹10 Cr","kind":"money"},{"text":"Independent (stress case)","kind":"fi"}]},{"year":"2043","age":53,"kids":[22,18],"invested":130594670.0836,"invested_real":48734281.2351,"goals":0.0,"loan":0.0,"pct":1.0,"events":[{"text":"Child 2 starts college","kind":"child"}]},{"year":"2044","age":54,"kids":[23,19],"invested":152583072.2782,"invested_real":53716734.3767,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2045","age":55,"kids":[24,20],"invested":177542488.455,"invested_real":58965730.7161,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2046","age":56,"kids":[25,21],"invested":205766933.2975,"invested_real":64471400.1144,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2047","age":57,"kids":[26,22],"invested":237725311.7468,"invested_real":70268563.7898,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2048","age":58,"kids":[27,23],"invested":273873029.4904,"invested_real":76371101.0863,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2049","age":59,"kids":[28,24],"invested":314718694.1879,"invested_real":82793541.8196,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]},{"year":"2050","age":60,"kids":[29,25],"invested":360830178.6525,"invested_real":89551096.7495,"goals":0.0,"loan":0.0,"pct":1.0,"events":[]}],"phases":[{"title":"Now","when":"Nov 2026","ins":[{"name":"Earner 1 take-home","v":210000.0},{"name":"Earner 2 take-home","v":52000.0}],"outs":[{"name":"Living costs","v":84500.0},{"name":"Medical and insurance","v":6250.0},{"name":"School fees","v":6000.0},{"name":"Spending not listed","v":13100.0},{"name":"Rent","v":32000.0},{"name":"Home loan (EMI + prepayment)","v":47000}],"alloc":[{"name":"Emergency fund","v":8000.0},{"name":"Goal SIPs","v":17000.0},{"name":"Investments (left over)","v":48150.0}]},{"title":"After possession","when":"Jul 2027","ins":[{"name":"Earner 1 take-home","v":210000.0},{"name":"Earner 2 take-home","v":52000.0}],"outs":[{"name":"Living costs","v":84500.0},{"name":"Medical and insurance","v":6250.0},{"name":"School fees","v":6000.0},{"name":"Spending not listed","v":13100.0},{"name":"Maintenance","v":4000.0},{"name":"Home loan (EMI + prepayment)","v":52000}],"alloc":[{"name":"Emergency fund","v":8000.0},{"name":"Goal SIPs","v":17000.0},{"name":"Investments (left over)","v":71150.0}]},{"title":"After the loan is cleared","when":"Jun 2035","ins":[{"name":"Earner 1 take-home","v":360819.0978},{"name":"Earner 2 take-home","v":110685.6266}],"outs":[{"name":"Living costs","v":134680.1623},{"name":"Medical and insurance","v":11335.9023},{"name":"School fees","v":11105.5813},{"name":"Spending not listed","v":23575.2362},{"name":"Maintenance","v":6375.3923}],"alloc":[{"name":"Goal SIPs","v":19292.2993},{"name":"Investments (left over)","v":265140.1507}]}],"goals":[{"name":"Child 1s higher education","due":"2038","cost":6295425.292,"paid":3016140.5221,"short":3279284.7699},{"name":"Child 2s higher education","due":"2042","cost":8564856.6083,"paid":2623998.6946,"short":5940857.9137},{"name":"Car upgrade","due":"2031","cost":1125537.9173,"paid":518353.3115,"short":607184.6059}],"levers":[{"name":"Spend 10% less, now and in retirement","base":46.0,"stress":49.0,"delta":-1.0},{"name":"Rent the new house out","base":49.0,"stress":53.0,"delta":2.0},{"name":"Stop prepaying the loan (invest the money instead)","base":47.0,"stress":51.0,"delta":0.0},{"name":"Earner 2 also stops when the main earner stops","base":51.0,"stress":54.0,"delta":4.0},{"name":"Retirement spending 10% lower","base":46.0,"stress":50.0,"delta":-1.0}],"guesses":["Education costs rise 8% a year","Medical costs rise 4% a year faster than prices","5% of take-home goes on things not listed","About 5% tax on money drawn in retirement","Earner 2s basic pay is about 62% of take-home"],"guess_effects":[{"name":"Return after inflation in retirement: 2.5% vs 3.5%","low":48.0,"high":46.0,"spread":2.0},{"name":"Retirement spending: 10% more vs 10% less","low":48.0,"high":46.0,"spread":2.0},{"name":"Spending not listed: 10% vs 0% of take-home","low":48.0,"high":47.0,"spread":1.0},{"name":"Earner 2s pension: none vs as entered","low":48.0,"high":47.0,"spread":1.0},{"name":"Pay commission for Earner 2: +12% vs +18%","low":47.0,"high":47.0,"spread":0.0}],"term":{"years":20,"need":{"loan":3800000,"living":19874967.4408,"goals":5047936.8067},"have":{"investments":1750000,"goal_funds":220000,"pf":2050000,"others_income":9083948.1102,"cover":15000000},"gap":618956.1374},"todos":[{"when":"now","text":"Emergency fund covers about 1.1 months of fixed costs. Build it to at least 3 months first, then 6."},{"when":"now","text":"If the main earners income stopped today, thered be a shortfall of about ₹6L after investments, other income and existing cover. Thats the gap term insurance would need to fill; check it against your policy."},{"when":"now","text":"Check the family floater amount and consider a super top-up for large hospital bills."},{"when":"before possession","text":"The house is owned by Earner 2 but funded by Earner 1: under clubbing rules the rent is taxed as Earner 1s income. Check with a CA."},{"when":"before possession","text":"Budget separately for registration, interiors and furniture so the emergency fund and SIPs stay untouched."},{"when":"every year","text":"Step up SIPs with each raise; compare this years milestone row with your actual net worth."}],"assumptions":{"equity_return":0.11,"debt_return":0.065,"inflation":0.06,"retire_real_return":0.03,"live_to":95,"pf_return":0.0825,"nps_return":0.09,"education_inflation":0.08,"medical_inflation_extra":0.04,"unlisted_spending_share":0.05,"tax_on_retirement_spending":0.05,"stress":{"first_year":-0.3,"years":10,"real":0.01},"goal_derisk_months":36,"premium_age_bands":[[45,1.5],[55,2.0],[65,3.0]]},"flags":[]};
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = v => { if (v == null) return "–"; const a = Math.abs(v), s = v < 0 ? "−" : ""; return a >= 1e7 ? s + "₹" + (a / 1e7).toFixed(2) + " Cr" : a >= 1e5 ? s + "₹" + (a / 1e5).toFixed(1) + "L" : s + "₹" + Math.round(a).toLocaleString("en-IN"); };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const KIND = {home: "--accent2", good: "--good", money: "--money", child: "--kid", fi: "--accent"};
+
+$("#eyebrow").textContent = `${D.label} · as of ${D.as_of}${D.share ? " · share copy (amounts rounded)" : ""}`;
+const T = D.tiles;
+$("#tiles").innerHTML = [
+  ["Independent, base case", T.base == null ? "not by retirement" : "age " + Math.round(T.base), T.need == null ? "" : `needs about ${inr(T.need)} in today's money`, "--accent"],
+  ["Independent, stress case", T.stress == null ? "not by retirement" : "age " + Math.round(T.stress), T.need_stress == null ? "" : `if the first decade goes badly: ${inr(T.need_stress)}`, "--accent2"],
+  ["Home loan cleared", T.loan || "–", T.loan_age ? `age ${T.loan_age}; the EMI then goes to savings` : "", "--fg"],
+  ["Emergency fund full", T.emg || "not reached", "target in months of fixed costs", T.emg ? "--good" : "--warn"],
+].map(([k, v, d, c]) => `<div class="tile"><span class="k">${esc(k)}</span><span class="v" style="color:var(${c})">${esc(v)}</span><span class="d">${esc(d)}</span></div>`).join("");
+
+(function chart() {
+  const svg = $("#chart"), W = 760, H = 320, m = {l: 56, r: 16, t: 14, b: 32}, P = D.path;
+  if (!P.length) return;
+  const maxY = Math.max(...P.map(x => Math.max(x.have, x.req_stress))) * 1.05, a0 = P[0].age, a1 = P[P.length - 1].age;
+  const sx = a => m.l + (a - a0) / (a1 - a0 || 1) * (W - m.l - m.r), sy = v => H - m.b - v / maxY * (H - m.t - m.b);
+  const el = (t, at) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); svg.appendChild(e); return e; };
+  const step = maxY > 4e7 ? 1e7 : maxY > 1.5e7 ? 5e6 : 2e6;
+  for (let v = 0; v <= maxY; v += step) { el("line", {x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), stroke: css("--line")}); const t = el("text", {x: m.l - 8, y: sy(v) + 4, "text-anchor": "end", "font-size": 11}); t.textContent = v ? (v / 1e7).toFixed(v % 1e7 ? 1 : 0) + " Cr" : "0"; }
+  for (let a = Math.ceil(a0 / 5) * 5; a <= a1; a += 5) { const t = el("text", {x: sx(a), y: H - 10, "text-anchor": "middle", "font-size": 11}); t.textContent = "age " + a; }
+  const line = (k, col, dash, w) => el("path", {d: P.map((x, i) => (i ? "L" : "M") + sx(x.age).toFixed(1) + " " + sy(x[k]).toFixed(1)).join(""), fill: "none", stroke: css(col), "stroke-width": w, "stroke-dasharray": dash || "", "stroke-linejoin": "round"});
+  el("path", {d: P.map((x, i) => (i ? "L" : "M") + sx(x.age).toFixed(1) + " " + sy(x.have).toFixed(1)).join("") + `L${sx(a1)} ${sy(0)}L${sx(a0)} ${sy(0)}Z`, fill: css("--accent"), "fill-opacity": .1, stroke: "none"});
+  line("req_stress", "--accent2", "3 4", 1.5); line("req", "--accent2", "7 5", 2); line("have", "--accent", "", 2.5);
+  for (const [k, lab] of [["base", "base"], ["stress", "stress"]]) if (T[k] != null) { const x = P.find(q => Math.round(q.age) === Math.round(T[k])); if (x) { el("circle", {cx: sx(x.age), cy: sy(x.have), r: 6, fill: css(k === "base" ? "--accent" : "--accent2"), stroke: css("--surface"), "stroke-width": 2}); const t = el("text", {x: sx(x.age) + 8, y: sy(x.have) - 10, "font-size": 12, "font-weight": 600}); t.style.fill = css("--fg"); t.textContent = `${lab}: ${Math.round(T[k])}`; } }
+  const tip = $("#tip"), hit = el("rect", {x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent"});
+  hit.addEventListener("pointermove", e => { const b = svg.getBoundingClientRect(), age = a0 + ((e.clientX - b.left) / b.width * W - m.l) / (W - m.l - m.r) * (a1 - a0);
+    const x = P.reduce((p, q) => Math.abs(q.age - age) < Math.abs(p.age - age) ? q : p); tip.innerHTML = `<b>Age ${Math.round(x.age)}</b><br>Investments ${inr(x.have)}<br>Needed ${inr(x.req)} · stress ${inr(x.req_stress)}`; tip.hidden = false; tip.style.left = Math.min(e.clientX + 14, innerWidth - 270) + "px"; tip.style.top = e.clientY + 14 + "px"; });
+  hit.addEventListener("pointerleave", () => tip.hidden = true);
+  $("#legend").innerHTML = `<span><i class="sw" style="background:var(--accent)"></i>Investments (today's ₹)</span><span><i class="sw" style="background:var(--accent2)"></i>Needed, base case</span><span><i class="sw" style="background:var(--accent2);opacity:.6"></i>Needed, stress case (dotted)</span>`;
+})();
+
+$("#mile").innerHTML = `<thead><tr><th>Year</th><th class="n">Investments</th><th class="n">Loan left</th><th>To base target</th><th>Milestones</th></tr></thead><tbody>` +
+  D.miles.map(r => { const hit = r.events.some(e => e.kind === "fi"); const kids = r.kids.filter(k => k != null);
+    return `<tr${hit ? ' class="hit"' : ""}><td><b>${esc(r.year)}</b><br><span class="m2">age ${r.age}${kids.length ? " · children " + kids.join(", ") : ""}</span></td>` +
+      `<td class="n"><b>${inr(r.invested)}</b><br><span class="m2">${inr(r.invested_real)} today${r.goals ? " · goal funds " + inr(r.goals) : ""}</span></td>` +
+      `<td class="n">${r.loan > 0 ? inr(r.loan) : "–"}</td>` +
+      `<td>${r.pct == null ? "" : `<span class="num" style="font-size:.82rem">${Math.round(r.pct * 100)}%</span><div class="bar"><i style="width:${r.pct * 100}%"></i></div>`}</td>` +
+      `<td>${r.events.map(e => `<span class="chip"><i style="background:var(${KIND[e.kind] || "--muted"})"></i>${esc(e.text)}</span>`).join("")}</td></tr>`; }).join("") + "</tbody>";
+
+$("#phases").innerHTML = D.phases.map(ph => { const sum = a => a.reduce((s, x) => s + (x.v || 0), 0);
+  const rows = (a, sign) => a.map(x => `<div class="row"><span>${esc(x.name)}</span><span class="num">${sign}${inr(x.v)}</span></div>`).join("");
+  return `<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3>${esc(ph.title)}</h3><span class="note">${esc(ph.when)}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Money in</div>${rows(ph.ins, "")}<div class="row t"><span>Total</span><span class="num">${inr(sum(ph.ins))}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Money out</div>${rows(ph.outs, "")}<div class="row t"><span>Total</span><span class="num">${inr(sum(ph.outs))}</span></div>` +
+    `<div class="eyebrow" style="margin-top:10px">Where the rest goes</div>${rows(ph.alloc, "")}</div>`; }).join("");
+
+$("#goals").innerHTML = `<thead><tr><th>Goal</th><th class="n">Cost then</th><th class="n">Fund covers</th><th class="n">Shortfall</th></tr></thead><tbody>` +
+  D.goals.map(g => `<tr><td><b>${esc(g.name)}</b><br><span class="m2">${esc(g.due)}</span></td><td class="n">${inr(g.cost)}</td><td class="n">${inr(g.paid)}</td><td class="n" style="color:var(${g.short > 1 ? "--crit" : "--good"})">${g.short > 1 ? inr(g.short) : "covered"}</td></tr>`).join("") + "</tbody>";
+
+const ageTxt = a => a == null ? "not by retirement" : "age " + Math.round(a);
+$("#levers").innerHTML = D.levers.map(l => `<div class="row"><span>${esc(l.name)}</span><span class="num">${ageTxt(l.base)}${l.delta ? ` <span class="m2">(${l.delta > 0 ? "+" : "−"}${Math.abs(l.delta).toFixed(0)}y)</span>` : ""}</span></div>`).join("");
+$("#geff").innerHTML = D.guess_effects.map(g => `<div class="row"><span>${esc(g.name)}</span><span class="num">${ageTxt(g.low)} – ${ageTxt(g.high)}</span></div>`).join("") +
+  (D.guesses.length ? `<p class="note" style="margin-top:8px">Assumed: ${D.guesses.map(esc).join("; ")}.</p>` : "");
+
+const t = D.term, NAME = {loan: "Home loan still owed", living: `Household costs for ${t.years} years`, goals: "Goals (today's value)", investments: "Investments and emergency fund", goal_funds: "Goal funds", pf: "PF / GPF balances", others_income: `Other earners' income for ${t.years} years`, cover: "Existing term cover"};
+$("#term").innerHTML = `<div class="cols"><div><div class="eyebrow">Needed</div>${Object.entries(t.need).map(([k, v]) => `<div class="row"><span>${NAME[k]}</span><span class="num">${inr(v)}</span></div>`).join("")}</div>` +
+  `<div><div class="eyebrow">Available</div>${Object.entries(t.have).map(([k, v]) => `<div class="row"><span>${NAME[k]}</span><span class="num">${inr(v)}</span></div>`).join("")}</div></div>` +
+  `<p style="margin-top:12px"><b>${t.gap > 0 ? "Shortfall: " + inr(t.gap) : "No shortfall"}</b> <span class="note">· a gap analysis in today's money, not a recommendation to buy any policy. Check the result against your own cover with a professional.</span></p>`;
+
+const groups = {};
+D.todos.forEach(x => (groups[x.when] = groups[x.when] || []).push(x.text));
+$("#todos").innerHTML = Object.entries(groups).map(([w, items]) => `<div class="panel"><h3 style="margin-bottom:10px">${esc(w[0].toUpperCase() + w.slice(1))}</h3><ul class="todo">${items.map(i => `<li><span class="box"></span><span>${esc(i)}</span></li>`).join("")}</ul></div>`).join("");
+
+const A = D.assumptions;
+$("#how").innerHTML = [
+  `A monthly ledger: each earner's take-home (growing yearly, with any pay commission paid with arrears) plus rent received, minus spending, rent, EMI and premiums. What's left goes to the emergency fund, then goal SIPs, then investments. Medical costs rise ${Math.round(A.medical_inflation_extra * 100)}% a year faster than prices (${Math.round(A.inflation * 100)}%); education ${Math.round(A.education_inflation * 100)}%.`,
+  `Investments earn ${Math.round(A.equity_return * 100)}% a year before the stop date. After it, money left must last to age ${A.live_to} at ${(A.retire_real_return * 100).toFixed(1)}% above inflation (base case), or survive a ${Math.round(A.stress.first_year * 100)}% first year followed by ${A.stress.years} years at ${(A.stress.real * 100).toFixed(0)}% (stress case). About ${Math.round(A.tax_on_retirement_spending * 100)}% is added for tax on money drawn.`,
+  `Pensions: old-scheme pension = % of last basic, pro-rated by service, with dearness relief keeping it in line with prices; UPS and NPS by their own rules (NPS annuity fixed in rupees). PF becomes spendable at its withdrawal age, NPS at 60. A partner who keeps working covers spending only after the stop date; nothing is added to investments after it.`,
+  `Rules and defaults come from the plugin's static files (pension, pay commission, tax, liquidity), each with an as-of date and marked "verify". This is planning maths, not financial, tax or insurance advice; the author is not a SEBI-registered adviser.`,
+].map(s => `<p>${esc(s)}</p>`).join("");
+</script>

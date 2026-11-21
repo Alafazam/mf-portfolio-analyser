@@ -1,0 +1,110 @@
+{
+ "schema": "mfpa-plan/1",
+ "label": "",
+ "as_of": "",
+ "earners": [
+  {
+   "name": "Earner 1",
+   "age": 0,
+   "take_home": 0,
+   "growth": 0.07,
+   "employer": "private",
+   "pf": {
+    "type": "EPF",
+    "balance": 0,
+    "monthly": 0
+   },
+   "pension": {
+    "type": "none"
+   },
+   "retire_age": 60,
+   "keeps_working": false
+  },
+  {
+   "name": "Earner 2",
+   "age": 0,
+   "take_home": 0,
+   "growth": 0.07,
+   "employer": "private",
+   "pf": {
+    "type": "none",
+    "balance": 0,
+    "monthly": 0
+   },
+   "pension": {
+    "type": "none"
+   },
+   "retire_age": 60,
+   "keeps_working": true,
+   "_help": "Delete this earner if there is only one. employer: private / central_govt / state_govt / business. pension.type: none / NPS / UPS / OPS (for OPS add pct, min_years, full_years, service_years_now)."
+  }
+ ],
+ "home": {
+  "loan": {
+   "balance": 0,
+   "rate": 0.085,
+   "emi": 0,
+   "prepay_now": 0,
+   "prepay_after": 0
+  },
+  "rent_now": 0,
+  "possession_months": 0,
+  "after_possession": "move_in",
+  "let_out": {
+   "rent": 0,
+   "owner": "Earner 1",
+   "funded_by": "Earner 1"
+  },
+  "_help": "Remove let_out if you won't rent the house out. possession_months: 0 if you already live there."
+ },
+ "spending": {
+  "household": 0,
+  "card_needs": 0,
+  "card_wants": 0,
+  "transfers": 0,
+  "bills": 0,
+  "travel": 0,
+  "other": 0,
+  "medical": 0,
+  "insurance_premiums_yearly": 0
+ },
+ "children": [
+  {
+   "name": "Child 1",
+   "age": 0,
+   "school_fee": 0,
+   "cost_today": 2500000,
+   "fund_now": 0,
+   "sip": 0,
+   "sip_step": 0.1
+  }
+ ],
+ "goals": [],
+ "investments": {
+  "mutual_funds": 0,
+  "stocks": 0,
+  "other": 0
+ },
+ "emergency": {
+  "now": 0,
+  "target_months": 6,
+  "top_up": 0,
+  "seed": 0
+ },
+ "insurance": {
+  "term_cover": 0,
+  "health_floater": 0,
+  "super_top_up": 0
+ },
+ "retirement": {
+  "spend_today": null,
+  "_help": "Yearly spending in retirement in today's rupees; leave null to use today's living costs."
+ },
+ "assumptions": {
+  "equity_return": 0.11,
+  "debt_return": 0.065,
+  "inflation": 0.06,
+  "retire_real_return": 0.03,
+  "live_to": 95
+ }
+}

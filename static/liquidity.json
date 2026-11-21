@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "as_of": "2026-11-23",
+ "source": "EPFO, PFRDA and PPF rules as commonly applied; partial withdrawals ignored. Verify.",
+ "EPF": {
+  "available_from_age": 55,
+  "or_on_retirement": true
+ },
+ "GPF": {
+  "available_on_retirement": true
+ },
+ "NPS": {
+  "available_from_age": 60
+ },
+ "PPF": {
+  "term_years": 15
+ }
+}

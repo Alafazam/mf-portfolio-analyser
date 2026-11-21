@@ -1,10 +1,80 @@
 {
- "version": 1, "as_of": "2026-11-22", "fy": "2026-27",
+ "version": 1,
+ "as_of": "2026-11-22",
+ "fy": "2026-27",
  "source": "Income-tax Act 1961 s.111A/112A/50AA as amended by Finance (No.2) Act 2024; Income-tax Act 2025 in force from 1 Apr 2026 (verify section numbers). Rates assumed unchanged for later years.",
- "equity": {"ltcg_exemption": 125000, "ltcg_rate": 0.125, "stcg_rate": 0.20, "long_term_after_months": 12},
- "other": {"ltcg_rate": 0.125, "long_term_after_months": 24, "short_term": "slab rate", "exemption": 0},
- "specified_50AA": {"from": "2023-04-01", "rate": "slab rate, any holding period"},
- "cess": 0.04, "elss_lock_months": 36, "grandfather_date": "2018-01-31",
- "costs": {"stamp_duty": 0.00005, "stt_equity_redemption": 0.00001, "default_exit_load": {"rate": 0.01, "within_days": 365, "note": "check the scheme document; many index funds and ELSS differ"}},
- "planning": {"buffer": 0.05, "tiny_leftover_share": 0.01}
+ "equity": {
+  "ltcg_exemption": 125000,
+  "ltcg_rate": 0.125,
+  "stcg_rate": 0.2,
+  "long_term_after_months": 12
+ },
+ "other": {
+  "ltcg_rate": 0.125,
+  "long_term_after_months": 24,
+  "short_term": "slab rate",
+  "exemption": 0
+ },
+ "specified_50AA": {
+  "from": "2023-04-01",
+  "rate": "slab rate, any holding period"
+ },
+ "cess": 0.04,
+ "elss_lock_months": 36,
+ "grandfather_date": "2018-01-31",
+ "costs": {
+  "stamp_duty": 5e-05,
+  "stt_equity_redemption": 1e-05,
+  "default_exit_load": {
+   "rate": 0.01,
+   "within_days": 365,
+   "note": "check the scheme document; many index funds and ELSS differ"
+  }
+ },
+ "planning": {
+  "buffer": 0.05,
+  "tiny_leftover_share": 0.01
+ },
+ "income_tax_new_regime": {
+  "fy": "2026-27",
+  "slabs": [
+   [
+    400000,
+    0
+   ],
+   [
+    800000,
+    0.05
+   ],
+   [
+    1200000,
+    0.1
+   ],
+   [
+    1600000,
+    0.15
+   ],
+   [
+    2000000,
+    0.2
+   ],
+   [
+    2400000,
+    0.25
+   ],
+   [
+    null,
+    0.3
+   ]
+  ],
+  "rebate_taxable_upto": 1200000,
+  "standard_deduction_salary": 75000,
+  "cess": 0.04,
+  "house_property": {
+   "standard_deduction": 0.3,
+   "let_out_interest": "deductible against the property's rent; a loss can't be set off against salary in the new regime",
+   "clubbing": "rent from a house funded by one spouse and owned by the other is taxed in the funder's hands unless adequate consideration was paid"
+  },
+  "source": "New regime slabs and rebate as in force for FY 2025-26, assumed unchanged for FY 2026-27 under the Income-tax Act 2025 (verify)."
+ }
 }

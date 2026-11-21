@@ -163,3 +163,137 @@ Stocks, NPS, EPF, US stocks; debt fund selection; placing orders; other CAS layo
 | 25 | No versioning of static data (Low) | **Accepted.** `{version, as_of, source}` everywhere. |
 
 Critic's "cut from v1" list — partly taken: cut summary-CAS input, the direct/regular/both toggle, the hard-coded mid-cap option B (replaced by generic shape detection), pre-2018 long run, and the 400-fund default fetch. **Kept:** INDmoney (your decision; optional), falls and recoveries (appendix), what-if (labelled), case-for-change (now with break-even).
+
+---
+
+## 16. Family plan module (v0.2)
+
+A second module of the same plugin: from a short interview, build a family money plan — monthly budget by phase, emergency fund, children's and other goals, home loan and house choices, and the age at which the family could stop depending on salary — as one self-contained page. It generalises a personal prototype (a private `family-plan.html`, which stays untouched) into options, not special cases.
+
+Status: built in v0.2.0 (Nov 2026). `schema.py`, `solver.py` and `levers.py` from 16.8 live inside `model.py` for now.
+
+### 16.1 Who and why
+- The same users as the fund analyser, usually one or two earners, a home loan, young children, spending spread over credit cards and two cities.
+- They ask "is my budget OK?", "when can I stop working?", "what moves that date?". No free tool answers this with Indian specifics (pay commissions, OPS/NPS, EPF lock-in, education inflation, rent vs move-in).
+
+### 16.2 Interview (asked by the skill, multiple choice where possible)
+| Group | Questions |
+|---|---|
+| Earners (1–3) | take-home, employer type (private / central govt / state govt / business), yearly growth, EPF or GPF contribution, pension scheme (none / NPS / OPS), age, retirement age, years of service at retirement, does this earner keep working after the main earner stops |
+| Home | own / renting / both; loan balance, rate, EMI, prepayment; under construction (months to possession); after possession: move in or rent out (rent, increase %, vacant months); who legally owns it |
+| Spending | household, rent, transfers to family, card spend (needs vs wants split), bills, travel between cities, other fixed monthly items |
+| Children (any number) | age, goal (school / higher education / both), today's cost, current fund value, SIP |
+| Other goals | car, wedding, house upgrade, parents' care: amount in today's ₹, year, inflation |
+| Safety | emergency money today, term cover amount, health cover (incl. all children added?), other loans |
+| Investments | taken from the fund analyser run (`--from-run`), or entered: mutual funds, stocks, EPF/GPF, PPF, NPS |
+| Retirement | yearly spending in today's ₹ (default: today's living costs without rent, EMI and SIPs) |
+
+All answers go into one `plan.json` (versioned schema). The interview can be skipped by editing the file; every field has a default and a source note.
+
+### 16.3 Model (revised after review round 2)
+One monthly **cash-flow ledger**, implemented once in Python (`mfpa/plan/model.py`); the page only displays its results.
+
+- **Ledger, every month:** inflows (each earner's take-home, rent received, arrears) − outflows (spending by category, rent paid, EMI + prepayment, insurance premiums, goal payouts) = **surplus**. The surplus goes, in order, to the emergency fund (until its target), the goal SIPs the user set, then the general corpus. Typed SIPs are an **allocation of the surplus, not extra money**; if the surplus can't cover them, the page says so. A negative month draws from the emergency fund, then the corpus, and is flagged. Conservation is tested: inflows = outflows + change in all balances.
+- **Spending inflation:** general spending at CPI; **medical and health premiums at CPI + 4%**, with premium jumps at age bands; school costs end with each child's schooling; optional "lifestyle creep" (share of each raise spent).
+- **Earners:** take-home grows yearly; optional career break (from year X for N years, back at Y% of pay); optional basic pay (default share of take-home by employer type, flagged as a guess).
+- **Pay commission:** a change in gross pay with an effective date and a later payout date with arrears; default **+15% net** (band 12–18%), labelled "not yet announced". No repeating later commissions in v0.2.
+- **Pensions** (typed: none / NPS / UPS / OPS):
+  - **OPS:** pension = % (default 50%) × max(last basic, average of last 10 months), pro-rated below the full-service years the user enters; **dearness relief** paid on top (indexed to CPI) and revised at pay commissions; optional commutation (up to 40% as a lump sum, restored after 15 years).
+  - **UPS:** 50% of the last 12 months' average basic at 25+ years, pro-rated down to 10 years, ₹10,000 minimum, indexed; lump sum of 1/10 of monthly pay per completed six months. Marked "verify".
+  - **NPS:** corpus from contributions; at exit the annuity share by sector (government 40%, others per current rules, "verify"); **annuity fixed in nominal rupees**, taxed at slab.
+  - **No per-state OPS table:** the user enters pension %, minimum and full-service years (central-rule defaults), with a pointer to their state's notification.
+- **Liquidity table** for the bridge check: EPF from 55 (or on retirement), NPS from 60 (early-exit rule), GPF on retirement, PPF at maturity. The check counts only money available in each year.
+- **Home loan:** monthly amortisation with prepayment (reduce tenure); floating-rate sensitivity row (+1%); pre-EMI interest until possession.
+- **House choice:** move in vs rent out with **net rent** (rent × (1 − vacancy) − maintenance, both rents growing). Rent tax follows the **funding source** (clubbing applies when one spouse funded a house owned by the other), joint-ownership shares, new-regime interest rules (no loss set-off against salary) and the rebate; slabs live in `static/tax_rules.json`, citing the Income-tax Act 2025.
+- **Goals:** separate buckets with their own SIP and inflation; **moved to debt returns over the last 36 months**; never part of the independence corpus.
+- **Emergency fund:** target in months of fixed outgo; kept **out** of the independence corpus.
+- **Independence test** (main earner's stop month = "independence age"):
+  - required at the stop month = PV of after-tax retirement spending + PV of **goal shortfalls still to be paid** + outstanding loan (or remaining EMIs) + PV of continuing rent if renting;
+  - a partner who keeps working covers spending only through the solver's cash flows; **all projection contributions stop at the stop month**, so partner income is counted once;
+  - pensions enter from their start dates, with a survivor phase (family pension %, a lever, not a blanket "50% counted");
+  - **base** case at a real return (default 3%) and a **stress case** (−30% in year one, then 1% real for ten years); the page reports both ages and says plainly that this is not a probability.
+- **Levers:** each recomputed one at a time (step-up, spending cut, house choice, prepay vs invest, partner keeps working, pension counted) and shown as "not additive", plus one combined row.
+- **Stress rows:** main earner's income stops next year (death or job loss) → shortfall after assets, spouse income and goals = the **term-cover gap** (zero when assets cover it); a partner's career break.
+- **"Guesses that move your age most":** the same engine run on the defaulted inputs (pension %, pay-commission jump, retirement spending, return), listed on the page.
+
+### 16.4 Outputs (revised)
+1. The **family plan page**: headline tiles (base and stress independence ages, corpus needed, loan cleared, emergency fund full) with the disclaimer beside the age; path chart; **yearly milestones** (ages, invested, % to target, events incl. ₹1/2/3 Cr crossings, possession, loan cleared, school and college, pay commission, retirements, independence); budget by phase; goals; levers; stress and term-cover gap; guesses that move the age; to-do list; method and limits.
+2. **No editable panel in v0.2**: change `plan.json` and regenerate, so there is one tested model.
+3. `plan.json` + `plan-result.json` in `~/.mfpa/plans/<name>/` (0700). The starting corpus can come from a fund run (`--from-run`); no other overlay with the fund plan in v0.2.
+4. **Share copy** (`--share`): amounts rounded to bands, children shown as Child 1/2 with no ages, no ownership or transfer fields. Publishing is offered only for the share copy, after the user sees what it contains.
+
+### 16.5 To-do rules (revised)
+- Emergency fund under 3 months of fixed outgo → first item (seed from tax-free fund sales if a fund run exists).
+- Term cover shown as a **gap analysis** (shortfall if income stopped today), never "you need ₹X".
+- Health: floater + super top-up; any child under 1 → add to the policy within the insurer's window.
+- House funded by one spouse but owned by the other → clubbing note; rent paid to a spouse while claiming HRA (old regime) → HRA note; both "check with a CA".
+- Spending: if needs vs wants are unknown, ask for the split (no fixed card-spend threshold).
+- Yearly: step up with raises; compare the milestone row with actual net worth.
+
+### 16.6 Wording, safety, privacy (revised)
+- Planning maths with ranges; "candidate" actions; disclaimer next to the headline age; insurance only as a gap; tax only as flags; not a SEBI-registered adviser, not insurance or tax advice.
+- Personal files in `~/.mfpa/plans/` (0700); the page works offline and stores nothing in the browser; publishing only of the share copy.
+- The sample family is synthetic; the local leak check covers the author's real plan values.
+
+### 16.7 Static data (revised)
+- `pay_commission.json`: default net jump and band, "not yet announced", typical payout lag.
+- `pension_defaults.json`: OPS central-rule defaults (50%, 10 and 20 years), UPS rules, NPS annuity share by sector and default annuity rate — all "verify".
+- `household_defaults.json`: medical inflation, premium age bands, education inflation, rent growth, vacancy, maintenance, de-risking window.
+- `liquidity.json`: EPF, NPS, GPF, PPF availability ages.
+- `tax_rules.json`: add new-regime slabs, rebate limit and house-property rules for FY 2026-27 (Income-tax Act 2025).
+
+### 16.8 Packaging
+- `mfpa/plan/` — `schema.py`, `model.py` (ledger, pensions, loans, goals), `solver.py`, `levers.py`, `build.py`, `template.html`.
+- `commands/plan-family.md` → `/plan-family`; `skills/mf-portfolio-analyser/references/plan.md`.
+- CLI: `python3 -m mfpa plan --init NAME`, `plan --file plan.json [--from-run DIR] [--share] [--as-of DATE]`, `plan-sample`.
+- Interview: **10 core questions** (earners' take-home, age, employer type, pension scheme; total spending; loan balance and EMI; children's ages; investments or `--from-run`), then an optional refine pass; every defaulted field is tagged.
+
+### 16.9 Tests
+- OPS golden case (basic × %, dearness relief on top, pro-rating, commutation); UPS at 10, 20 and 25 years; NPS annuity flat nominal.
+- Liquidity: EPF at 55, NPS at 60.
+- Ledger conservation every month; SIPs larger than surplus are capped and flagged.
+- A college goal after the independence date is counted in the required corpus.
+- Partner income counted once: no contributions after the stop month.
+- Real/nominal invariance at zero inflation; stress case never earlier than base.
+- Loan amortisation against the EMI formula; payoff with prepayment.
+- Rent tax: funding-source clubbing and the new-regime rebate.
+- Pay commission arrears paid on the payout date.
+- Sample page regenerated with a fixed `--as-of` date and diffed.
+
+### 16.10 Out of scope (v0.2)
+Monte Carlo simulation; per-state OPS tables; a third earner; repeating future pay commissions; an editable in-page panel; overlaying the fund plan's steps; filing taxes or choosing a regime; insurance product selection; property valuation and selling the house; NRI/foreign income; non-English pages.
+
+### 16.11 Decisions
+| # | Question | Decision |
+|---|---|---|
+| F-Q1 | Skill | Section of the existing skill + `/plan-family` |
+| F-Q2 | Uncertainty | Deterministic base + one historical-style stress case; no Monte Carlo |
+| F-Q3 | Pension rules | No state table; the user enters pension %, minimum and full-service years |
+| F-Q4 | House | Not in the independence corpus; shown as a separate line |
+| F-Q5 | Fund link | Only when asked (`--from-run`) |
+
+### 16.12 Adversarial review, round 2 — dispositions
+| # | Finding (severity) | Decision |
+|---|---|---|
+| 1 | OPS base wrongly includes DA (Critical) | **Adjusted.** Total paid = % × basic + dearness relief at the DA rate, which equals % × (basic + DA); now written precisely, with DR indexation, pay-commission revision and commutation. |
+| 2 | Two sources of truth for savings (Critical) | **Accepted.** One ledger; SIPs are an allocation of the surplus. |
+| 3 | Goals and liabilities after independence ignored; emergency fund double counted (Critical) | **Accepted.** |
+| 4 | UPS missing (Critical) | **Accepted.** Typed scheme with UPS rules, "verify". |
+| 5 | Pay-commission jump overstated (High) | **Accepted.** Gross change, effective and payout dates, arrears, default +15% net. |
+| 6 | EPF lock-in age, NPS/PPF liquidity (High) | **Accepted.** Liquidity table. |
+| 7 | Sequence risk; pre-tax spending (High) | **Accepted.** Stress case, after-tax spending. |
+| 8 | Partner income and levers double counted (High) | **Accepted.** |
+| 9 | Rent tax and clubbing mixed up (High) | **Accepted.** Funding-source test, rebate, slabs in tax_rules. |
+| 10 | Per-state OPS table will be wrong (High) | **Accepted.** |
+| 11 | Medical inflation, premiums, creep (High) | **Accepted.** |
+| 12 | Basic vs take-home (Medium) | **Accepted.** Optional basic, flagged guess. |
+| 13 | NPS annuity nominal, sector rules (Medium) | **Accepted.** |
+| 14 | Career break, job loss, death (Medium) | **Accepted.** Stress rows; term cover as a gap. |
+| 15 | Advice and insurance wording (Medium) | **Accepted.** |
+| 16 | Children's data when shared (Medium) | **Accepted.** Share copy; no browser storage. |
+| 17 | Goal glide path, floating rate, pre-EMI (Medium) | **Accepted.** |
+| 18 | Interview too long (Medium) | **Accepted.** 10 core + refine; defaults tagged. |
+| 19 | Tests can't catch these (Medium) | **Accepted.** 16.9 replaced. |
+| 20 | Survivor phase; blanket 50% pension (Low) | **Accepted.** |
+
+Reviewer's cuts taken except two: **yearly milestones and ₹ crossing events stay** (the author asked for them), and vacancy/maintenance stay as inputs folded into one net-rent figure.

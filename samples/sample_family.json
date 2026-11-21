@@ -1,0 +1,37 @@
+{
+ "schema": "mfpa-plan/1",
+ "label": "Sample family (made up)",
+ "as_of": "2026-11-01",
+ "earners": [
+  {"name": "Earner 1", "age": 36, "take_home": 210000, "growth": 0.07, "employer": "private",
+   "pf": {"type": "EPF", "balance": 1900000, "monthly": 21600},
+   "pension": {"type": "none"}, "retire_age": 60, "keeps_working": false},
+  {"name": "Earner 2", "age": 34, "take_home": 52000, "growth": 0.08, "employer": "state_govt",
+   "pay_commission": {"effective": "2026-01", "payout": "2028-04", "net_jump": 0.15},
+   "pf": {"type": "GPF", "balance": 150000, "monthly": 4000},
+   "pension": {"type": "OPS", "pct": 0.5, "min_years": 10, "full_years": 20, "service_years_now": 2},
+   "retire_age": 60, "keeps_working": true}
+ ],
+ "home": {
+  "loan": {"balance": 3800000, "rate": 0.081, "emi": 42000, "prepay_now": 5000, "prepay_after": 10000},
+  "rent_now": 32000, "rent_growth": 0.06,
+  "possession_months": 8,
+  "after_possession": "move_in",
+  "let_out": {"rent": 28000, "growth": 0.05, "vacant_months": 1, "owner": "Earner 2", "funded_by": "Earner 1"},
+  "maintenance": 4000
+ },
+ "spending": {"household": 38000, "card_needs": 12000, "card_wants": 15000, "transfers": 10000, "bills": 3500, "travel": 0, "other": 6000,
+              "medical": 2500, "insurance_premiums_yearly": 45000},
+ "children": [
+  {"name": "Child 1", "age": 6, "school_fee": 6000, "cost_today": 2500000, "fund_now": 180000, "sip": 6000, "sip_step": 0.10},
+  {"name": "Child 2", "age": 2, "school_fee": 0, "cost_today": 2500000, "fund_now": 40000, "sip": 3000, "sip_step": 0.10}
+ ],
+ "goals": [
+  {"name": "Car upgrade", "cost_today": 900000, "year": 2031, "inflation": 0.05, "fund_now": 0, "sip": 8000}
+ ],
+ "investments": {"mutual_funds": 1450000, "stocks": 120000, "other": 0},
+ "emergency": {"now": 180000, "target_months": 6, "top_up": 8000, "seed": 0},
+ "insurance": {"term_cover": 15000000, "health_floater": 1000000, "super_top_up": 0},
+ "retirement": {"spend_today": 1100000},
+ "assumptions": {"equity_return": 0.11, "debt_return": 0.065, "inflation": 0.06, "retire_real_return": 0.03, "live_to": 95}
+}

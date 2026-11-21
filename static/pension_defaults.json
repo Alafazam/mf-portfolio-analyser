@@ -1,0 +1,44 @@
+{
+ "version": 1,
+ "as_of": "2026-11-23",
+ "source": "Central civil service pension rules as commonly applied; UPS notified by the Government of India in 2025; PFRDA exit rules. All values: verify with the employer or the state's notification.",
+ "OPS": {
+  "pct_of_last_basic": 0.5,
+  "basis": "higher of last basic and average of last 10 months",
+  "min_years": 10,
+  "full_years": 20,
+  "dearness_relief": "paid on the pension at the prevailing DA rate (indexed to inflation)",
+  "commutation": {
+   "max_share": 0.4,
+   "factor_years": 8.4,
+   "restored_after_years": 15
+  },
+  "family_pension_pct": 0.3
+ },
+ "UPS": {
+  "pct_of_avg_basic": 0.5,
+  "basis": "average basic of the last 12 months",
+  "full_years": 25,
+  "min_years": 10,
+  "min_pension": 10000,
+  "lump_sum": "1/10 of monthly basic + DA for each completed 6 months of service",
+  "family_pension_pct": 0.6,
+  "indexed": true
+ },
+ "NPS": {
+  "annuity_share": {
+   "government": 0.4,
+   "other": 0.2
+  },
+  "annuity_rate": 0.065,
+  "annuity_indexed": false,
+  "lump_sum_tax_free": true,
+  "locked_until_age": 60
+ },
+ "basic_share_of_take_home_default": {
+  "central_govt": 0.6,
+  "state_govt": 0.62,
+  "private": 0.4,
+  "business": 0.0
+ }
+}

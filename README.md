@@ -14,8 +14,9 @@ A Claude Code plugin that looks at a **whole Indian mutual fund portfolio**, not
 - **Tax calendar on your real purchase lots:** oldest units first, only long-term and unlocked lots, within each year's ₹1.25L room after gains you've already booked; anything beyond four years shown with the tax of doing it now.
 - **SIP review:** where each SIP would go by score, with a rebalance option when mid and small caps dominate.
 - **Falls and recoveries, peer check, fund detail,** and a single offline **HTML report**.
+- **Family money plan** (`/plan-family`): budget by phase, emergency fund, children's goals, home loan and rent-vs-move-in, OPS/UPS/NPS pensions and pay commissions, yearly milestones, and the age the family could stop depending on salary in a base and a stress case.
 
-Website: **[alafazam.com/mf-portfolio-analyser](https://alafazam.com/mf-portfolio-analyser/)**. See it on made-up data: [`samples/sample-report.html`](samples/sample-report.html) (a made-up investor holding real funds; purchases invented, values from real NAVs).
+Website: **[alafazam.com/mf-portfolio-analyser](https://alafazam.com/mf-portfolio-analyser/)**. See it on made-up data: [`samples/sample-report.html`](samples/sample-report.html) (a made-up investor holding real funds; purchases invented, values from real NAVs) and [`samples/sample-family.html`](samples/sample-family.html) (a made-up family).
 
 ## Install
 
@@ -51,6 +52,20 @@ python3 -m mfpa run --indmoney holdings.json sips.json
 
 Add `--other-ltcg 40000` if you've already booked equity long-term gains this year outside mutual funds (shares, ETFs). The first run downloads NAV histories and takes a few minutes; later runs use a 1-day cache in `~/.mfpa/`.
 
+### Family plan
+
+```bash
+python3 -m mfpa plan --init family
+```
+
+Fill `~/.mfpa/plans/family/plan.json` (or let `/plan-family` interview you), then:
+
+```bash
+python3 -m mfpa plan --file ~/.mfpa/plans/family/plan.json
+```
+
+Add `--from-run <run dir>` to take investments from a fund run, and `--share` for a copy with rounded amounts and no children's ages. How it works: [`references/plan.md`](skills/mf-portfolio-analyser/references/plan.md).
+
 ## Privacy
 
 - The CAS PDF and its text never leave your computer and are never shown to Claude. The tool extracts what it needs, deletes the raw text, and writes a redacted summary (no name, PAN, address, contact details or folio numbers) to `~/.mfpa/runs/…` with owner-only permissions.
@@ -72,10 +87,10 @@ Data: [mfapi.in](https://www.mfapi.in) NAVs and AMFI's daily scheme list (`NAVAl
 ## Tests
 
 ```bash
-python3 -m unittest -v tests.test_core
+python3 -m unittest discover -v -s tests
 ```
 
-Includes a round trip: the sample portfolio written as a synthetic MF Central CAS and parsed back.
+Includes a round trip (the sample portfolio written as a synthetic MF Central CAS and parsed back) and the family plan model: money conserved every month, loans against the EMI formula, OPS/UPS/NPS cases, EPF and NPS access ages, rent clubbing, pay-commission arrears, and the stress case never earlier than the base.
 
 ## Limits
 
